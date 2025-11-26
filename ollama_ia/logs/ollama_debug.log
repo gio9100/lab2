@@ -1,0 +1,274 @@
+[2025-11-24 00:24:50] === Iniciando configuración de Ollama ===
+[2025-11-24 00:24:50] Host: http://localhost:11434
+[2025-11-24 00:24:50] Modelo: llama2
+[2025-11-24 00:24:50] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:25:02] === Iniciando configuración de Ollama ===
+[2025-11-24 00:25:02] Host: http://localhost:11434
+[2025-11-24 00:25:02] Modelo: llama2
+[2025-11-24 00:25:02] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:27:50] === Iniciando configuración de Ollama ===
+[2025-11-24 00:27:50] Host: http://localhost:11434
+[2025-11-24 00:27:50] Modelo: llama2
+[2025-11-24 00:27:50] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:29:21] === Iniciando configuración de Ollama ===
+[2025-11-24 00:29:21] Host: http://localhost:11434
+[2025-11-24 00:29:21] Modelo: llama2
+[2025-11-24 00:29:21] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:29:21] 🚀 Iniciando moderación de publicación ID: 25
+[2025-11-24 00:29:21] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:29:21] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:29:21] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:29:21] 🤖 ModeradorIA inicializado
+[2025-11-24 00:29:21] 🔍 Iniciando análisis de publicación ID: 25
+[2025-11-24 00:29:21] ❌ Rechazado por validación básica: El contenido es muy corto (10 caracteres). Mínimo requerido: 100
+[2025-11-24 00:29:22] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:29:22] ✅ Moderación completada exitosamente
+[2025-11-24 00:30:36] === Iniciando configuración de Ollama ===
+[2025-11-24 00:30:36] Host: http://localhost:11434
+[2025-11-24 00:30:36] Modelo: llama2
+[2025-11-24 00:30:36] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:30:36] 🚀 Iniciando moderación de publicación ID: 25
+[2025-11-24 00:30:36] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:30:36] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:30:36] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:30:36] 🤖 ModeradorIA inicializado
+[2025-11-24 00:30:36] 🔍 Iniciando análisis de publicación ID: 25
+[2025-11-24 00:30:36] ❌ Rechazado por validación básica: El contenido es muy corto (10 caracteres). Mínimo requerido: 100
+[2025-11-24 00:30:36] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:30:36] ✅ Moderación completada exitosamente
+[2025-11-24 00:33:18] === Iniciando configuración de Ollama ===
+[2025-11-24 00:33:18] Host: http://localhost:11434
+[2025-11-24 00:33:18] Modelo: llama2
+[2025-11-24 00:33:18] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:33:18] 🚀 Iniciando moderación de publicación ID: 25
+[2025-11-24 00:33:18] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:33:18] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:33:18] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:33:18] 🤖 ModeradorIA inicializado
+[2025-11-24 00:33:18] 🔍 Iniciando análisis de publicación ID: 25
+[2025-11-24 00:33:18] ❌ Rechazado por validación básica: El contenido es muy corto (10 caracteres). Mínimo requerido: 100
+[2025-11-24 00:33:18] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:33:19] ✅ Estado de publicación actualizado a: rechazada
+[2025-11-24 00:33:19] 📝 Motivo de rechazo guardado: El contenido es muy corto (10 caracteres). Mínimo requerido: 100...
+[2025-11-24 00:33:19] ✅ Moderación completada exitosamente
+[2025-11-24 00:41:01] === Iniciando configuración de Ollama ===
+[2025-11-24 00:41:01] Host: http://localhost:11434
+[2025-11-24 00:41:01] Modelo: llama2
+[2025-11-24 00:41:01] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:41:01] 🚀 Iniciando moderación de publicación ID: 13
+[2025-11-24 00:41:01] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:41:02] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:41:02] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:41:02] 🤖 ModeradorIA inicializado
+[2025-11-24 00:41:02] 🔍 Iniciando análisis de publicación ID: 13
+[2025-11-24 00:41:02] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:41:02] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:41:02] Prompt: Eres un moderador experto de contenido académico. Tu trabajo es analizar publicaciones y determinar...
+[2025-11-24 00:42:02] ❌ Error en cURL: Operation timed out after 60150 milliseconds with 0 bytes received
+[2025-11-24 00:42:02] ❌ Error al comunicarse con Ollama: Error de conexión: Operation timed out after 60150 milliseconds with 0 bytes received
+[2025-11-24 00:43:06] === Iniciando configuración de Ollama ===
+[2025-11-24 00:43:06] Host: http://localhost:11434
+[2025-11-24 00:43:06] Modelo: 
+[2025-11-24 00:43:06] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:43:06] 🚀 Iniciando moderación de publicación ID: 33
+[2025-11-24 00:43:06] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:43:07] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:43:07] 🔧 Nuevo OllamaClient creado con modelo: 
+[2025-11-24 00:43:07] 🤖 ModeradorIA inicializado
+[2025-11-24 00:43:07] 🔍 Iniciando análisis de publicación ID: 33
+[2025-11-24 00:43:07] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:43:07] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:43:07] Prompt: Eres un moderador experto de contenido académico. Tu trabajo es analizar publicaciones y determinar...
+[2025-11-24 00:43:07] ❌ Error HTTP: Código 404
+[2025-11-24 00:43:07] ❌ Error al comunicarse con Ollama: Error HTTP: 404
+[2025-11-24 00:44:07] === Iniciando configuración de Ollama ===
+[2025-11-24 00:44:07] Host: http://localhost:11434
+[2025-11-24 00:44:07] Modelo: llama2
+[2025-11-24 00:44:07] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:44:07] 🚀 Iniciando moderación de publicación ID: 33
+[2025-11-24 00:44:07] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:44:07] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:44:07] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:44:07] 🤖 ModeradorIA inicializado
+[2025-11-24 00:44:07] 🔍 Iniciando análisis de publicación ID: 33
+[2025-11-24 00:44:07] ⚠️ Contenido truncado a 2000 caracteres para acelerar análisis
+[2025-11-24 00:44:07] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:44:07] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:44:07] Prompt: Eres un moderador experto de contenido académico. Tu trabajo es analizar publicaciones y determinar...
+[2025-11-24 00:44:37] ❌ Error en cURL: Operation timed out after 30012 milliseconds with 0 bytes received
+[2025-11-24 00:44:37] ❌ Error al comunicarse con Ollama: Error de conexión: Operation timed out after 30012 milliseconds with 0 bytes received
+[2025-11-24 00:46:31] === Iniciando configuración de Ollama ===
+[2025-11-24 00:46:31] Host: http://localhost:11434
+[2025-11-24 00:46:31] Modelo: llama2
+[2025-11-24 00:46:32] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:46:32] 🚀 Iniciando moderación de publicación ID: 33
+[2025-11-24 00:46:32] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:46:32] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:46:32] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:46:32] 🤖 ModeradorIA inicializado
+[2025-11-24 00:46:32] 🔍 Iniciando análisis de publicación ID: 33
+[2025-11-24 00:46:32] ⚠️ Contenido truncado a 500 caracteres para análisis rápido
+[2025-11-24 00:46:32] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:46:32] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:46:32] Prompt: Analiza esta publicación académica y decide si aprobarla o rechazarla.
+
+Título: toma de muestra
+C...
+[2025-11-24 00:47:02] ❌ Error en cURL: Operation timed out after 30014 milliseconds with 0 bytes received
+[2025-11-24 00:47:02] ❌ Error al comunicarse con Ollama: Error de conexión: Operation timed out after 30014 milliseconds with 0 bytes received
+[2025-11-24 00:48:27] === Iniciando configuración de Ollama ===
+[2025-11-24 00:48:27] Host: http://localhost:11434
+[2025-11-24 00:48:27] Modelo: llama2
+[2025-11-24 00:48:27] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:48:27] 🚀 Iniciando moderación de publicación ID: 32
+[2025-11-24 00:48:27] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:48:27] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:48:27] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:48:27] 🤖 ModeradorIA inicializado
+[2025-11-24 00:48:27] 🔍 Iniciando análisis de publicación ID: 32
+[2025-11-24 00:48:27] ❌ Rechazado por validación básica: El contenido es muy corto (10 caracteres). Mínimo requerido: 100
+[2025-11-24 00:48:27] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:48:28] ✅ Estado de publicación actualizado a: rechazada
+[2025-11-24 00:48:28] 📝 Motivo de rechazo guardado: El contenido es muy corto (10 caracteres). Mínimo requerido: 100...
+[2025-11-24 00:48:28] ✅ Moderación completada exitosamente
+[2025-11-24 00:48:32] === Iniciando configuración de Ollama ===
+[2025-11-24 00:48:32] Host: http://localhost:11434
+[2025-11-24 00:48:32] Modelo: llama2
+[2025-11-24 00:48:32] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:48:32] 🚀 Iniciando moderación de publicación ID: 28
+[2025-11-24 00:48:32] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:48:32] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:48:32] 🔧 Nuevo OllamaClient creado con modelo: llama2
+[2025-11-24 00:48:32] 🤖 ModeradorIA inicializado
+[2025-11-24 00:48:32] 🔍 Iniciando análisis de publicación ID: 28
+[2025-11-24 00:48:32] ❌ Rechazado por validación básica: El contenido es muy corto (10 caracteres). Mínimo requerido: 100
+[2025-11-24 00:48:33] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:48:33] ✅ Estado de publicación actualizado a: rechazada
+[2025-11-24 00:48:33] 📝 Motivo de rechazo guardado: El contenido es muy corto (10 caracteres). Mínimo requerido: 100...
+[2025-11-24 00:48:33] ✅ Moderación completada exitosamente
+[2025-11-24 00:52:25] === Iniciando configuración de Ollama ===
+[2025-11-24 00:52:25] Host: http://localhost:11434
+[2025-11-24 00:52:25] Modelo: tinyllama
+[2025-11-24 00:52:25] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:52:25] 🚀 Iniciando moderación de publicación ID: 33
+[2025-11-24 00:52:25] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:52:25] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:52:25] 🔧 Nuevo OllamaClient creado con modelo: tinyllama
+[2025-11-24 00:52:25] 🤖 ModeradorIA inicializado
+[2025-11-24 00:52:25] 🔍 Iniciando análisis de publicación ID: 33
+[2025-11-24 00:52:25] ⚠️ Contenido truncado a 500 caracteres para análisis rápido
+[2025-11-24 00:52:25] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:52:25] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:52:25] Prompt: Analiza esta publicación académica y decide si aprobarla o rechazarla.
+
+Título: toma de muestra
+C...
+[2025-11-24 00:52:55] ❌ Error en cURL: Operation timed out after 30015 milliseconds with 0 bytes received
+[2025-11-24 00:52:55] ❌ Error al comunicarse con Ollama: Error de conexión: Operation timed out after 30015 milliseconds with 0 bytes received
+[2025-11-24 00:54:09] === Iniciando configuración de Ollama ===
+[2025-11-24 00:54:09] Host: http://localhost:11434
+[2025-11-24 00:54:09] Modelo: tinyllama
+[2025-11-24 00:54:10] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:54:10] 🚀 Iniciando moderación de publicación ID: 33
+[2025-11-24 00:54:10] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:54:10] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:54:10] 🔧 Nuevo OllamaClient creado con modelo: tinyllama
+[2025-11-24 00:54:10] 🤖 ModeradorIA inicializado
+[2025-11-24 00:54:10] 🔍 Iniciando análisis de publicación ID: 33
+[2025-11-24 00:54:10] ⚠️ Contenido truncado a 300 caracteres para análisis rápido
+[2025-11-24 00:54:10] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:54:10] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:54:10] Prompt: Analiza esta publicación académica y decide si aprobarla o rechazarla.
+
+Título: toma de muestra
+C...
+[2025-11-24 00:54:43] ✅ Respuesta recibida de Ollama
+[2025-11-24 00:54:43] Respuesta: Based on the passage above, the article is an academic publication that contains information about t...
+[2025-11-24 00:54:43] 🎯 Decisión de la IA: en_revision (Confianza: 50%)
+[2025-11-24 00:54:43] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:54:43] ✅ Estado de publicación actualizado a: en_revision
+[2025-11-24 00:54:43] ✅ Moderación completada exitosamente
+[2025-11-24 00:55:24] === Iniciando configuración de Ollama ===
+[2025-11-24 00:55:24] Host: http://localhost:11434
+[2025-11-24 00:55:24] Modelo: tinyllama
+[2025-11-24 00:55:25] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:55:25] 🚀 Iniciando moderación de publicación ID: 29
+[2025-11-24 00:55:25] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:55:25] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:55:25] 🔧 Nuevo OllamaClient creado con modelo: tinyllama
+[2025-11-24 00:55:25] 🤖 ModeradorIA inicializado
+[2025-11-24 00:55:25] 🔍 Iniciando análisis de publicación ID: 29
+[2025-11-24 00:55:25] ❌ Rechazado por validación básica: El contenido es muy corto (16 caracteres). Mínimo requerido: 100
+[2025-11-24 00:55:25] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:55:25] ✅ Estado de publicación actualizado a: rechazada
+[2025-11-24 00:55:25] 📝 Motivo de rechazo guardado: El contenido es muy corto (16 caracteres). Mínimo requerido: 100...
+[2025-11-24 00:55:25] ✅ Moderación completada exitosamente
+[2025-11-24 00:55:28] === Iniciando configuración de Ollama ===
+[2025-11-24 00:55:28] Host: http://localhost:11434
+[2025-11-24 00:55:28] Modelo: tinyllama
+[2025-11-24 00:55:28] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:55:28] 🚀 Iniciando moderación de publicación ID: 13
+[2025-11-24 00:55:28] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:55:29] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:55:29] 🔧 Nuevo OllamaClient creado con modelo: tinyllama
+[2025-11-24 00:55:29] 🤖 ModeradorIA inicializado
+[2025-11-24 00:55:29] 🔍 Iniciando análisis de publicación ID: 13
+[2025-11-24 00:55:29] ⚠️ Contenido truncado a 300 caracteres para análisis rápido
+[2025-11-24 00:55:29] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:55:29] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:55:29] Prompt: Analiza esta publicación académica y decide si aprobarla o rechazarla.
+
+Título: bacteriologia gen...
+[2025-11-24 00:56:29] ❌ Error en cURL: Operation timed out after 60003 milliseconds with 0 bytes received
+[2025-11-24 00:56:29] ❌ Error al comunicarse con Ollama: Error de conexión: Operation timed out after 60003 milliseconds with 0 bytes received
+[2025-11-24 00:56:32] === Iniciando configuración de Ollama ===
+[2025-11-24 00:56:32] Host: http://localhost:11434
+[2025-11-24 00:56:32] Modelo: tinyllama
+[2025-11-24 00:56:32] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:56:32] 🚀 Iniciando moderación de publicación ID: 20
+[2025-11-24 00:56:32] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:56:32] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:56:32] 🔧 Nuevo OllamaClient creado con modelo: tinyllama
+[2025-11-24 00:56:32] 🤖 ModeradorIA inicializado
+[2025-11-24 00:56:32] 🔍 Iniciando análisis de publicación ID: 20
+[2025-11-24 00:56:32] ❌ Rechazado por validación básica: El contenido es muy corto (10 caracteres). Mínimo requerido: 100
+[2025-11-24 00:56:32] 💾 Análisis guardado en la base de datos
+[2025-11-24 00:56:33] ✅ Estado de publicación actualizado a: rechazada
+[2025-11-24 00:56:33] 📝 Motivo de rechazo guardado: El contenido es muy corto (10 caracteres). Mínimo requerido: 100...
+[2025-11-24 00:56:33] ✅ Moderación completada exitosamente
+[2025-11-24 00:56:36] === Iniciando configuración de Ollama ===
+[2025-11-24 00:56:36] Host: http://localhost:11434
+[2025-11-24 00:56:36] Modelo: tinyllama
+[2025-11-24 00:56:36] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:56:36] 🚀 Iniciando moderación de publicación ID: 13
+[2025-11-24 00:56:36] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:56:36] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:56:36] 🔧 Nuevo OllamaClient creado con modelo: tinyllama
+[2025-11-24 00:56:36] 🤖 ModeradorIA inicializado
+[2025-11-24 00:56:36] 🔍 Iniciando análisis de publicación ID: 13
+[2025-11-24 00:56:36] ⚠️ Contenido truncado a 300 caracteres para análisis rápido
+[2025-11-24 00:56:36] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:56:36] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:56:36] Prompt: Analiza esta publicación académica y decide si aprobarla o rechazarla.
+
+Título: bacteriologia gen...
+[2025-11-24 00:57:36] ❌ Error en cURL: Operation timed out after 60004 milliseconds with 0 bytes received
+[2025-11-24 00:57:36] ❌ Error al comunicarse con Ollama: Error de conexión: Operation timed out after 60004 milliseconds with 0 bytes received
+[2025-11-24 00:58:12] === Iniciando configuración de Ollama ===
+[2025-11-24 00:58:12] Host: http://localhost:11434
+[2025-11-24 00:58:12] Modelo: tinyllama
+[2025-11-24 00:58:12] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:58:12] 🚀 Iniciando moderación de publicación ID: 34
+[2025-11-24 00:58:12] 👤 Solicitado por admin ID: 1
+[2025-11-24 00:58:12] ✅ Ollama está corriendo correctamente
+[2025-11-24 00:58:12] 🔧 Nuevo OllamaClient creado con modelo: tinyllama
+[2025-11-24 00:58:12] 🤖 ModeradorIA inicializado
+[2025-11-24 00:58:12] 🔍 Iniciando análisis de publicación ID: 34
+[2025-11-24 00:58:12] ⚠️ Contenido truncado a 300 caracteres para análisis rápido
+[2025-11-24 00:58:12] 📝 Prompt generado, enviando a Ollama...
+[2025-11-24 00:58:12] 📤 Enviando prompt a Ollama...
+[2025-11-24 00:58:12] Prompt: Analiza esta publicación académica y decide si aprobarla o rechazarla.
+
+Título: bacteriologia ali...
+[2025-11-24 00:59:12] ❌ Error en cURL: Operation timed out after 60008 milliseconds with 0 bytes received
+[2025-11-24 00:59:12] ❌ Error al comunicarse con Ollama: Error de conexión: Operation timed out after 60008 milliseconds with 0 bytes received

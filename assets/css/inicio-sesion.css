@@ -1,0 +1,344 @@
+/* Reseteo de estilos pa que todo empiece desde cero */
+* {
+    margin: 0;
+    /* Quita los margenes que vienen por defecto */
+    padding: 0;
+    /* Quita el padding que trae el navegador */
+    box-sizing: border-box;
+    /* Hace que el padding y border no aumenten el tamaño total */
+    font-family: 'Poppins', sans-serif;
+    /* Fuente chida de Google Fonts */
+}
+
+/* Estilos del fondo de la página */
+body {
+    background-image: url(../img/fondo-inicio-registro/registro-inicio.png);
+    /* Imagen de fondo bien perro */
+    background-position: center center;
+    /* Centra la imagen en medio de la pantalla */
+    background-repeat: no-repeat;
+    /* Evita que se repita la imagen */
+    background-size: cover;
+    /* Hace que la imagen cubra toda la pantalla */
+    background-attachment: fixed;
+    /* La imagen se queda fija cuando haces scroll */
+    color: #111;
+    /* Color de texto casi negro */
+    display: flex;
+    /* Activa flexbox pa centrar todo */
+    justify-content: center;
+    /* Centra horizontalmente */
+    align-items: center;
+    /* Centra verticalmente */
+    min-height: 100vh;
+    /* Altura mínima del 100% de la pantalla */
+}
+
+
+/* Formulario de inicio de sesión */
+
+.formulario {
+    background: rgba(255, 255, 255, 0.0);
+    /* Fondo transparente (0.0 = completamente transparente) */
+    backdrop-filter: blur(5px);
+    /* Efecto de desenfoque del fondo, se ve bien aesthetic */
+    -webkit-backdrop-filter: blur(5px);
+    /* Lo mismo pero pa Safari porque es especial */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Borde blanco medio transparente */
+    border: 2px solid #7390A0;
+    /* Borde azul grisáceo de 2px */
+    border-radius: 14px;
+    /* Esquinas redondeadas */
+    padding: 40px 50px;
+    /* Espacio interno: 40px arriba/abajo, 50px izq/der */
+    width: 90%;
+    /* Ancho del 90% del contenedor padre */
+    max-width: 420px;
+    /* Ancho máximo de 420px pa que no se vea muy grande */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    /* Sombra suave abajo del formulario */
+    transition: all 0.3s ease;
+    /* Transición suave de 0.3 segundos pa todos los cambios */
+    text-align: center;
+    /* Todo el texto centrado */
+}
+
+/* Efecto cuando pasas el mouse sobre el formulario */
+.formulario:hover {
+    transform: translateY(-5px);
+    /* Mueve el formulario 5px hacia arriba */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    /* Sombra más grande y oscura */
+}
+
+/* Logo del laboratorio */
+.logo-lab img {
+    width: 250px;
+    /* Ancho de 250px */
+    height: auto;
+    /* Altura automática pa mantener proporciones */
+    margin-bottom: 10px;
+    /* Espacio de 10px abajo del logo */
+}
+
+/* Título principal del formulario */
+.logo-lab h1 {
+    font-weight: 700;
+    /* Texto bien grueso (bold) */
+    color: #111;
+    /* Color casi negro */
+    font-size: 24px;
+    /* Tamaño de letra de 24px */
+}
+
+/* Subtítulo debajo del título */
+.subtitulo {
+    font-size: 14px;
+    /* Tamaño chico de 14px */
+    color: #444;
+    /* Gris oscuro */
+    margin-bottom: 20px;
+    /* Espacio de 20px abajo */
+}
+
+
+/* Etiquetas de los inputs */
+
+label {
+    display: block;
+    /* Hace que cada label ocupe toda la línea */
+    text-align: left;
+    /* Alinea el texto a la izquierda */
+    margin-bottom: 6px;
+    /* Espacio de 6px abajo del label */
+    font-weight: 500;
+    /* Peso medio de la fuente */
+    color: #222;
+    /* Gris muy oscuro casi negro */
+}
+
+/* Campos de texto (inputs) */
+input {
+    width: 100%;
+    /* Ocupa todo el ancho disponible */
+    padding: 10px 14px;
+    /* Espacio interno: 10px arriba/abajo, 14px izq/der */
+    margin-bottom: 20px;
+    /* Espacio de 20px abajo del input */
+    border: 1.8px solid #ccc;
+    /* Borde gris claro de 1.8px */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    background: #fff;
+    /* Fondo blanco */
+    transition: border 0.3s, box-shadow 0.3s;
+    /* Transición suave del borde y sombra */
+}
+
+/* Cuando haces click en un input */
+input:focus {
+    border-color: #7390A0;
+    /* Cambia el borde a azul grisáceo */
+    box-shadow: 0 0 5px rgba(204, 0, 0, 0.3);
+    /* Sombra rojiza alrededor del input */
+    outline: none;
+    /* Quita el outline feo del navegador */
+}
+
+/* Input con error */
+input.error {
+    border-color: #7390A0;
+    /* Borde azul grisáceo */
+    background: #ffeaea;
+    /* Fondo rosa clarito pa indicar error */
+}
+
+
+/* Mensajes de validación */
+
+.mensaje-correo {
+    display: none;
+    /* Oculto por defecto */
+    color: #7390A0;
+    /* Color azul grisáceo */
+    font-size: 13px;
+    /* Tamaño chico */
+    margin-top: -15px;
+    /* Margen negativo pa acercarlo al input de arriba */
+    margin-bottom: 15px;
+    /* Espacio de 15px abajo */
+    text-align: left;
+    /* Texto alineado a la izquierda */
+}
+
+/* Botón de submit */
+button {
+    width: 100%;
+    /* Ocupa todo el ancho */
+    background: #7390A0;
+    /* Fondo azul grisáceo */
+    color: #fff;
+    /* Texto blanco */
+    border: none;
+    /* Sin borde */
+    padding: 12px;
+    /* Espacio interno de 12px */
+    border-radius: 8px;
+    /* Esquinas redondeadas */
+    font-size: 16px;
+    /* Tamaño de letra */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    cursor: pointer;
+    /* Cambia el cursor a manita */
+    transition: 0.3s;
+    /* Transición suave de 0.3 segundos */
+}
+
+/* Efecto hover del botón */
+button:hover {
+    background: #7390A0;
+    /* Mismo color (podría cambiar pa un efecto más chido) */
+}
+
+
+/* Links de redirección */
+
+a {
+    color: blue;
+    /* Color azul clásico */
+    text-decoration: none;
+    /* Sin subrayado */
+    font-weight: 500;
+    /* Peso medio */
+}
+
+/* Efecto hover de los links */
+a:hover {
+    text-decoration: underline;
+    /* Subraya el link cuando pasas el mouse */
+}
+
+
+/* Modal de mensajes (éxito o error) */
+
+.modal-mensaje {
+    position: fixed;
+    /* Posición fija en la pantalla */
+    top: 0;
+    /* Pegado arriba */
+    left: 0;
+    /* Pegado a la izquierda */
+    right: 0;
+    /* Pegado a la derecha */
+    bottom: 0;
+    /* Pegado abajo */
+    display: flex;
+    /* Flexbox pa centrar el contenido */
+    align-items: center;
+    /* Centra verticalmente */
+    justify-content: center;
+    /* Centra horizontalmente */
+    background: rgba(0, 0, 0, 0.4);
+    /* Fondo negro semi-transparente */
+    z-index: 10;
+    /* Nivel de capa 10 pa que esté encima */
+}
+
+/* Contenido del modal */
+.modal-contenido {
+    background: #fff;
+    /* Fondo blanco */
+    border-radius: 12px;
+    /* Esquinas bien redondeadas */
+    padding: 30px;
+    /* Espacio interno de 30px */
+    text-align: center;
+    /* Todo centrado */
+    width: 90%;
+    /* Ancho del 90% */
+    max-width: 400px;
+    /* Ancho máximo de 400px */
+    border-top: 5px solid #7390A0;
+    /* Borde superior azul grisáceo de 5px */
+    color: #111;
+    /* Texto casi negro */
+}
+
+/* Título del modal */
+.modal-contenido h2 {
+    margin-bottom: 10px;
+    /* Espacio de 10px abajo */
+    color: #7390A0;
+    /* Color azul grisáceo */
+    font-weight: 700;
+    /* Texto bien grueso */
+}
+
+/* Párrafos del modal */
+.modal-contenido p {
+    color: #333;
+    /* Gris oscuro */
+    margin-bottom: 10px;
+    /* Espacio de 10px abajo */
+}
+
+/* Botón dentro del modal */
+.modal-contenido button {
+    background: #7390A0;
+    /* Fondo azul grisáceo */
+    border: none;
+    /* Sin borde */
+    padding: 10px 20px;
+    /* Espacio interno: 10px arriba/abajo, 20px izq/der */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    color: #fff;
+    /* Texto blanco */
+    cursor: pointer;
+    /* Cursor de manita */
+    margin-top: 15px;
+    /* Espacio de 15px arriba */
+    font-weight: 600;
+    /* Texto semi-grueso */
+}
+
+/* Hover del botón del modal */
+.modal-contenido button:hover {
+    background: #7390A0;
+    /* Mismo color (podría oscurecerse un poco) */
+}
+
+
+/* Estilos responsive pa pantallas chicas */
+
+@media (max-width: 480px) {
+    .formulario {
+        padding: 25px 30px;
+        /* Reduce el padding en pantallas chicas */
+    }
+
+    h1 {
+        font-size: 22px;
+        /* Reduce el tamaño del título */
+    }
+}
+
+
+/* Asegura que el modal esté por encima de TODO */
+
+.modal-mensaje {
+    z-index: 999999 !important;
+    /* Nivel de capa súper alto con !important pa forzarlo */
+}
+
+
+/* Manda el formulario abajo pa que no tape el modal */
+
+.formulario {
+    position: relative;
+    /* Posición relativa */
+    z-index: 1;
+    /* Nivel de capa bajo */
+}

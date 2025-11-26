@@ -1,0 +1,326 @@
+/* Reset de estilos básicos pa empezar limpio */
+* {
+    margin: 0;
+    /* Sin márgenes por defecto */
+    padding: 0;
+    /* Sin padding por defecto */
+    box-sizing: border-box;
+    /* El padding y border no aumentan el tamaño total del elemento */
+    font-family: 'Poppins', sans-serif;
+    /* Fuente Poppins bien chida */
+}
+
+/* Fondo de la página de registro */
+body {
+    background-image: url(../img/fondo-inicio-registro/registro-inicio.png);
+    /* Imagen de fondo */
+    background-position: center center;
+    /* Centra la imagen */
+    background-repeat: no-repeat;
+    /* No repite la imagen */
+    background-size: cover;
+    /* Cubre toda la pantalla */
+    background-attachment: fixed;
+    /* Imagen fija cuando haces scroll */
+    color: #111;
+    /* Color de texto casi negro */
+    display: flex;
+    /* Flexbox pa centrar */
+    justify-content: center;
+    /* Centra horizontal */
+    align-items: center;
+    /* Centra vertical */
+    min-height: 100vh;
+    /* Altura mínima del 100% de la ventana */
+}
+
+
+/* Caja del formulario de registro */
+
+.formulario {
+    background: rgba(255, 255, 255, 0.0);
+    /* Fondo completamente transparente */
+    backdrop-filter: blur(5px);
+    /* Desenfoque del fondo, se ve aesthetic */
+    -webkit-backdrop-filter: blur(5px);
+    /* Desenfoque pa Safari porque es especial */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Borde blanco transparente */
+    border: 2px solid #7390A0;
+    /* Borde azul grisáceo más grueso */
+    border-radius: 14px;
+    /* Esquinas redondeadas */
+    padding: 40px 50px;
+    /* Espacio interno: 40px arriba/abajo, 50px lados */
+    width: 90%;
+    /* Ancho del 90% del contenedor */
+    max-width: 420px;
+    /* Ancho máximo de 420px */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
+    transition: all 0.3s ease;
+    /* Transición suave de 0.3s */
+    text-align: center;
+    /* Texto centrado */
+}
+
+/* Efecto cuando pasas el mouse sobre el formulario */
+.formulario:hover {
+    transform: translateY(-5px);
+    /* Sube 5px el formulario */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    /* Sombra más grande */
+}
+
+/* Logo del lab */
+.logo-lab img {
+    width: 250px;
+    /* Ancho de 250px */
+    height: auto;
+    /* Altura automática pa mantener proporción */
+    margin-bottom: 10px;
+    /* Espacio de 10px abajo */
+}
+
+/* Título del formulario */
+.logo-lab h1 {
+    font-weight: 700;
+    /* Texto bien grueso */
+    color: #7390A0;
+    /* Color azul grisáceo */
+    font-size: 24px;
+    /* Tamaño de 24px */
+}
+
+/* Subtítulo debajo del título */
+.subtitulo {
+    font-size: 14px;
+    /* Tamaño chico */
+    color: #444;
+    /* Gris oscuro */
+    margin-bottom: 20px;
+    /* Espacio de 20px abajo */
+}
+
+
+/* Etiquetas de los campos */
+
+label {
+    display: block;
+    /* Cada label en su propia línea */
+    text-align: left;
+    /* Texto a la izquierda */
+    margin-bottom: 6px;
+    /* Espacio de 6px abajo */
+    font-weight: 500;
+    /* Peso medio */
+    color: #222;
+    /* Casi negro */
+}
+
+/* Campos de entrada de texto */
+input {
+    width: 100%;
+    /* Ancho completo */
+    padding: 10px 14px;
+    /* Espacio interno: 10px arriba/abajo, 14px lados */
+    margin-bottom: 20px;
+    /* Espacio de 20px abajo */
+    border: 1.8px solid #ccc;
+    /* Borde gris claro */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    background: #fff;
+    /* Fondo blanco */
+    transition: border 0.3s, box-shadow 0.3s;
+    /* Transición suave del borde y sombra */
+}
+
+/* Cuando haces click en un input */
+input:focus {
+    border-color: #7390A0;
+    /* Borde azul grisáceo */
+    box-shadow: 0 0 5px rgba(204, 0, 0, 0.3);
+    /* Sombra rojiza */
+    outline: none;
+    /* Quita el outline feo del navegador */
+}
+
+/* Input con error de validación */
+input.error {
+    border-color: #7390A0;
+    /* Borde azul grisáceo */
+    background: #ffeaea;
+    /* Fondo rosa clarito pa indicar error */
+}
+
+
+/* Mensajes de validación */
+
+.mensaje-correo {
+    display: none;
+    /* Oculto por defecto */
+    color: #7390A0;
+    /* Color azul grisáceo */
+    font-size: 13px;
+    /* Tamaño chico */
+    margin-top: -15px;
+    /* Margen negativo pa pegarlo al input de arriba */
+    margin-bottom: 15px;
+    /* Espacio de 15px abajo */
+    text-align: left;
+    /* Texto a la izquierda */
+}
+
+/* Botón de crear cuenta */
+button {
+    width: 100%;
+    /* Ancho completo */
+    background: #7390A0;
+    /* Fondo azul grisáceo */
+    color: #fff;
+    /* Texto blanco */
+    border: none;
+    /* Sin borde */
+    padding: 12px;
+    /* Espacio interno de 12px */
+    border-radius: 8px;
+    /* Esquinas redondeadas */
+    font-size: 16px;
+    /* Tamaño de letra */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    cursor: pointer;
+    /* Cursor de manita */
+    transition: 0.3s;
+    /* Transición de 0.3s */
+}
+
+/* Hover del botón */
+button:hover {
+    background: #7390A0;
+    /* Mismo color (podría oscurecerse) */
+}
+
+
+/* Links de redirección */
+
+a {
+    color: blue;
+    /* Azul clásico */
+    text-decoration: none;
+    /* Sin subrayado */
+    font-weight: 500;
+    /* Peso medio */
+}
+
+/* Hover de los links */
+a:hover {
+    text-decoration: underline;
+    /* Subraya cuando pasas el mouse */
+}
+
+
+/* Modal de mensajes */
+
+.modal-mensaje {
+    position: fixed;
+    /* Posición fija en la pantalla */
+    top: 0;
+    /* Pegado arriba */
+    left: 0;
+    /* Pegado a la izquierda */
+    right: 0;
+    /* Pegado a la derecha */
+    bottom: 0;
+    /* Pegado abajo */
+    display: flex;
+    /* Flexbox pa centrar */
+    align-items: center;
+    /* Centra vertical */
+    justify-content: center;
+    /* Centra horizontal */
+    background: rgba(0, 0, 0, 0.4);
+    /* Fondo negro semi-transparente */
+    z-index: 10;
+    /* Nivel de capa 10 */
+}
+
+/* Contenido del modal */
+.modal-contenido {
+    background: #fff;
+    /* Fondo blanco */
+    border-radius: 12px;
+    /* Esquinas bien redondeadas */
+    padding: 30px;
+    /* Espacio interno de 30px */
+    text-align: center;
+    /* Todo centrado */
+    width: 90%;
+    /* Ancho del 90% */
+    max-width: 400px;
+    /* Ancho máximo de 400px */
+    border-top: 5px solid #7390A0;
+    /* Borde superior azul grisáceo */
+    color: #111;
+    /* Texto casi negro */
+}
+
+/* Título del modal */
+.modal-contenido h2 {
+    margin-bottom: 10px;
+    /* Espacio de 10px abajo */
+    color: #7390A0;
+    /* Color azul grisáceo */
+    font-weight: 700;
+    /* Texto bien grueso */
+}
+
+/* Párrafos del modal */
+.modal-contenido p {
+    color: #333;
+    /* Gris oscuro */
+    margin-bottom: 10px;
+    /* Espacio de 10px abajo */
+}
+
+/* Botón dentro del modal */
+.modal-contenido button {
+    background: #7390A0;
+    /* Fondo azul grisáceo */
+    border: none;
+    /* Sin borde */
+    padding: 10px 20px;
+    /* Espacio: 10px arriba/abajo, 20px lados */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    color: #fff;
+    /* Texto blanco */
+    cursor: pointer;
+    /* Cursor de manita */
+    margin-top: 15px;
+    /* Espacio de 15px arriba */
+    font-weight: 600;
+    /* Texto semi-grueso */
+}
+
+/* Hover del botón del modal */
+.modal-contenido button:hover {
+    background: #7390A0;
+    /* Mismo color */
+}
+
+
+/* Responsive pa pantallas chicas */
+
+@media (max-width: 480px) {
+    .formulario {
+        padding: 25px 30px;
+        /* Reduce el padding en móviles */
+    }
+
+    h1 {
+        font-size: 22px;
+        /* Reduce el tamaño del título */
+    }
+}

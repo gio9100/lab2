@@ -1,0 +1,16 @@
+2025-11-22 20:46:02 - POST received: Array
+(
+    [publicacion_id] => 20
+    [mensaje_rechazo] => 
+    [nuevo_estado] => revision
+    [cambiar_estado] => 1
+)
+
+2025-11-22 20:46:10 - POST received: Array
+(
+    [publicacion_id] => 21
+    [mensaje_rechazo] => 
+    [nuevo_estado] => borrador
+    [cambiar_estado] => 1
+)
+

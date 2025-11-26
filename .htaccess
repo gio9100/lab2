@@ -1,0 +1,36 @@
+# Configuración de Apache para Lab-Explorer
+
+# Establecer pagina-principal.php como página de inicio predeterminada
+DirectoryIndex pagina-principal.php index.php index.html
+
+# Habilitar reescritura de URLs
+RewriteEngine On
+
+# Redirigir automáticamente de index.php a pagina-principal.php si se accede directamente
+# (solo si no se está accediendo desde un subdirectorio)
+RewriteCond %{REQUEST_URI} ^/lab/?$
+RewriteRule ^$ pagina-principal.php [L]
+
+# Configuración de seguridad básica
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Habilitar compresión GZIP para mejorar velocidad
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# Configurar caché del navegador
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+</IfModule>

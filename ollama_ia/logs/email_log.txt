@@ -1,0 +1,81 @@
+2025-11-24 01:26:19 - Intento de envío a PUBLICADOR: giovannidossantos929@gmail.com
+Nombre: Giovanni Dos santos
+Asunto: ✅ Tu publicación ha sido aprobada - Lab-Explorer
+Resultado: FALLO
+Estado: aprobada
+Publicación: ¿ssQuaséss es la toma de muestra?  La toma de muestra es el proceso mediante el cual se obtiene una parte representativa de un material (sangre, orina, tejido, alimento, agua, etc.) con el fin de anal
+---
+
+2025-11-24 01:26:21 - Intento de envío a ADMIN: giovannidossantos929@gmail.com
+Asunto: ✅ Publicación Aprobada Automáticamente - Lab-Explorer
+Resultado: FALLO
+Estado: aprobada
+---
+
+2025-11-24 01:26:23 - Intento de envío a ADMIN: giovannidossantos929a@gmail.com
+Asunto: ✅ Publicación Aprobada Automáticamente - Lab-Explorer
+Resultado: FALLO
+Estado: aprobada
+---
+
+2025-11-24 01:28:35 - Intento de envío a PUBLICADOR: giovannidossantos929@gmail.com
+Nombre: Giovanni Dos santos
+Asunto: Tu publicacion ha sido aprobada - Lab-Explorer
+Resultado: FALLO
+Estado: aprobada
+Publicación: ¿Qué es la toma de muestra?  La toma de muestra es el proceso mediante el cual se obtiene una parte representativa de un material (sangre, orina, tejido, alimento, agua, etc.) con el fin de analizarlo
+---
+
+2025-11-24 01:28:37 - Intento de envío a ADMIN: giovannidossantos929@gmail.com
+Asunto: Publicacion Aprobada Automaticamente - Lab-Explorer
+Resultado: FALLO
+Estado: aprobada
+---
+
+2025-11-24 01:28:39 - Intento de envío a ADMIN: giovannidossantos929a@gmail.com
+Asunto: Publicacion Aprobada Automaticamente - Lab-Explorer
+Resultado: FALLO
+Estado: aprobada
+---
+
+2025-11-24 01:32:19 - Intento de envío a PUBLICADOR: giovannidossantos929@gmail.com
+Nombre: Giovanni Dos santos
+Asunto: Tu publicacion ha sido aprobada - Lab-Explorer
+Resultado: FALLO
+Estado: publicado
+Publicación: sdfsdfdsf
+---
+
+2025-11-24 01:32:21 - Intento de envío a ADMIN: giovannidossantos929@gmail.com
+Asunto: Publicacion Aprobada Automaticamente - Lab-Explorer
+Resultado: FALLO
+Estado: publicado
+---
+
+2025-11-24 01:32:23 - Intento de envío a ADMIN: giovannidossantos929a@gmail.com
+Asunto: Publicacion Aprobada Automaticamente - Lab-Explorer
+Resultado: FALLO
+Estado: publicado
+---
+
+2025-11-24 01:45:09 - Correo enviado a publicador: giovannidossantos929@gmail.com
+2025-11-24 01:45:13 - Correo enviado a admin: giovannidossantos929@gmail.com
+2025-11-24 01:45:16 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-11-24 17:34:50 - ✅ Correo enviado exitosamente a publicador: castanedazoe77@gmail.com - Estado: rechazada
+2025-11-24 17:34:54 - Correo enviado a admin: giovannidossantos929@gmail.com
+2025-11-24 17:34:58 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-11-24 17:38:06 - ✅ Correo enviado exitosamente a publicador: castanedazoe77@gmail.com - Estado: rechazada
+2025-11-24 17:38:09 - Correo enviado a admin: giovannidossantos929@gmail.com
+2025-11-24 17:38:11 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-11-24 17:38:20 - ✅ Correo enviado exitosamente a publicador: castanedazoe77@gmail.com - Estado: rechazada
+2025-11-24 17:38:23 - Correo enviado a admin: giovannidossantos929@gmail.com
+2025-11-24 17:38:27 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-11-25 16:52:40 - ✅ Correo enviado exitosamente a publicador: giovannidossantos929@gmail.com - Estado: publicado
+2025-11-25 16:52:43 - Correo enviado a admin: giovannidossantos929@gmail.com
+2025-11-25 16:52:46 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-11-25 16:56:46 - ✅ Correo enviado exitosamente a publicador: brandonioriz117@gmail.com - Estado: publicado
+2025-11-25 16:56:48 - Correo enviado a admin: giovannidossantos929@gmail.com
+2025-11-25 16:56:50 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-11-25 16:57:00 - ✅ Correo enviado exitosamente a publicador: giovannidossantos929@gmail.com - Estado: publicado
+2025-11-25 16:57:02 - Correo enviado a admin: giovannidossantos929@gmail.com
+2025-11-25 16:57:04 - Correo enviado a admin: giovannidossantos929a@gmail.com

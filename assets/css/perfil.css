@@ -1,0 +1,552 @@
+/* Variables globales pa usar en todo el CSS */
+
+:root {
+    --color-primario: #7390A0;
+    /* Color principal azul grisáceo */
+    --color-texto: #2c3e50;
+    /* Color del texto oscuro */
+    --color-borde: #e9ecef;
+    /* Color de los bordes gris claro */
+    --color-fondo: #f8f9fa;
+    /* Color de fondo gris muy claro */
+    --radius: 8px;
+    /* Radio de las esquinas redondeadas */
+    --trans: .3s ease;
+    /* Transición suave de 0.3 segundos */
+    --font-1: 'Roboto', sans-serif;
+    /* Fuente principal Roboto */
+    --font-2: 'Poppins', sans-serif;
+    /* Fuente secundaria Poppins */
+    --font-3: 'Nunito', sans-serif;
+    /* Fuente terciaria Nunito */
+    --heading-font: "Nunito", sans-serif;
+    /* Fuente pa los títulos */
+    --heading-color: #7390A0;
+    /* Color de los títulos */
+}
+
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    /* Padding y border no aumentan el tamaño */
+}
+
+/* Estilos del body */
+body {
+    background: var(--color-fondo);
+    /* Fondo gris claro */
+    font-family: var(--font-1);
+    /* Fuente Roboto */
+    margin: 0;
+    /* Sin márgenes */
+}
+
+/* Header principal de la página */
+.header-principal {
+    background: #fff;
+    /* Fondo blanco */
+    padding: 15px 0;
+    /* Espacio arriba y abajo de 15px */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+    /* Sombra suave */
+    border-bottom: 1px solid var(--color-borde);
+    /* Borde inferior gris */
+}
+
+/* Contenedor fluido con ancho máximo */
+.container-fluid {
+    max-width: 1200px;
+    /* Ancho máximo de 1200px */
+    margin: auto;
+    /* Centrado automático */
+    padding: 0 20px;
+    /* Padding lateral de 20px */
+}
+
+/* Fila superior del header */
+.top-row {
+    display: flex;
+    /* Flexbox activado */
+    justify-content: space-between;
+    /* Espacio entre elementos */
+    align-items: center;
+    /* Alinea verticalmente al centro */
+}
+
+/* Logo del sitio */
+.logo {
+    display: flex;
+    /* Flexbox */
+    align-items: center;
+    /* Centra verticalmente */
+    gap: 10px;
+    /* Espacio de 10px entre elementos */
+    text-decoration: none;
+    /* Sin subrayado */
+}
+
+/* Imagen del logo */
+.logo img {
+    height: 40px;
+    /* Altura de 40px */
+}
+
+/* Nombre del sitio */
+.sitename {
+    font-size: 1.5rem;
+    /* Tamaño de 1.5rem */
+    margin: 0;
+    /* Sin margen */
+    font-weight: 700;
+    /* Texto bien grueso */
+    color: var(--color-primario);
+    /* Color azul grisáceo */
+    font-family: var(--heading-font);
+    /* Fuente Nunito */
+}
+
+/* Links de redes sociales */
+.social-links {
+    display: flex;
+    /* Flexbox */
+    gap: 15px;
+    /* Espacio de 15px entre links */
+}
+
+/* Cada link de red social */
+.social-links a {
+    color: var(--color-primario);
+    /* Color azul grisáceo */
+    font-size: 18px;
+    /* Tamaño de 18px */
+    transition: var(--trans);
+    /* Transición suave */
+}
+
+/* Hover de los links sociales */
+.social-links a:hover {
+    opacity: .7;
+    /* Reduce la opacidad al 70% */
+}
+
+/* Contenedor del usuario */
+.usuario {
+    display: flex;
+    /* Flexbox */
+    align-items: center;
+    /* Centra verticalmente */
+    margin-left: 20px;
+    /* Margen izquierdo de 20px */
+}
+
+/* Links del usuario */
+.usuario-links a {
+    padding: 2px 8px;
+    /* Padding: 2px arriba/abajo, 8px lados */
+    font-size: .85rem;
+    /* Tamaño chico */
+    color: #8e9a9d;
+    /* Color gris */
+    text-decoration: none;
+    /* Sin subrayado */
+    transition: var(--trans);
+    /* Transición suave */
+}
+
+/* Hover de los links del usuario */
+.usuario-links a:hover {
+    color: #3498db;
+    /* Cambia a azul */
+}
+
+/* Separador entre links del usuario */
+.usuario-links a:not(:last-child)::after {
+    content: "|";
+    /* Agrega una barra vertical */
+    margin-left: 8px;
+    /* Margen izquierdo de 8px */
+    color: #ced4da;
+    /* Color gris claro */
+}
+
+/* Contenedor principal del perfil */
+.main-container {
+    max-width: 1000px;
+    /* Ancho máximo de 1000px */
+    margin: 40px auto;
+    /* Margen de 40px arriba/abajo, centrado */
+    padding: 0 20px;
+    /* Padding lateral de 20px */
+}
+
+/* Tarjeta del perfil */
+.perfil-card {
+    background: #fff;
+    /* Fondo blanco */
+    border-radius: var(--radius);
+    /* Esquinas redondeadas */
+    padding: 40px;
+    /* Padding de 40px */
+    box-shadow: 0 2px 20px rgba(0, 0, 0, .1);
+    /* Sombra suave */
+}
+
+/* Header del perfil */
+.perfil-header {
+    display: flex;
+    /* Flexbox */
+    gap: 30px;
+    /* Espacio de 30px entre elementos */
+    border-bottom: 1px solid var(--color-borde);
+    /* Borde inferior */
+    padding-bottom: 25px;
+    /* Padding inferior de 25px */
+    margin-bottom: 30px;
+    /* Margen inferior de 30px */
+}
+
+/* Imagen de perfil */
+.perfil-imagen img {
+    width: 150px;
+    /* Ancho de 150px */
+    height: 150px;
+    /* Alto de 150px */
+    border-radius: 50%;
+    /* Hace la imagen circular */
+    object-fit: cover;
+    /* Recorta la imagen pa que cubra el área */
+    border: 4px solid var(--color-primario);
+    /* Borde azul grisáceo de 4px */
+    box-shadow: 0 4px 15px rgba(52, 152, 219, .2);
+    /* Sombra azulada */
+    transition: var(--trans);
+    /* Transición suave */
+}
+
+/* Hover de la imagen de perfil */
+.perfil-imagen img:hover {
+    transform: scale(1.05);
+    /* Agranda la imagen un 5% */
+    box-shadow: 0 6px 20px rgba(52, 152, 219, .3);
+    /* Sombra más grande */
+}
+
+/* Imagen de perfil por defecto */
+.perfil-imagen img[src*="default.png"] {
+    border-color: #95a5a6;
+    /* Borde gris */
+    opacity: .7;
+    /* Opacidad del 70% */
+}
+
+/* Título del nombre del usuario */
+.perfil-info h2 {
+    margin: 0 0 8px;
+    /* Margen inferior de 8px */
+    font-size: 2rem;
+    /* Tamaño grande */
+    color: var(--color-primario);
+    /* Color azul grisáceo */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    font-family: var(--font-2);
+    /* Fuente Poppins */
+}
+
+/* Correo del perfil */
+.perfil-correo {
+    display: flex;
+    /* Flexbox */
+    gap: 8px;
+    /* Espacio de 8px */
+    font-size: 1.1rem;
+    /* Tamaño de 1.1rem */
+    color: var(--color-primario);
+    /* Color azul grisáceo */
+    font-family: var(--font-3);
+    /* Fuente Nunito */
+}
+
+/* ID del perfil */
+.perfil-id {
+    display: inline-block;
+    /* Bloque en línea */
+    padding: 6px 12px;
+    /* Padding: 6px arriba/abajo, 12px lados */
+    font-size: .85rem;
+    /* Tamaño chico */
+    color: var(--color-primario);
+    /* Color azul grisáceo */
+    background: var(--color-fondo);
+    /* Fondo gris claro */
+    border: 1px solid var(--color-borde);
+    /* Borde gris */
+    border-radius: 15px;
+    /* Esquinas bien redondeadas */
+}
+
+/* Grid de estadísticas */
+.perfil-stats {
+    display: grid;
+    /* Grid activado */
+    gap: 20px;
+    /* Espacio de 20px entre elementos */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* Columnas responsivas */
+    margin-bottom: 30px;
+    /* Margen inferior de 30px */
+}
+
+/* Tarjeta de estadística */
+.stat-card {
+    background: #fff;
+    /* Fondo blanco */
+    border: 1px solid var(--color-borde);
+    /* Borde gris */
+    padding: 25px 20px;
+    /* Padding: 25px arriba/abajo, 20px lados */
+    text-align: center;
+    /* Texto centrado */
+    border-radius: var(--radius);
+    /* Esquinas redondeadas */
+    color: var(--color-primario);
+    /* Color azul grisáceo */
+    transition: var(--trans);
+    /* Transición suave */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    /* Sombra suave */
+}
+
+/* Hover de la tarjeta de estadística */
+.stat-card:hover {
+    transform: translateY(-5px);
+    /* Sube 5px */
+    border-color: var(--color-primario);
+    /* Borde azul grisáceo */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .15);
+    /* Sombra más grande */
+}
+
+/* Número de la estadística */
+.stat-number {
+    font-size: 2.5rem;
+    /* Tamaño bien grande */
+    font-weight: 700;
+    /* Texto bien grueso */
+    margin-bottom: 5px;
+    /* Margen inferior de 5px */
+    font-family: var(--font-2);
+    /* Fuente Poppins */
+}
+
+/* Etiqueta de la estadística */
+.stat-label {
+    font-size: .85rem;
+    /* Tamaño chico */
+    text-transform: uppercase;
+    /* Todo en mayúsculas */
+    letter-spacing: .5px;
+    /* Espaciado entre letras */
+}
+
+/* Formulario de imagen */
+.form-imagen {
+    background: var(--color-fondo);
+    /* Fondo gris claro */
+    padding: 25px;
+    /* Padding de 25px */
+    border-radius: var(--radius);
+    /* Esquinas redondeadas */
+    border-left: 4px solid var(--color-primario);
+    /* Borde izquierdo azul */
+    margin: 25px 0;
+    /* Margen arriba/abajo de 25px */
+}
+
+/* Label del formulario */
+.form-group label {
+    display: block;
+    /* Bloque completo */
+    margin-bottom: 10px;
+    /* Margen inferior de 10px */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    font-family: var(--font-2);
+    /* Fuente Poppins */
+    color: var(--color-texto);
+    /* Color de texto oscuro */
+}
+
+/* Input de archivo */
+input[type="file"] {
+    width: 100%;
+    /* Ancho completo */
+    padding: 12px;
+    /* Padding de 12px */
+    border: 1px solid #dee2e6;
+    /* Borde gris */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    background: #fff;
+    /* Fondo blanco */
+    transition: var(--trans);
+    /* Transición suave */
+}
+
+/* Hover del input de archivo */
+input[type="file"]:hover {
+    border-color: var(--color-primario);
+    /* Borde azul grisáceo */
+}
+
+/* Botones de subir y eliminar foto */
+.btn-subir,
+.btn-eliminar-foto {
+    padding: 12px 30px;
+    /* Padding: 12px arriba/abajo, 30px lados */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    font-family: var(--font-1);
+    /* Fuente Roboto */
+    font-weight: 500;
+    /* Peso medio */
+    cursor: pointer;
+    /* Cursor de manita */
+    border: none;
+    /* Sin borde */
+    transition: var(--trans);
+    /* Transición suave */
+    display: inline-flex;
+    /* Flexbox en línea */
+    gap: 8px;
+    /* Espacio de 8px entre elementos */
+    align-items: center;
+    /* Centra verticalmente */
+}
+
+/* Botón de subir */
+.btn-subir {
+    background: var(--color-primario);
+    /* Fondo azul grisáceo */
+    color: #fff;
+    /* Texto blanco */
+}
+
+/* Hover del botón subir */
+.btn-subir:hover {
+    transform: translateY(-2px);
+    /* Sube 2px */
+    box-shadow: 0 4px 12px rgba(52, 152, 219, .3);
+    /* Sombra azulada */
+}
+
+/* Botón de eliminar foto */
+.btn-eliminar-foto {
+    background: #e74c3c;
+    /* Fondo rojo */
+    color: #fff;
+    /* Texto blanco */
+}
+
+/* Hover del botón eliminar */
+.btn-eliminar-foto:hover {
+    background: #c0392b;
+    /* Rojo más oscuro */
+    transform: translateY(-2px);
+    /* Sube 2px */
+    box-shadow: 0 4px 8px rgba(231, 76, 60, .3);
+    /* Sombra rojiza */
+}
+
+/* Mensajes de éxito y error */
+.mensaje-exito,
+.mensaje-error {
+    padding: 15px;
+    /* Padding de 15px */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    font-weight: 500;
+    /* Peso medio */
+    margin: 20px 0;
+    /* Margen arriba/abajo de 20px */
+    font-family: var(--font-3);
+    /* Fuente Nunito */
+}
+
+/* Mensaje de éxito */
+.mensaje-exito {
+    background: #d4edda;
+    /* Fondo verde claro */
+    color: #155724;
+    /* Texto verde oscuro */
+    border: 1px solid #c3e6cb;
+    /* Borde verde */
+}
+
+/* Mensaje de error */
+.mensaje-error {
+    background: #f8d7da;
+    /* Fondo rojo claro */
+    color: #721c24;
+    /* Texto rojo oscuro */
+    border: 1px solid #f5c6cb;
+    /* Borde rojo */
+}
+
+/* Responsive pa tablets */
+@media (max-width: 768px) {
+    .top-row {
+        flex-direction: column;
+        /* Cambia a columna */
+        text-align: center;
+        /* Texto centrado */
+        gap: 15px;
+        /* Espacio de 15px */
+    }
+
+    .perfil-header {
+        flex-direction: column;
+        /* Cambia a columna */
+        text-align: center;
+        /* Texto centrado */
+    }
+
+    .perfil-stats {
+        grid-template-columns: 1fr;
+        /* Una sola columna */
+    }
+
+    .perfil-imagen img {
+        width: 120px;
+        /* Reduce el ancho a 120px */
+        height: 120px;
+        /* Reduce el alto a 120px */
+    }
+}
+
+/* Responsive pa móviles */
+@media (max-width: 480px) {
+    .sitename {
+        font-size: 1.3rem;
+        /* Reduce el tamaño del nombre */
+    }
+
+    .btn-subir {
+        width: 100%;
+        /* Ancho completo */
+        justify-content: center;
+        /* Centra el contenido */
+    }
+
+    .perfil-imagen img {
+        width: 100px;
+        /* Reduce a 100px */
+        height: 100px;
+        /* Reduce a 100px */
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        /* Reduce el tamaño del número */
+    }
+}

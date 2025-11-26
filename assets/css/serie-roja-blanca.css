@@ -1,0 +1,9 @@
+/* Estilos pa la sección de series (roja y blanca) */
+.series p {
+    text-align: center;
+    /* Centra el texto */
+    font-size: 50px;
+    /* Tamaño bien grande de 50px */
+    color: #7390A0;
+    /* Color azul grisáceo */
+}

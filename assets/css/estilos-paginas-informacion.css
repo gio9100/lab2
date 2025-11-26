@@ -1,0 +1,608 @@
+/* Variables de colores pa las páginas de información */
+.info-paginas {
+    --primary: #7390A0;
+    /* Color principal azul grisáceo */
+    --primary-dark: #5a7686;
+    /* Versión más oscura del color principal */
+    --success: #28a745;
+    /* Verde pa éxito */
+    --danger: #dc3545;
+    /* Rojo pa peligro */
+    --warning: #ffc107;
+    /* Amarillo pa advertencias */
+    --light-bg: #f8f9fa;
+    /* Fondo gris clarito */
+}
+
+
+/* Reset de estilos porque salía una línea gris fea */
+
+.info-paginas .hero-title,
+.info-paginas .section-title,
+.info-paginas .card-title {
+    border-bottom: none !important;
+    /* Quita el borde inferior */
+    background-image: none !important;
+    /* Quita imagen de fondo */
+    text-decoration: none !important;
+    /* Sin subrayado */
+    box-shadow: none !important;
+    /* Sin sombra */
+}
+
+
+/* Sección hero pa todas las páginas */
+
+.info-paginas .info-hero-section {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    /* Gradiente azul */
+    color: white;
+    /* Texto blanco */
+    padding: 80px 0 40px;
+    /* Padding: 80px arriba, 40px abajo */
+    margin-top: 20px;
+    /* Margen superior de 20px */
+    position: relative;
+    /* Posición relativa pa el ::after */
+}
+
+/* Línea decorativa abajo del hero */
+.info-paginas .info-hero-section::after {
+    content: '';
+    /* Contenido vacío */
+    position: absolute;
+    /* Posición absoluta */
+    bottom: 0;
+    /* Pegado abajo */
+    left: 50%;
+    /* Empieza al 50% desde la izquierda */
+    transform: translateX(-50%);
+    /* Centra horizontalmente */
+    width: 80px;
+    /* Ancho de 80px */
+    height: 3px;
+    /* Alto de 3px */
+    background: rgba(255, 255, 255, 0.5);
+    /* Blanco semi-transparente */
+}
+
+/* Título principal del hero */
+.info-paginas .hero-title {
+    font-size: 2.5rem;
+    /* Tamaño bien grande */
+    font-weight: 700;
+    /* Texto bien grueso */
+    margin-bottom: 1rem;
+    /* Margen inferior de 1rem */
+    line-height: 1.2;
+    /* Altura de línea compacta */
+    color: white;
+    /* Texto blanco */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Sombra suave del texto */
+}
+
+/* Subtítulo del hero */
+.info-paginas .hero-subtitle {
+    font-size: 1.3rem;
+    /* Tamaño mediano */
+    font-weight: 300;
+    /* Texto delgado */
+    margin-bottom: 1.5rem;
+    /* Margen inferior de 1.5rem */
+    opacity: 0.9;
+    /* Opacidad del 90% */
+}
+
+/* Descripción del hero */
+.info-paginas .hero-description {
+    font-size: 1.1rem;
+    /* Tamaño de 1.1rem */
+    line-height: 1.6;
+    /* Altura de línea espaciada */
+    opacity: 0.9;
+    /* Opacidad del 90% */
+    margin-bottom: 0;
+    /* Sin margen inferior */
+}
+
+/* Imagen del hero */
+.info-paginas .hero-image {
+    border-radius: 10px;
+    /* Esquinas redondeadas */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    /* Sombra grande */
+    max-height: 300px;
+    /* Altura máxima de 300px */
+    object-fit: cover;
+    /* Recorta la imagen pa que cubra el área */
+    width: 100%;
+    /* Ancho completo */
+}
+
+
+/* Secciones de información */
+
+.info-paginas .info-section {
+    padding: 60px 0;
+    /* Padding arriba/abajo de 60px */
+}
+
+/* Header de cada sección */
+.info-paginas .section-header {
+    text-align: center;
+    /* Texto centrado */
+    margin-bottom: 3rem;
+    /* Margen inferior de 3rem */
+}
+
+/* Título de la sección */
+.info-paginas .section-title {
+    font-size: 2.2rem;
+    /* Tamaño grande */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    color: var(--primary);
+    /* Color azul grisáceo */
+    margin-bottom: 1rem;
+    /* Margen inferior de 1rem */
+}
+
+/* Descripción de la sección */
+.info-paginas .section-description {
+    font-size: 1.1rem;
+    /* Tamaño de 1.1rem */
+    color: #666;
+    /* Gris medio */
+    line-height: 1.5;
+    /* Altura de línea */
+    margin-bottom: 0;
+    /* Sin margen inferior */
+}
+
+
+/* Tarjetas de información */
+
+.info-paginas .info-card {
+    background: white;
+    /* Fondo blanco */
+    border-radius: 10px;
+    /* Esquinas redondeadas */
+    padding: 25px;
+    /* Padding de 25px */
+    margin-bottom: 25px;
+    /* Margen inferior de 25px */
+    border-left: 4px solid var(--primary);
+    /* Borde izquierdo azul de 4px */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    /* Sombra suave */
+    transition: transform 0.3s ease;
+    /* Transición suave */
+    height: 100%;
+    /* Altura completa */
+}
+
+/* Hover de las tarjetas */
+.info-paginas .info-card:hover {
+    transform: translateY(-5px);
+    /* Sube 5px */
+}
+
+/* Tarjeta tipo paciente */
+.info-paginas .info-card.patient {
+    border-left-color: var(--success);
+    /* Borde verde */
+}
+
+/* Tarjeta tipo profesional */
+.info-paginas .info-card.professional {
+    border-left-color: var(--danger);
+    /* Borde rojo */
+}
+
+/* Título de la tarjeta */
+.info-paginas .card-title {
+    color: var(--primary);
+    /* Color azul grisáceo */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    margin-bottom: 15px;
+    /* Margen inferior de 15px */
+    font-size: 1.3rem;
+    /* Tamaño de 1.3rem */
+}
+
+/* Título de tarjeta tipo paciente */
+.info-paginas .info-card.patient .card-title {
+    color: var(--success);
+    /* Color verde */
+}
+
+/* Título de tarjeta tipo profesional */
+.info-paginas .info-card.professional .card-title {
+    color: var(--danger);
+    /* Color rojo */
+}
+
+
+/* Listas de características */
+
+.info-paginas .feature-list {
+    list-style: none;
+    /* Sin viñetas por defecto */
+    padding: 0;
+    /* Sin padding */
+    margin: 15px 0 0 0;
+    /* Margen superior de 15px */
+}
+
+/* Cada item de la lista */
+.info-paginas .feature-list li {
+    padding: 8px 0;
+    /* Padding arriba/abajo de 8px */
+    border-bottom: 1px solid #f0f0f0;
+    /* Borde inferior gris claro */
+    line-height: 1.5;
+    /* Altura de línea */
+    display: flex;
+    /* Flexbox */
+    align-items: center;
+    /* Centra verticalmente */
+}
+
+/* Palomita antes de cada item */
+.info-paginas .feature-list li:before {
+    content: "✓";
+    /* Palomita */
+    color: var(--success);
+    /* Color verde */
+    font-weight: bold;
+    /* Texto grueso */
+    margin-right: 10px;
+    /* Margen derecho de 10px */
+}
+
+/* Último item sin borde inferior */
+.info-paginas .feature-list li:last-child {
+    border-bottom: none;
+    /* Sin borde */
+}
+
+
+/* Caja de advertencia */
+
+.info-paginas .warning-box {
+    background: #fff3cd;
+    /* Fondo amarillo claro */
+    border: 1px solid #ffeaa7;
+    /* Borde amarillo */
+    border-radius: 8px;
+    /* Esquinas redondeadas */
+    padding: 20px;
+    /* Padding de 20px */
+    margin: 25px 0;
+    /* Margen arriba/abajo de 25px */
+    border-left: 4px solid var(--warning);
+    /* Borde izquierdo amarillo grueso */
+}
+
+/* Título de la advertencia */
+.info-paginas .warning-box h4 {
+    color: #856404;
+    /* Color café oscuro */
+    margin-bottom: 10px;
+    /* Margen inferior de 10px */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    display: flex;
+    /* Flexbox */
+    align-items: center;
+    /* Centra verticalmente */
+    gap: 10px;
+    /* Espacio de 10px entre elementos */
+}
+
+/* Texto de la advertencia */
+.info-paginas .warning-box p {
+    color: #856404;
+    /* Color café oscuro */
+    margin: 0;
+    /* Sin margen */
+    line-height: 1.5;
+    /* Altura de línea */
+}
+
+
+/* Sección de metodología */
+
+.info-paginas .methodology-section {
+    margin-top: 40px;
+    /* Margen superior de 40px */
+}
+
+/* Título de metodología */
+.info-paginas .methodology-title {
+    font-size: 1.8rem;
+    /* Tamaño de 1.8rem */
+    color: var(--primary);
+    /* Color azul grisáceo */
+    text-align: center;
+    /* Texto centrado */
+    margin-bottom: 30px;
+    /* Margen inferior de 30px */
+    font-weight: 600;
+    /* Texto semi-grueso */
+}
+
+/* Grid de pasos de metodología */
+.info-paginas .methodology-steps {
+    display: grid;
+    /* Grid activado */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* Columnas responsivas */
+    gap: 20px;
+    /* Espacio de 20px entre elementos */
+}
+
+/* Cada paso de la metodología */
+.info-paginas .step {
+    display: flex;
+    /* Flexbox */
+    align-items: flex-start;
+    /* Alinea arriba */
+    gap: 15px;
+    /* Espacio de 15px */
+    padding: 20px;
+    /* Padding de 20px */
+    background: white;
+    /* Fondo blanco */
+    border-radius: 8px;
+    /* Esquinas redondeadas */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    /* Sombra suave */
+}
+
+/* Número del paso */
+.info-paginas .step-number {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    /* Gradiente azul */
+    color: white;
+    /* Texto blanco */
+    width: 40px;
+    /* Ancho de 40px */
+    height: 40px;
+    /* Alto de 40px */
+    border-radius: 50%;
+    /* Hace un círculo */
+    display: flex;
+    /* Flexbox */
+    align-items: center;
+    /* Centra verticalmente */
+    justify-content: center;
+    /* Centra horizontalmente */
+    font-weight: bold;
+    /* Texto grueso */
+    flex-shrink: 0;
+    /* No se encoge */
+}
+
+/* Título del contenido del paso */
+.info-paginas .step-content h4 {
+    color: var(--primary);
+    /* Color azul grisáceo */
+    margin-bottom: 5px;
+    /* Margen inferior de 5px */
+    font-weight: 600;
+    /* Texto semi-grueso */
+}
+
+/* Descripción del paso */
+.info-paginas .step-content p {
+    color: #666;
+    /* Gris medio */
+    margin: 0;
+    /* Sin margen */
+    line-height: 1.4;
+    /* Altura de línea */
+}
+
+
+/* Sección de tipos */
+
+.info-paginas .types-section {
+    background: var(--light-bg);
+    /* Fondo gris claro */
+}
+
+/* Tarjeta de tipo */
+.info-paginas .type-card {
+    background: white;
+    /* Fondo blanco */
+    padding: 25px 20px;
+    /* Padding: 25px arriba/abajo, 20px lados */
+    border-radius: 10px;
+    /* Esquinas redondeadas */
+    text-align: center;
+    /* Texto centrado */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    /* Sombra suave */
+    transition: all 0.3s ease;
+    /* Transición suave */
+    height: 100%;
+    /* Altura completa */
+    border: 1px solid #e9ecef;
+    /* Borde gris claro */
+}
+
+/* Hover de tarjeta de tipo */
+.info-paginas .type-card:hover {
+    transform: translateY(-5px);
+    /* Sube 5px */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    /* Sombra más grande */
+}
+
+/* Ícono del tipo */
+.info-paginas .type-icon {
+    width: 60px;
+    /* Ancho de 60px */
+    height: 60px;
+    /* Alto de 60px */
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    /* Gradiente azul */
+    border-radius: 50%;
+    /* Hace un círculo */
+    display: flex;
+    /* Flexbox */
+    align-items: center;
+    /* Centra verticalmente */
+    justify-content: center;
+    /* Centra horizontalmente */
+    margin: 0 auto 15px;
+    /* Centrado horizontal, margen inferior de 15px */
+    color: white;
+    /* Color blanco */
+    font-size: 1.5rem;
+    /* Tamaño de 1.5rem */
+}
+
+/* Título de la tarjeta de tipo */
+.info-paginas .type-card h4 {
+    color: var(--primary);
+    /* Color azul grisáceo */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    margin-bottom: 10px;
+    /* Margen inferior de 10px */
+    font-size: 1.2rem;
+    /* Tamaño de 1.2rem */
+}
+
+/* Descripción de la tarjeta de tipo */
+.info-paginas .type-card p {
+    color: #666;
+    /* Gris medio */
+    line-height: 1.4;
+    /* Altura de línea */
+    margin: 0;
+    /* Sin margen */
+}
+
+
+/* Sección de alteraciones */
+
+.info-paginas .alterations-section {
+    background: var(--light-bg);
+    /* Fondo gris claro */
+}
+
+/* Tarjeta de alteración */
+.info-paginas .alteration-card {
+    background: white;
+    /* Fondo blanco */
+    border-radius: 10px;
+    /* Esquinas redondeadas */
+    padding: 25px;
+    /* Padding de 25px */
+    margin-bottom: 25px;
+    /* Margen inferior de 25px */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    /* Sombra suave */
+    height: 100%;
+    /* Altura completa */
+}
+
+/* Título de la alteración */
+.info-paginas .alteration-title {
+    color: var(--primary);
+    /* Color azul grisáceo */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    margin-bottom: 15px;
+    /* Margen inferior de 15px */
+    font-size: 1.3rem;
+    /* Tamaño de 1.3rem */
+    border-bottom: 2px solid var(--primary);
+    /* Borde inferior azul */
+    padding-bottom: 8px;
+    /* Padding inferior de 8px */
+}
+
+/* Lista de alteraciones */
+.info-paginas .alteration-list {
+    list-style: none;
+    /* Sin viñetas */
+    padding: 0;
+    /* Sin padding */
+    margin: 0;
+    /* Sin margen */
+}
+
+/* Cada item de la lista de alteraciones */
+.info-paginas .alteration-list li {
+    padding: 8px 0;
+    /* Padding arriba/abajo de 8px */
+    border-bottom: 1px solid #f0f0f0;
+    /* Borde inferior gris claro */
+    line-height: 1.5;
+    /* Altura de línea */
+    display: flex;
+    /* Flexbox */
+    align-items: center;
+    /* Centra verticalmente */
+}
+
+/* Punto antes de cada item */
+.info-paginas .alteration-list li:before {
+    content: "•";
+    /* Punto */
+    color: var(--primary);
+    /* Color azul grisáceo */
+    font-weight: bold;
+    /* Texto grueso */
+    margin-right: 10px;
+    /* Margen derecho de 10px */
+}
+
+/* Último item sin borde */
+.info-paginas .alteration-list li:last-child {
+    border-bottom: none;
+    /* Sin borde inferior */
+}
+
+
+/* Responsive pa tablets y móviles */
+
+@media (max-width: 768px) {
+    .info-paginas .hero-title {
+        font-size: 2rem;
+        /* Reduce el tamaño del título hero */
+    }
+
+    .info-paginas .hero-subtitle {
+        font-size: 1.1rem;
+        /* Reduce el subtítulo */
+    }
+
+    .info-paginas .section-title {
+        font-size: 1.8rem;
+        /* Reduce el título de sección */
+    }
+
+    .info-paginas .methodology-steps {
+        grid-template-columns: 1fr;
+        /* Una sola columna */
+    }
+
+    .info-paginas .step {
+        flex-direction: column;
+        /* Cambia a columna */
+        text-align: center;
+        /* Texto centrado */
+    }
+
+    .info-paginas .info-card {
+        margin-bottom: 20px;
+        /* Reduce el margen inferior */
+    }
+}

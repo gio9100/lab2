@@ -1,0 +1,298 @@
+<?php
+// Iniciar la sesión para recordar quién está conectado
+session_start();
+
+// Cargar el archivo donde están las funciones para publicadores
+require_once 'config-publicadores.php';
+
+// Variables para mostrar mensajes al usuario
+$mensaje = "";      // Aquí guardamos el mensaje que le vamos a mostrar
+$exito = false;     // Esta variable nos dice si todo salió bien o mal
+
+// Lista de correos que aceptamos (para que no se registren con cualquier correo)
+$dominios_validos = [
+    'gmail.com',    // Aceptamos Gmail
+    'outlook.com',  // Aceptamos Outlook
+    'outlook.es',   // Aceptamos Outlook es
+];
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    
+    
+    // Obtenemos cada dato del formulario y le quitamos espacios extras
+    $nombre = trim($_POST["nombre"] ?? "");  // Nombre del publicador
+    $correo = trim($_POST["correo"] ?? "");  // Su correo electrónico
+    $correo = mb_strtolower($correo, 'UTF-8'); // Convertimos a minúsculas
+    $contrasena = $_POST["contrasena"] ?? ""; // Su contraseña
+    $especialidad = trim($_POST["especialidad"] ?? ""); // Ej: Bacteriología
+    $titulo_academico = trim($_POST["titulo_academico"] ?? ""); // Ej: Doctor
+    $institucion = trim($_POST["institucion"] ?? ""); // Ej: Hospital General
+
+    // ============================================
+    // PASO 2: REVISAR QUE TODO ESTÉ BIEN
+    // ============================================
+    
+    // Revisamos que los campos obligatorios no estén vacíos
+    if ($nombre === "" || $correo === "" || $contrasena === "" || $especialidad === "") {
+        $mensaje = "Completa todos los campos obligatorios";
+    }
+    // Revisamos que el correo tenga formato correcto (que tenga @ y .com)
+    elseif(!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        $mensaje = "El correo no tiene un formato válido";
+    }
+    else {
+        // Separamos el correo en dos partes: lo de antes del @ y lo de después
+        $partes_correo = explode('@', $correo);
+        $dominio = $partes_correo[1] ?? ''; // Ej: si es ana@gmail.com, dominio = gmail.com
+
+        // Revisamos que el dominio esté en nuestra lista de permitidos
+        if(!in_array($dominio, $dominios_validos)) {
+            $dominios_lista = implode(', ', array_slice($dominios_validos, 0, 5));
+            $mensaje = "Solo se permiten correos de dominio verificados como: " . $dominios_lista;
+        }
+        // Revisamos que la contraseña tenga al menos 6 letras/números
+        elseif (strlen($contrasena) < 6) {
+            $mensaje = "La contraseña debe tener al menos 6 caracteres";
+        }
+        else {
+            
+            // Revisamos si ese correo ya está registrado
+            if (emailExiste($correo, $conn)) {
+                $mensaje = "Este correo electrónico ya está registrado";
+            } else {
+              
+                // Preparamos todos los datos en un paquete
+                $datos = [
+                    'nombre' => $nombre,
+                    'email' => $correo,
+                    'password' => $contrasena,
+                    'especialidad' => $especialidad,
+                    'titulo_academico' => $titulo_academico,
+                    'institucion' => $institucion
+                ];
+                
+                // Intentamos guardar en la base de datos
+               if (registrarPublicador($datos, $conn)) {
+    // Si el usuario está logueado, marcar como publicador pendiente
+    if (isset($_SESSION['usuario_id'])) {
+        $_SESSION["es_publicador_pendiente"] = true;
+    }
+    
+    $mensaje = "Registro exitoso. Tu cuenta está pendiente de aprobación.";
+    $exito = true;
+    $_POST = array();
+}
+            }
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Publicadores - Lab-Explorer</title>
+    
+    <link rel="stylesheet" href="../../assets/css/registro.css">
+</head>
+<body>
+    <div class="form-container">
+        <form method="post" class="formulario" novalidate>
+            
+            <!-- Logo y título de la página -->
+            <div class="logo-Lab">
+                <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                <h1>Registro Publicadores Lab-explorer</h1>
+                <p class="subtitulo">Panel de Publicadores (cbtis52)</p>
+            </div>
+
+            <!-- Sección donde el usuario llena sus datos -->
+            <section class="seccion-informacion">
+                
+           
+                <label>Nombre Completo *</label>
+                <input type="text" 
+                       name="nombre" 
+                       id="nombre"
+                       placeholder="Ej: Dr. Juan Pérez" 
+                       value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
+                       required>
+
+         
+                <label>Correo Electrónico *</label>
+                <input type="email" 
+                       id="correo" 
+                       name="correo" 
+                       placeholder="ejemplo@gmail.com"
+                       value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
+                       required>
+                <!-- Aquí aparecerán mensajes sobre si el correo es válido -->
+                <div id="mensaje-correo" class="mensaje-correo"></div>
+
+              
+                <label>Contraseña *</label>
+                <input type="password" 
+                       id="contrasena"
+                       name="contrasena" 
+                       placeholder="Mínimo 6 caracteres"
+                       required 
+                       minlength="6">
+                <!-- Aquí aparecerán mensajes sobre la contraseña -->
+                <div id="mensaje-contrasena" class="mensaje-validacion"></div>
+
+            
+                <label>Especialidad *</label>
+                <input type="text" 
+                       name="especialidad" 
+                       id="especialidad"
+                       placeholder="Ej: Bacteriología, Hematología, etc." 
+                       value="<?= htmlspecialchars($_POST['especialidad'] ?? '') ?>"
+                       required>
+
+        
+                <label>Título Académico</label>
+                <input type="text" 
+                       name="titulo_academico" 
+                       id="titulo_academico"
+                       placeholder="Ej: Doctor en Microbiología" 
+                       value="<?= htmlspecialchars($_POST['titulo_academico'] ?? '') ?>">
+
+               
+                <label>Institución</label>
+                <input type="text" 
+                       name="institucion" 
+                       id="institucion"
+                       placeholder="Ej: Hospital General, Universidad Nacional" 
+                       value="<?= htmlspecialchars($_POST['institucion'] ?? '') ?>">
+            </section>
+
+            <section class="seccion-botones">
+                <button type="submit">Registrarse como Publicador</button>
+                
+                <p>¿Ya tienes cuenta? <a href="inicio-sesion-publicadores.php">Inicia sesión</a></p>
+                <p><a href="../../index.php">← Volver al sitio principal</a></p>
+            </section>
+        </form>
+    </div>
+
+   
+    <?php if($mensaje): ?>
+    <div class="modal-mensaje <?= $exito ? 'exito' : 'error' ?>">
+        <div class="modal-contenido">
+            <!-- Título diferente si fue éxito o error -->
+            <h2><?= $exito ? "🧪 Registro Completado" : "⚠️ Error" ?></h2>
+            
+            <!-- El mensaje que preparamos en PHP -->
+            <p><?= htmlspecialchars($mensaje) ?></p>
+            
+            <!-- Si fue exitoso, mostramos mensaje extra -->
+            <?php if($exito): ?>
+                <p style="font-style: italic; margin-top: 15px;">
+                    Tu cuenta está pendiente de aprobación por los administradores.
+                </p>
+            <?php else: ?>
+                <!-- Si fue error, mostramos botón para cerrar -->
+                <button onclick="cerrarModal()">Cerrar</button>
+            <?php endif; ?>
+        </div>
+    </div>
+    
+    <!-- JavaScript para cerrar la ventana emergente -->
+    <script>
+        function cerrarModal() { 
+            document.querySelector('.modal-mensaje').style.display='none'; 
+        }
+    </script>
+    <?php endif; ?>
+
+  
+    <script>
+        // Lista de correos que aceptamos (la misma que en PHP)
+        const dominiosValidos = [
+            'gmail.com',
+            'outlook.com',
+            'outlook.es',
+        ];
+
+        const correoInput = document.getElementById('correo');
+        const mensajeCorreo = document.getElementById('mensaje-correo');
+
+        // Esta función se ejecuta cada vez que el usuario escribe en el campo de correo
+        correoInput.addEventListener('input', function() {
+            // Obtenemos lo que escribió el usuario
+            const val = this.value.trim().toLowerCase();
+            
+            // Si no escribió nada, quitamos los mensajes
+            if (!val) {
+                correoInput.classList.remove('error', 'success');
+                mensajeCorreo.style.display = 'none';
+                return;
+            }
+
+            // Dividimos el correo en dos partes: usuario@dominio
+            const partesCorreo = val.split('@');
+            const dominio = partesCorreo[1] || '';
+            
+            // Revisamos si el dominio está en nuestra lista
+            if (dominiosValidos.includes(dominio)) {
+                // Correo válido - ponemos borde verde
+                correoInput.classList.remove('error');
+                correoInput.classList.add('success');
+                mensajeCorreo.textContent = '✓ Correo válido';
+                mensajeCorreo.style.color = 'green';
+                mensajeCorreo.style.display = 'block';
+            } else {
+                // Correo no válido - ponemos borde rojo
+                correoInput.classList.remove('success');
+                correoInput.classList.add('error');
+                mensajeCorreo.textContent = '✗ Dominio no permitido';
+                mensajeCorreo.style.color = 'red';
+                mensajeCorreo.style.display = 'block';
+            }
+        });
+
+ 
+        const contrasenaInput = document.getElementById('contrasena');
+        const mensajeContrasena = document.getElementById('mensaje-contrasena');
+
+        // Esta función se ejecuta cada vez que el usuario escribe en la contraseña
+        contrasenaInput.addEventListener('input', function() {
+            // Obtenemos la contraseña que escribió
+            const val = this.value;
+            
+            // Si no escribió nada, quitamos los mensajes
+            if (!val) {
+                contrasenaInput.classList.remove('error', 'success');
+                mensajeContrasena.style.display = 'none';
+                return;
+            }
+
+            // Revisamos si tiene al menos 6 caracteres
+            if (val.length >= 6) {
+                // Contraseña válida - borde verde
+                contrasenaInput.classList.remove('error');
+                contrasenaInput.classList.add('success');
+                mensajeContrasena.textContent = '✓ Contraseña válida';
+                mensajeContrasena.style.color = 'green';
+                mensajeContrasena.style.display = 'block';
+            } else {
+                // Contraseña muy corta - borde rojo
+                contrasenaInput.classList.remove('success');
+                contrasenaInput.classList.add('error');
+                mensajeContrasena.textContent = '✗ Mínimo 6 caracteres';
+                mensajeContrasena.style.color = 'red';
+                mensajeContrasena.style.display = 'block';
+            }
+        });
+
+     
+        <?php if($exito): ?>
+        // Si el registro salió bien, cerramos el mensaje después de 5 segundos
+        setTimeout(function() {
+            cerrarModal();
+        }, 5000);
+        <?php endif; ?>
+    </script>
+</body>
+</html>
