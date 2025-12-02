@@ -1,54 +1,51 @@
--- Tabla INDEPENDIENTE para publicadores
-CREATE TABLE publicadores (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    especialidad VARCHAR(100) NOT NULL,
-    titulo_academico VARCHAR(100) NULL,
-    institucion VARCHAR(150) NULL,
-    departamento VARCHAR(100) NULL,
-    telefono VARCHAR(20) NULL,
-    biografia TEXT NULL,
-    avatar VARCHAR(255) NULL,
-    areas_interes JSON NULL,
-    experiencia_años INT DEFAULT 0,
-    cv_url VARCHAR(255) NULL,
-    orcid_id VARCHAR(20) NULL,
-    linkedin_url VARCHAR(255) NULL,
-    permisos JSON NULL,
-    limite_publicaciones_mes INT DEFAULT 10,
-    publicaciones_este_mes INT DEFAULT 0,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ultimo_acceso TIMESTAMP NULL,
-    fecha_activacion TIMESTAMP NULL,
-    estado ENUM('activo', 'pendiente', 'suspendido', 'inactivo') DEFAULT 'pendiente',
-    motivo_suspension TEXT NULL,
-    notificaciones_email BOOLEAN DEFAULT TRUE,
-    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+CREATE TABLE `publicadores` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `reset_token` varchar(64) DEFAULT NULL,
+  `token_expira` datetime DEFAULT NULL,
+  `especialidad` varchar(100) NOT NULL,
+  `categoria_id` int(11) DEFAULT NULL,
+  `titulo_academico` varchar(100) DEFAULT NULL,
+  `institucion` varchar(150) DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `biografia` text DEFAULT NULL,
+  `experiencia_años` int(11) DEFAULT 0,
+  `limite_publicaciones_mes` int(11) DEFAULT 10,
+  `publicaciones_este_mes` int(11) DEFAULT 0,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `ultimo_acceso` timestamp NULL DEFAULT NULL,
+  `fecha_activacion` timestamp NULL DEFAULT NULL,
+  `estado` enum('activo','pendiente','suspendido','inactivo') DEFAULT 'pendiente',
+  `motivo_suspension` text DEFAULT NULL,
+  `notificaciones_email` tinyint(1) DEFAULT 1,
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Tabla de publicaciones
-CREATE TABLE publicaciones (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    titulo VARCHAR(200) NOT NULL,
-    slug VARCHAR(220) UNIQUE NOT NULL,
-    contenido LONGTEXT NOT NULL,
-    resumen TEXT NULL,
-    imagen_principal VARCHAR(255) NULL,
-    publicador_id INT NOT NULL,
-    categoria_id INT NOT NULL,
-    estado ENUM('publicado', 'borrador', 'revision', 'rechazado') DEFAULT 'borrador',
-    tipo ENUM('articulo', 'noticia', 'tutorial', 'investigacion') DEFAULT 'articulo',
-    fecha_publicacion TIMESTAMP NULL,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    vistas INT DEFAULT 0,
-    likes INT DEFAULT 0,
-    meta_descripcion VARCHAR(300) NULL,
-    tags JSON NULL,
-    FOREIGN KEY (publicador_id) REFERENCES publicadores(id) ON DELETE CASCADE
-);
+
+
+CREATE TABLE `publicaciones` (
+  `id` int(11) NOT NULL,
+  `titulo` varchar(200) NOT NULL,
+  `slug` varchar(220) NOT NULL,
+  `contenido` longtext NOT NULL,
+  `resumen` text DEFAULT NULL,
+  `imagen_principal` varchar(255) DEFAULT NULL,
+  `publicador_id` int(11) NOT NULL,
+  `categoria_id` int(11) NOT NULL,
+  `estado` enum('publicado','borrador','revision','rechazado','rechazada') DEFAULT NULL,
+  `mensaje_rechazo` text DEFAULT NULL,
+  `tipo` enum('articulo','noticia','tutorial','investigacion') DEFAULT 'articulo',
+  `fecha_publicacion` timestamp NULL DEFAULT NULL,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `vistas` int(11) DEFAULT 0,
+  `likes` int(11) DEFAULT 0,
+  `meta_descripcion` varchar(300) DEFAULT NULL,
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- Tabla de categorías
 CREATE TABLE categorias (
