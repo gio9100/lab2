@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ============================================================================
 // 👥 GESTIÓN COMPLETA DE PUBLICADORES - GESTIONAR_PUBLICADORES.PHP
 // ============================================================================
@@ -587,7 +587,7 @@ if (isset($_GET['editar'])) {
                             <a href="gestionar-publicaciones.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
                             </a>
-                            <a href="./categorias/crear_categoria.php" class="list-group-item list-group-item-action">
+                            <a href="./categorias/listar_categorias.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-tags me-2"></i>Categorías
                             </a>
                             <?php if($admin_nivel == 'superadmin'): ?>

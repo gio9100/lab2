@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Abrimos PHP para escribir código del lado del servidor
 session_start();
 // Iniciamos la sesión para poder acceder a las variables de sesión ($_SESSION)

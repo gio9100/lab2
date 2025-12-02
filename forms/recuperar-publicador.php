@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Abrimos PHP
 // Este archivo maneja la recuperación de contraseña para PUBLICADORES
 // Es similar al recuperar.php pero usa la tabla "publicadores" en vez de "usuarios"
@@ -114,39 +114,26 @@ if (isset($_POST['email']) && !isset($_POST['nueva_password'])) {
 
                 // Contenido del correo
                 $mail->isHTML(true);
-                // Le decimos que el correo tiene HTML
                 $mail->Subject = "Restablecer contraseña - Publicador Lab Explorer";
-                // Asunto del correo
                 
-                // Adjuntamos el logo para que se vea en el correo
-                $mail->addEmbeddedImage('../assets/img/logo/logo-lab.ico', 'logoLab');
-                // addEmbeddedImage mete una imagen en el correo
-
-                // Cuerpo del correo en HTML
-                $mail->Body = "
-                    <center>
-                        <img src='cid:logoLab' width='150' style='margin-bottom:20px;'>
-                    </center>
-
-                    <h2>Recuperación de contraseña - Publicador</h2>
-                    Hola <strong>{$publicador['nombre']}</strong>,<br><br>
-
-                    Has solicitado recuperar tu contraseña de publicador.<br><br>
-
-                    <!-- Botón para restablecer -->
-                    <a href='$enlace' 
-                       style='background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;font-weight:bold;'>
-                       Restablecer contraseña
-                    </a>
-
-                    <br><br>
-                    Si el botón no funciona abre este enlace:<br>
-                    $enlace
-                    <br><br>
-                    Este enlace expira en 1 hora.<br>
-                    <strong>Si tú no solicitaste el cambio de contraseña, ignora este correo.</strong>
-                ";
-                // Cuerpo del correo con HTML
+                // Usamos EmailHelper para generar el cuerpo del correo
+                require_once 'EmailHelper.php';
+                
+                $boton = [
+                    'texto' => 'Restablecer contraseña',
+                    'url' => $enlace
+                ];
+                
+                $mensaje_texto = "Has solicitado recuperar tu contraseña de publicador. Haz clic en el siguiente botón para restablecerla. Este enlace expira en 1 hora.";
+                
+                $mail->Body = EmailHelper::render(
+                    "Recuperación de contraseña",
+                    $publicador['nombre'],
+                    $mensaje_texto,
+                    [], // Sin detalles extra
+                    $boton,
+                    'info'
+                );
 
                 // Versión en texto plano
                 $mail->AltBody = "Hola {$publicador['nombre']}, usa este enlace para recuperar tu contraseña: $enlace";

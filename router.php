@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $request = $_SERVER['REQUEST_URI'];
 
 // Si acceden a la raíz "/", servir pagina-principal.php

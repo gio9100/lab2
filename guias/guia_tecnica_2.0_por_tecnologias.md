@@ -1380,5 +1380,4 @@ if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
 
 ---
 
-**¡Guía Técnica 2.0 Completa! 🎉**
-Organizada por tecnologías y carpetas del proyecto Lab Explorer.
+

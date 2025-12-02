@@ -529,6 +529,58 @@ function acortar($texto, $limite = 150) {
         .btn-read-more {
 /* Clase para el botón de "Leer más" */
             display: inline-flex;
+/* Usamos inline-flex para que sea un botón flexible en línea */
+            align-items: center;
+/* Centramos verticalmente el contenido del botón */
+            gap: 8px;
+/* Espacio de 8px entre el texto y el icono */
+            padding: 12px 28px;
+/* Espaciado interno: 12px arriba/abajo, 28px izquierda/derecha */
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+/* Fondo con degradado azul del color principal al oscuro */
+            color: var(--white);
+/* Texto blanco */
+            text-decoration: none;
+/* Sin subrayado */
+            border-radius: 25px;
+/* Bordes muy redondeados (forma de píldora) */
+            font-weight: 600;
+/* Texto semi-bold */
+            transition: all 0.3s ease;
+/* Transición suave para todos los cambios */
+            box-shadow: 0 4px 12px rgba(115, 144, 160, 0.3);
+/* Sombra azulada para dar profundidad */
+        }
+/* Cerramos la clase btn-read-more */
+
+/* Línea vacía */
+        .btn-read-more:hover {
+/* Estilos cuando pasas el mouse sobre el botón */
+            transform: translateY(-2px);
+/* Movemos el botón 2px hacia arriba */
+            box-shadow: 0 6px 20px rgba(115, 144, 160, 0.4);
+/* Sombra más grande y pronunciada */
+            color: var(--white);
+/* Mantenemos el texto blanco */
+        }
+/* Cerramos el hover del botón */
+
+/* Línea vacía */
+        .btn-read-more i {
+/* Estilos para el icono dentro del botón */
+            transition: transform 0.3s ease;
+/* Transición suave para el icono */
+        }
+/* Cerramos los estilos del icono */
+
+/* Línea vacía */
+        .btn-read-more:hover i {
+/* Estilos para el icono cuando pasas el mouse sobre el botón */
+            transform: translateX(5px);
+/* Movemos el icono 5px a la derecha (efecto de flecha) */
+        }
+/* Cerramos el hover del icono */
+
 /* Línea vacía */
         /* Empty State */
 /* Comentario CSS para el estado vacío */

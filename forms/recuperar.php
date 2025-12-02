@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Abrimos PHP
 // Este archivo maneja todo el proceso de recuperar contraseña olvidada
 // Tiene 3 pasos: 1) Usuario pone su correo, 2) Le enviamos un link, 3) Cambia su contraseña
@@ -114,41 +114,28 @@ if (isset($_POST['correo']) && !isset($_POST['nueva_password'])) {
 
                 // Contenido del correo
                 $mail->isHTML(true);
-                // Le decimos que el correo tiene HTML
                 $mail->Subject = "Restablecer password Lab Explorer";
-                // Asunto del correo
                 
-                // Adjuntamos el logo para que se vea en el correo
-                $mail->addEmbeddedImage('../assets/img/logo/logo-lab.ico', 'logoLab');
-                // addEmbeddedImage mete una imagen en el correo
+                // Usamos EmailHelper para generar el cuerpo del correo
+                require_once 'EmailHelper.php';
+                
+                $boton = [
+                    'texto' => 'Restablecer contraseña',
+                    'url' => $enlace
+                ];
+                
+                $mensaje_texto = "Has solicitado recuperar tu contraseña. Haz clic en el siguiente botón para restablecerla. Este enlace expira en 1 hora.";
+                
+                $mail->Body = EmailHelper::render(
+                    "Recuperación de contraseña",
+                    $usuario['nombre'],
+                    $mensaje_texto,
+                    [], // Sin detalles extra
+                    $boton,
+                    'info'
+                );
 
-                // Cuerpo del correo en HTML
-                $mail->Body = "
-                    <center>
-                        <img src='cid:logoLab' width='150' style='margin-bottom:20px;'>
-                    </center>
-
-                    <h2>Recuperación de contraseña</h2>
-                    Hola <strong>{$usuario['nombre']}</strong>,<br><br>
-
-                    Has solicitado recuperar tu contraseña.<br><br>
-
-                    <!-- Botón para restablecer -->
-                    <a href='$enlace' 
-                       style='background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;font-weight:bold;'>
-                       Restablecer contraseña
-                    </a>
-
-                    <br><br>
-                    Si el botón no funciona abre este enlace:<br>
-                    $enlace
-                    <br><br>
-                    Este enlace expira en 1 hora.<br>
-                    <strong>Si tú no solicitaste el cambio de contraseña, ignora este correo.</strong>
-                ";
-                // Cuerpo del correo con HTML
-
-                // Versión en texto plano (por si el correo no soporta HTML)
+                // Versión en texto plano
                 $mail->AltBody = "Hola {$usuario['nombre']}, usa este enlace para recuperar tu contraseña: $enlace";
 
                 // Enviamos el correo

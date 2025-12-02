@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Abrimos PHP para escribir código del lado del servidor
 session_start();
 // Iniciamos la sesión para poder acceder a las variables de sesión ($_SESSION)
@@ -207,6 +207,26 @@ if (isset($_GET['eliminar'])) {
 }
 
 // ============================================================================
+// LÓGICA: ELIMINAR TODAS LAS PUBLICACIONES
+// ============================================================================
+if (isset($_GET['eliminar_todas'])) {
+    // Usamos TRUNCATE para reiniciar la tabla y los IDs, o DELETE si hay restricciones FK
+    // DELETE es más seguro si hay claves foráneas con CASCADE
+    $query = "DELETE FROM publicaciones";
+    
+    if ($conn->query($query)) {
+        $_SESSION['mensaje'] = "✅ Todas las publicaciones han sido eliminadas correctamente";
+        $_SESSION['tipo_mensaje'] = "success";
+    } else {
+        $_SESSION['mensaje'] = "❌ Error al eliminar todas las publicaciones: " . $conn->error;
+        $_SESSION['tipo_mensaje'] = "danger";
+    }
+    
+    header("Location: gestionar-publicaciones.php");
+    exit;
+}
+
+// ============================================================================
 // OBTENER TODAS LAS PUBLICACIONES
 // ============================================================================
 // Consulta compleja para traer datos de publicación, publicador y categoría
@@ -309,7 +329,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                             <a href="historial-publicaciones.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-clock-history me-2"></i>Historial de Publicaciones
                             </a>
-                            <a href="./categorias/crear_categoria.php" class="list-group-item list-group-item-action">
+                            <a href="./categorias/listar_categorias.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-tags me-2"></i>Categorías
                             </a>
                             <?php if($admin_nivel == 'superadmin'): ?>
@@ -448,6 +468,9 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                 Todas las Publicaciones
                                 <span class="badge bg-primary"><?= count($publicaciones) ?></span>
                             </h5>
+                            <a href="gestionar-publicaciones.php?eliminar_todas=1" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás SEGURO de que quieres eliminar TODAS las publicaciones del sistema? Esta acción no se puede deshacer.')">
+                                <i class="bi bi-trash"></i> Eliminar Todo
+                            </a>
                         </div>
                         <div class="card-body">
                             <?php if(empty($publicaciones)): ?>

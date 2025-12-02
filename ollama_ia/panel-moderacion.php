@@ -1,20 +1,19 @@
 <?php
 // =============================================================================
 // ARCHIVO: panel-moderacion.php
-// PROPÓSITO: Interfaz web para moderar publicaciones con IA
+// PROPÓSITO: Interfaz web para moderar publicaciones automáticamente
 // =============================================================================
 
-// Iniciar sesión
+// Iniciamos la sesión para verificar el usuario logueado
 session_start();
 
-// Incluir la configuración de administrador
+// Incluimos la configuración de administrador para validar permisos
 require_once '../forms/admins/config-admin.php';
 
-// Verificar que el usuario sea administrador
-// Si no lo es, redirige automáticamente al login
+// Verificamos que el usuario sea administrador, si no, redirige
 requerirAdmin();
 
-// Obtener datos del administrador
+// Obtenemos los datos del administrador desde la sesión
 $admin_nombre = $_SESSION['admin_nombre'] ?? 'Administrador';
 $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
 ?>
@@ -28,7 +27,7 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <!-- Fuentes de Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <!-- CSS de Vendors -->
     <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -39,9 +38,8 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <link href="../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css-admins/admin.css">
     
-    <!-- Estilos adicionales para el panel de moderación -->
+    <!-- Estilos adicionales específicos para este panel -->
     <style>
-        /* Tarjeta de publicación - estilo admin-card */
         .publicacion-card {
             background: white;
             border-radius: 10px;
@@ -78,7 +76,7 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
             border-bottom: 1px solid #e9ecef;
         }
         
-        /* Botón de moderar */
+        /* Botón de moderar con gradiente azul/morado */
         .btn-moderar {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -96,15 +94,9 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
-        .btn-moderar:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* Modal */
+        /* Estilos del Modal */
         .modal {
-            display: none;
+            display: none; /* Oculto por defecto */
             position: fixed;
             top: 0;
             left: 0;
@@ -133,14 +125,11 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
             font-weight: bold;
             color: #aaa;
             cursor: pointer;
-            line-height: 20px;
         }
         
-        .close-modal:hover {
-            color: #000;
-        }
+        .close-modal:hover { color: #000; }
         
-        /* Resultados */
+        /* Estilos para resultados de moderación */
         .resultado-aprobado {
             background: #d4edda;
             border-left: 4px solid #28a745;
@@ -168,7 +157,7 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
             margin: 20px 0;
         }
         
-        /* Spinner */
+        /* Spinner de carga */
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
@@ -197,47 +186,11 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
         .confianza-fill {
             height: 100%;
             background: linear-gradient(90deg, #28a745 0%, #ffc107 50%, #dc3545 100%);
-            transition: width 0.5s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.95em;
-        }
-        
-        /* Detalles */
-        .detalles {
-            margin-top: 25px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .detalle-item {
-            margin: 12px 0;
-            padding: 12px;
-            background: white;
-            border-left: 4px solid #667eea;
-            border-radius: 4px;
-            padding-left: 15px;
-        }
-        
-        /* Mensaje de error */
-        .error-message {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        /* Mensaje de carga */
-        .loading-message {
-            text-align: center;
-            color: #6c757d;
-            padding: 40px;
         }
     </style>
 </head>
@@ -247,12 +200,10 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                
                 <a href="../index.php" class="logo d-flex align-items-end">
                     <img src="../assets/img/logo/nuevologo.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    <h1 class="sitename">Lab-Explorer</h1>
                 </a>
-
                 <div class="d-flex align-items-center">
                     <div class="social-links">
                         <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
@@ -267,12 +218,11 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
-                <!-- Contenido principal -->
                 <div class="col-12">
-                    <!-- Título -->
+                    <!-- Título de la sección -->
                     <div class="section-title" data-aos="fade-up">
                         <h2>🤖 Panel de Moderación Automática</h2>
-                        <p>Sistema inteligente de moderación de publicaciones</p>
+                        <p>Sistema inteligente de moderación basado en reglas</p>
                     </div>
                     
                     <!-- Botón para volver -->
@@ -282,9 +232,9 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
                         </a>
                     </div>
                     
-                    <!-- Aquí se cargarán las publicaciones dinámicamente -->
+                    <!-- Contenedor donde se cargarán las publicaciones dinámicamente -->
                     <div id="publicaciones-container">
-                        <!-- Las publicaciones se cargarán aquí con JavaScript -->
+                        <!-- JavaScript llenará esto -->
                     </div>
                 </div>
             </div>
@@ -294,267 +244,146 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <!-- Modal para mostrar resultados -->
     <div id="modal-resultado" class="modal">
         <div class="modal-content">
-            <!-- Botón para cerrar el modal -->
             <span class="close-modal" onclick="cerrarModal()">&times;</span>
-            
-            <!-- Aquí se mostrará el resultado del análisis -->
-            <div id="resultado-contenido">
-                <!-- El contenido se carga dinámicamente -->
-            </div>
+            <div id="resultado-contenido"></div>
         </div>
     </div>
     
-    <!-- JavaScript para la funcionalidad -->
+    <!-- Scripts -->
     <script>
-        // =============================================================================
-        // FUNCIÓN: cargarPublicaciones
-        // Carga las publicaciones pendientes de moderación
-        // =============================================================================
+        // Función para cargar publicaciones pendientes
         function cargarPublicaciones() {
-            // Obtener el contenedor donde se mostrarán las publicaciones
             const container = document.getElementById('publicaciones-container');
-            
-            // Mostrar un mensaje de carga
             container.innerHTML = '<div class="loading-message"><div class="spinner"></div><p>Cargando publicaciones...</p></div>';
             
-            // Hacer una petición AJAX para obtener las publicaciones
             fetch('obtener-publicaciones.php')
-                .then(response => response.json()) // Convertir la respuesta a JSON
+                .then(response => response.json())
                 .then(data => {
-                    // Verificar si hubo error
                     if (!data.success) {
                         container.innerHTML = '<div class="error-message">❌ Error: ' + data.error + '</div>';
                         return;
                     }
-                    
-                    // Si no hay publicaciones
                     if (data.publicaciones.length === 0) {
-                        container.innerHTML = '<div class="admin-card" data-aos="fade-up"><div class="card-body text-center"><p class="text-muted mb-0">No hay publicaciones pendientes de moderación.</p></div></div>';
+                        container.innerHTML = '<div class="admin-card"><div class="card-body text-center"><p class="text-muted">No hay publicaciones pendientes.</p></div></div>';
                         return;
                     }
-                    
-                    // Limpiar el contenedor
                     container.innerHTML = '';
-                    
-                    // Crear una tarjeta para cada publicación
                     data.publicaciones.forEach(pub => {
-                        const card = crearTarjetaPublicacion(pub);
-                        container.appendChild(card);
+                        container.appendChild(crearTarjetaPublicacion(pub));
                     });
                 })
                 .catch(error => {
-                    // Si hay error en la petición
                     console.error('Error:', error);
-                    container.innerHTML = '<div class="error-message">❌ Error al cargar las publicaciones. Verifica que estés conectado.</div>';
+                    container.innerHTML = '<div class="error-message">❌ Error de conexión.</div>';
                 });
         }
         
-        // =============================================================================
-        // FUNCIÓN: crearTarjetaPublicacion
-        // Crea el HTML de una tarjeta de publicación
-        // =============================================================================
+        // Función para crear el HTML de una tarjeta
         function crearTarjetaPublicacion(publicacion) {
-            // Crear el elemento div para la tarjeta
             const card = document.createElement('div');
             card.className = 'publicacion-card';
             card.setAttribute('data-aos', 'fade-up');
             
-            // Construir el HTML interno
+            const contenido = publicacion.resumen || (publicacion.contenido ? publicacion.contenido.substring(0, 200) + '...' : 'Sin contenido');
+            
             card.innerHTML = `
-                <h3 class="publicacion-titulo">${publicacion.titulo}</h3>
-                <p class="publicacion-contenido">${publicacion.resumen || publicacion.contenido.substring(0, 200) + '...'}</p>
+                <h3 class="publicacion-titulo">${publicacion.titulo || 'Sin título'}</h3>
+                <p class="publicacion-contenido">${contenido}</p>
                 <p class="publicacion-meta">
-                    <i class="bi bi-calendar3 me-2"></i>${publicacion.fecha_creacion} | 
+                    <i class="bi bi-calendar3 me-2"></i>${publicacion.fecha_creacion || 'Fecha desconocida'} | 
                     <i class="bi bi-person ms-3 me-2"></i>${publicacion.autor || 'Autor desconocido'}
                 </p>
-                <button class="btn-moderar" onclick="moderarConIA(${publicacion.id})">
-                    <i class="bi bi-robot me-2"></i>Moderar con IA
+                <button class="btn-moderar" onclick="moderarAutomaticamente(${publicacion.id})">
+                    <i class="bi bi-lightning-charge me-2"></i>Moderar Automáticamente
                 </button>
             `;
-            
             return card;
         }
         
-        // =============================================================================
-        // FUNCIÓN: moderarConIA
-        // Envía una publicación a la IA para que la analice
-        // =============================================================================
-        function moderarConIA(publicacionId) {
-            // Mostrar el modal con un spinner de carga
-            mostrarModal('<div class="spinner"></div><p style="text-align:center;">Analizando publicación...</p><p style="text-align:center; color:#999; font-size:0.9em;">Usando moderación local (sin IA externa)</p>');
+        // Función para enviar a moderar
+        function moderarAutomaticamente(publicacionId) {
+            mostrarModal('<div class="spinner"></div><p style="text-align:center;">Analizando publicación...</p>');
             
-            // Crear los datos del formulario
             const formData = new FormData();
             formData.append('publicacion_id', publicacionId);
             
-            // Hacer la petición AJAX al endpoint LOCAL
             fetch('moderar-local.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json()) // Convertir respuesta a JSON
+            .then(response => response.json())
             .then(data => {
-                // Verificar si hubo error
                 if (!data.success) {
                     mostrarError(data.error);
                     return;
                 }
-                
-                // Mostrar el resultado del análisis
                 mostrarResultado(data);
-                
-                // Recargar las publicaciones después de 2 segundos
-                setTimeout(() => {
-                    cargarPublicaciones();
-                }, 2000);
+                setTimeout(cargarPublicaciones, 2000);
             })
             .catch(error => {
-                // Si hay error en la petición
                 console.error('Error:', error);
-                mostrarError('Error al comunicarse con el servidor. Por favor, intenta de nuevo.');
+                mostrarError('Error de comunicación con el servidor.');
             });
         }
         
-        // =============================================================================
-        // FUNCIÓN: mostrarResultado
-        // Muestra el resultado del análisis en el modal
-        // =============================================================================
+        // Función para mostrar el resultado en el modal
         function mostrarResultado(data) {
-            // Determinar la clase CSS según la decisión
-            let claseResultado = '';
-            if (data.decision === 'aprobada') {
-                claseResultado = 'resultado-aprobado';
+            let clase = '', icono = '';
+            if (data.decision === 'publicado') {
+                clase = 'resultado-aprobado'; icono = '✅';
             } else if (data.decision === 'rechazada') {
-                claseResultado = 'resultado-rechazado';
+                clase = 'resultado-rechazado'; icono = '❌';
             } else {
-                claseResultado = 'resultado-revision';
+                clase = 'resultado-revision'; icono = '⚠️';
             }
             
-            // Construir el HTML del resultado
             let html = `
-                <div class="${claseResultado}">
-                    <h2>${data.icono} ${data.decision.toUpperCase()}</h2>
-                    <p style="margin-top:10px;">${data.mensaje}</p>
+                <div class="${clase}">
+                    <h2>${icono} ${(data.decision || '').toUpperCase()}</h2>
+                    <p>${data.razon || ''}</p>
                 </div>
-                
                 <div style="margin:20px 0;">
-                    <h3>📊 Nivel de Confianza</h3>
+                    <h3>📊 Puntuación de Calidad</h3>
                     <div class="confianza-bar">
-                        <div class="confianza-fill" style="width:${data.confianza}%">
-                            ${data.confianza}%
-                        </div>
+                        <div class="confianza-fill" style="width:${data.confianza}%">${data.confianza}/100</div>
                     </div>
-                </div>
-                
-                <div>
-                    <h3>💭 Razón</h3>
-                    <p style="padding:15px; background:#f8f9fa; border-radius:8px; margin-top:10px;">
-                        ${data.razon}
-                    </p>
                 </div>
             `;
             
-            // Si hay detalles adicionales, mostrarlos
-            if (data.detalles && Object.keys(data.detalles).length > 0) {
-                html += '<div class="detalles"><h3>📋 Detalles del Análisis</h3>';
-                
-                // Iterar sobre cada detalle
-                for (let [clave, valor] of Object.entries(data.detalles)) {
-                    // Formatear el nombre de la clave
-                    const nombreClave = clave.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                    html += `<div class="detalle-item"><strong>${nombreClave}:</strong> ${valor}</div>`;
+            if (data.detalles) {
+                html += '<div class="detalles"><h3>📋 Detalles</h3>';
+                for (let [k, v] of Object.entries(data.detalles)) {
+                    html += `<div><strong>${k.replace(/_/g, ' ')}:</strong> ${v}</div>`;
                 }
-                
                 html += '</div>';
             }
             
-            // Agregar información del tipo de análisis
-            html += `
-                <p style="margin-top:20px; color:#999; font-size:0.9em; text-align:center;">
-                    Tipo de análisis: ${data.tipo_analisis}
-                </p>
-            `;
-            
-            // Mostrar en el modal
             mostrarModal(html);
         }
         
-        // =============================================================================
-        // FUNCIÓN: mostrarError
-        // Muestra un mensaje de error en el modal
-        // =============================================================================
-        function mostrarError(mensaje) {
-            const html = `
-                <div class="resultado-rechazado">
-                    <h2>❌ Error</h2>
-                    <p style="margin-top:10px;">${mensaje}</p>
-                </div>
-                <p style="margin-top:20px; color:#666; font-size:0.9em;">
-                    <strong>Posibles soluciones:</strong><br>
-                    • Verifica que Ollama esté corriendo (ejecuta: <code>ollama list</code>)<br>
-                    • Asegúrate de haber descargado un modelo (ejecuta: <code>ollama pull llama2</code>)<br>
-                    • Revisa los logs en ollama_ia/logs/ollama_debug.log
-                </p>
-            `;
-            mostrarModal(html);
+        function mostrarError(msg) {
+            mostrarModal(`<div class="resultado-rechazado"><h2>❌ Error</h2><p>${msg}</p></div>`);
         }
         
-        // =============================================================================
-        // FUNCIÓN: mostrarModal
-        // Muestra el modal con el contenido especificado
-        // =============================================================================
-        function mostrarModal(contenido) {
-            // Obtener los elementos del DOM
-            const modal = document.getElementById('modal-resultado');
-            const contenedor = document.getElementById('resultado-contenido');
-            
-            // Establecer el contenido
-            contenedor.innerHTML = contenido;
-            
-            // Mostrar el modal (cambiar display a flex)
-            modal.style.display = 'flex';
+        function mostrarModal(content) {
+            document.getElementById('resultado-contenido').innerHTML = content;
+            document.getElementById('modal-resultado').style.display = 'flex';
         }
         
-        // =============================================================================
-        // FUNCIÓN: cerrarModal
-        // Cierra el modal
-        // =============================================================================
         function cerrarModal() {
-            const modal = document.getElementById('modal-resultado');
-            modal.style.display = 'none';
+            document.getElementById('modal-resultado').style.display = 'none';
         }
         
-        // =============================================================================
-        // EVENTO: Click fuera del modal para cerrarlo
-        // =============================================================================
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal-resultado');
-            // Si se hace click en el fondo oscuro (no en el contenido)
-            if (event.target === modal) {
-                cerrarModal();
-            }
+        window.onclick = function(e) {
+            if (e.target == document.getElementById('modal-resultado')) cerrarModal();
         }
         
-        // =============================================================================
-        // CARGAR PUBLICACIONES AL INICIAR LA PÁGINA
-        // =============================================================================
-        // Cuando la página termine de cargar, ejecutar esta función
-        document.addEventListener('DOMContentLoaded', function() {
-            cargarPublicaciones();
-        });
+        document.addEventListener('DOMContentLoaded', cargarPublicaciones);
     </script>
-
-    <!-- SCRIPTS -->
+    
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/vendor/aos/aos.js"></script>
     <script src="../assets/js/main.js"></script>
-
-    <script>
-        // Inicializar animaciones AOS
-        AOS.init({
-            duration: 1000,
-            once: true
-        });
-    </script>
+    <script>AOS.init();</script>
 </body>
 </html>

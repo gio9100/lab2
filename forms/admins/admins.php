@@ -1,125 +1,60 @@
-<?php
-// ============================================================================
-// 🛡️ GESTIÓN DE ADMINISTRADORES - ADMINS.PHP
-// ============================================================================
-// Este archivo permite a los SUPERADMINISTRADORES gestionar a otros admins.
-//
-// FUNCIONALIDADES PRINCIPALES:
-// 1. Listar todos los administradores registrados
-// 2. Crear nuevos administradores (requiere clave secreta)
-// 3. Editar datos de administradores (nombre, email, nivel)
-// 4. Cambiar contraseñas de administradores
-// 5. Eliminar administradores (excepto a uno mismo)
-//
-// SEGURIDAD:
-// - Solo accesible para usuarios con nivel 'superadmin'
-// - Uso de claves secretas para crear cuentas
-// - Protección contra auto-eliminación
-// ============================================================================
+﻿<?php
+// Gestión de administradores (solo para superadmins)
+// Permite crear, editar, cambiar contraseñas y eliminar otros admins
+// Usa claves secretas para autorizar la creación de nuevas cuentas
 
-// ============================================================================
-// 📌 EXPLICACIÓN DE session_start()
-// ============================================================================
-// session_start() inicia o reanuda una sesión PHP.
-// Es fundamental para acceder a $_SESSION, donde guardamos si el usuario
-// está logueado y qué nivel de permisos tiene.
+// Iniciamos la sesión para verificar permisos del usuario
 session_start();
 
-// ----------------------------------------------------------------------------
-// 1. CONFIGURACIÓN DE LA BASE DE DATOS
-// ----------------------------------------------------------------------------
-$servername = "localhost";  // Servidor de base de datos (usualmente localhost)
-$username = "root";         // Usuario de MySQL
-$password = "";             // Contraseña de MySQL
-$dbname = "lab_exp_db";     // Nombre de la base de datos
+// Configuración de la base de datos
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "lab_exp_db";
 
-// ============================================================================
-// 📌 EXPLICACIÓN DE new mysqli()
-// ============================================================================
-// Creamos una nueva instancia de la clase mysqli para conectar a la BD.
-// Si falla, $conn->connect_error tendrá el mensaje de error.
+// Conectamos a MySQL con los datos de acceso
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificamos la conexión
+// Si hay error de conexión, detenemos todo el script
 if ($conn->connect_error) {
-    // die() detiene la ejecución inmediatamente y muestra el mensaje
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// ============================================================================
-// 📌 EXPLICACIÓN DE set_charset("utf8mb4")
-// ============================================================================
-// Establece el juego de caracteres a UTF-8 Multibyte.
-// Es crucial para soportar emojis, acentos y caracteres especiales correctamente.
+// Configuramos UTF-8 para que funcionen tildes, ñ y emojis
 $conn->set_charset("utf8mb4");
 
-// ----------------------------------------------------------------------------
-// 2. CLAVES SECRETAS PARA CREAR ADMINISTRADORES
-// ----------------------------------------------------------------------------
-// ============================================================================
-// 📌 EXPLICACIÓN DE define()
-// ============================================================================
-// define() crea una CONSTANTE.
-// A diferencia de las variables ($var), las constantes:
-// 1. No llevan el signo $
-// 2. No se pueden cambiar una vez definidas
-// 3. Son globales (accesibles desde cualquier parte del script)
-//
-// AQUÍ: Definimos las claves que se deben escribir en el formulario
-// para autorizar la creación de nuevos administradores.
-define('CLAVE_ADMIN', 'labexplorer2025');           // Para crear admin normal
-define('CLAVE_SUPERADMIN', 'superlabexplorer2025'); // Para crear superadmin
+// Claves secretas para autorizar la creación de administradores
+// Se deben escribir en el formulario para poder crear cuentas
+define('CLAVE_ADMIN', 'labexplorer2025');           // Para admin normal
+define('CLAVE_SUPERADMIN', 'superlabexplorer2025'); // Para superadmin
 
-// ----------------------------------------------------------------------------
-// 3. VERIFICAR SI ES SUPERADMIN
-// ----------------------------------------------------------------------------
-// Esta página es CRÍTICA. Solo los superadmins deben entrar.
-//
-// Verificamos dos cosas:
-// 1. !isset(...) -> ¿No existe la variable de sesión? (No está logueado)
-// 2. ... != 'superadmin' -> ¿El nivel NO es superadmin?
+// Solo superadmins pueden entrar aquí
+// Verificamos que esté logueado Y que sea superadmin
 if (!isset($_SESSION['admin_id']) || $_SESSION['admin_nivel'] != 'superadmin') {
-    // Si falla alguna verificación, lo sacamos de aquí
     $_SESSION['mensaje'] = "No tienes permisos para acceder a esta sección";
     $_SESSION['tipo_mensaje'] = "danger";
-    
-    // header() redirige al usuario a otra página
     header("Location: index-admin.php");
-    exit; // IMPORTANTE: exit detiene el script para que no se ejecute nada más
+    exit; // Detenemos el script
 }
 
-// Obtenemos los datos del superadmin actual para mostrar en el header
+// Datos del superadmin actual
 $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 
-// ----------------------------------------------------------------------------
-// 4. PROCESAR ACCIONES (POST)
-// ----------------------------------------------------------------------------
-// ============================================================================
-// 📌 EXPLICACIÓN DE $_SERVER["REQUEST_METHOD"]
-// ============================================================================
-// Detectamos si el usuario envió un formulario.
-// GET = Solo visitar la página
-// POST = Enviar datos (guardar, editar, eliminar)
+// Procesamos las acciones enviadas por formularios
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
-    // ========================================================================
-    // CASO A: CREAR NUEVO ADMINISTRADOR
-    // ========================================================================
+    // Crear nuevo administrador
     if (isset($_POST['crear_admin'])) {
-        // ====================================================================
-        // 📌 EXPLICACIÓN DE trim()
-        // ====================================================================
-        // trim() elimina espacios en blanco al inicio y al final.
-        // Evita errores como " juan@email.com " (con espacios).
+        // Limpiamos los datos (trim elimina espacios al inicio y final)
         $nombre = trim($_POST['nombre']);
         $email = trim($_POST['email']);
         $password = trim($_POST['password']);
         $nivel = $_POST['nivel'];
         $clave_secreta = trim($_POST['clave_secreta']);
         
-        // Validamos la clave secreta
+        // Validamos que la clave secreta sea correcta según el nivel
         $clave_valida = false;
         
         // Operador && (AND): Ambas condiciones deben ser verdaderas
@@ -130,42 +65,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         
         if ($clave_valida) {
-            // ================================================================
-            // 📌 EXPLICACIÓN DE password_hash()
-            // ================================================================
-            // NUNCA guardar contraseñas en texto plano.
-            // password_hash() crea un "hash" seguro de la contraseña.
-            // PASSWORD_DEFAULT usa el algoritmo bcrypt (actualmente estándar).
-            // El resultado es una cadena larga ininteligible.
+            // Hasheamos la contraseña (NUNCA guardarla en texto plano)
+            // password_hash() crea un hash seguro usando bcrypt
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             
-            // Preparamos la consulta INSERT
-            // NOW() es una función SQL que devuelve la fecha/hora actual
+            // Preparamos la consulta SQL de forma segura
+            // Los ? son marcadores que evitan inyección SQL
             $query = "INSERT INTO admins (nombre, email, password, nivel, fecha_registro) 
                       VALUES (?, ?, ?, ?, NOW())";
             
-            // ================================================================
-            // 📌 EXPLICACIÓN DE prepare() y bind_param()
-            // ================================================================
-            // 1. prepare(): Prepara la estructura SQL (con ? como marcadores)
-            // 2. bind_param(): Reemplaza los ? con los datos reales de forma segura
-            //
-            // Tipos en bind_param("ssss"):
-            // s = string (texto)
-            // i = integer (número)
-            // d = double (decimal)
-            // b = blob (binario)
-            //
-            // Aquí son 4 strings: nombre, email, password_hash, nivel
             $stmt = $conn->prepare($query);
+            // "ssss" indica que son 4 strings: nombre, email, password_hash, nivel
             $stmt->bind_param("ssss", $nombre, $email, $password_hash, $nivel);
             
-            // execute() ejecuta la consulta preparada
+            // Ejecutamos la consulta
             if ($stmt->execute()) {
                 $_SESSION['mensaje'] = "Administrador creado correctamente";
                 $_SESSION['tipo_mensaje'] = "success";
             } else {
-                // $conn->error contiene el detalle si algo falló (ej. email duplicado)
+                // Si falla (ej. email duplicado), mostramos el error
                 $_SESSION['mensaje'] = "Error al crear administrador: " . $conn->error;
                 $_SESSION['tipo_mensaje'] = "danger";
             }
@@ -174,16 +92,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['tipo_mensaje'] = "danger";
         }
         
-        // Recargamos la página para limpiar el formulario (patrón PRG)
         header("Location: admins.php");
         exit;
     }
     
-    // ========================================================================
-    // CASO B: EDITAR ADMINISTRADOR EXISTENTE
-    // ========================================================================
+    // Editar administrador existente
     if (isset($_POST['editar_admin'])) {
-        // intval() asegura que el ID sea un número entero (seguridad)
+        // intval() convierte a entero para seguridad
         $id = intval($_POST['id']);
         $nombre = trim($_POST['nombre']);
         $email = trim($_POST['email']);
@@ -192,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $query = "UPDATE admins SET nombre=?, email=?, nivel=? WHERE id=?";
         
         $stmt = $conn->prepare($query);
-        // "sssi" = string, string, string, integer
+        // "sssi" = 3 strings (nombre, email, nivel) + 1 integer (id)
         $stmt->bind_param("sssi", $nombre, $email, $nivel, $id);
         
         if ($stmt->execute()) {
@@ -207,20 +122,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
     
-    // ========================================================================
-    // CASO C: CAMBIAR CONTRASEÑA
-    // ========================================================================
+    // Cambiar contraseña de un administrador
     if (isset($_POST['cambiar_password'])) {
         $id = intval($_POST['id']);
         $nueva_password = trim($_POST['nueva_password']);
         
-        // Siempre hashear la nueva contraseña antes de guardarla
+        // Hasheamos la nueva contraseña antes de guardarla
         $password_hash = password_hash($nueva_password, PASSWORD_DEFAULT);
         
         $query = "UPDATE admins SET password=? WHERE id=?";
         
         $stmt = $conn->prepare($query);
-        // "si" = string (password), integer (id)
+        // "si" = 1 string (password) + 1 integer (id)
         $stmt->bind_param("si", $password_hash, $id);
         
         if ($stmt->execute()) {
@@ -235,14 +148,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
     
-    // ========================================================================
-    // CASO D: ELIMINAR ADMINISTRADOR
-    // ========================================================================
+    // Eliminar un administrador
     if (isset($_POST['eliminar_admin'])) {
         $id = intval($_POST['id']);
         
-        // VALIDACIÓN IMPORTANTE: No permitir auto-eliminación
-        // Si el ID a eliminar es igual al ID del usuario logueado ($admin_id)
+        // Validación importante: no permitir que se elimine a sí mismo
         if ($id == $admin_id) {
             $_SESSION['mensaje'] = "No puedes eliminarte a ti mismo";
             $_SESSION['tipo_mensaje'] = "danger";
@@ -266,38 +176,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// ----------------------------------------------------------------------------
-// 5. OBTENER LISTA DE TODOS LOS ADMINISTRADORES
-// ----------------------------------------------------------------------------
-// ORDER BY fecha_registro DESC = Los más nuevos primero
+// Obtenemos todos los administradores de la base de datos
+// ORDER BY fecha_registro DESC = los más nuevos primero
 $query = "SELECT * FROM admins ORDER BY fecha_registro DESC";
 $result = $conn->query($query);
-
-// ============================================================================
-// 📌 EXPLICACIÓN DE fetch_all(MYSQLI_ASSOC)
-// ============================================================================
-// fetch_all() obtiene TODAS las filas de la consulta de una sola vez.
-// MYSQLI_ASSOC hace que el resultado sea un array asociativo.
-//
-// Ejemplo de estructura resultante:
-// [
-//    ['id' => 1, 'nombre' => 'Admin 1', ...],
-//    ['id' => 2, 'nombre' => 'Admin 2', ...]
-// ]
+// fetch_all(MYSQLI_ASSOC) trae todas las filas como array asociativo
 $admins = $result->fetch_all(MYSQLI_ASSOC);
 
-// ----------------------------------------------------------------------------
-// 6. OBTENER ESTADÍSTICAS
-// ----------------------------------------------------------------------------
-// Usamos COUNT(*) y GROUP BY para contar cuántos hay de cada nivel
-// Esto es más eficiente que traer todos los datos y contarlos con PHP
+// Estadísticas: contamos cuántos admins hay de cada nivel
+// COUNT(*) cuenta filas, GROUP BY agrupa por nivel
 $query_stats = "SELECT nivel, COUNT(*) as total FROM admins GROUP BY nivel";
 $result_stats = $conn->query($query_stats);
 
 $total_admins = 0;
 $total_superadmins = 0;
 
-// Recorremos los resultados del GROUP BY
+// Recorremos los resultados y separamos por nivel
 while ($row = $result_stats->fetch_assoc()) {
     if ($row['nivel'] == 'admin') {
         $total_admins = $row['total'];
@@ -306,13 +200,11 @@ while ($row = $result_stats->fetch_assoc()) {
     }
 }
 
-// Total general es la suma de ambos
+// Sumamos ambos para el total general
 $total_general = $total_admins + $total_superadmins;
 
-// ----------------------------------------------------------------------------
-// 7. OBTENER ADMIN PARA EDITAR (si se seleccionó uno)
-// ----------------------------------------------------------------------------
 // Si la URL tiene ?editar=123, cargamos los datos de ese admin
+// para mostrarlos en el formulario de edición
 $admin_editar = null;
 if (isset($_GET['editar'])) {
     $id_editar = intval($_GET['editar']);
@@ -410,7 +302,7 @@ if (isset($_GET['editar'])) {
                             <a href="gestionar-publicaciones.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
                             </a>
-                            <a href="./categorias/crear_categoria.php" class="list-group-item list-group-item-action">
+                            <a href="./categorias/listar_categorias.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-tags me-2"></i>Categorías
                             </a>
                             <!-- Clase 'active' marca la página actual -->
@@ -629,9 +521,7 @@ if (isset($_GET['editar'])) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- ================================================== -->
                                         <!-- 📌 EXPLICACIÓN DE foreach -->
-                                        <!-- ================================================== -->
                                         <!-- Recorremos el array de administradores -->
                                         <!-- $admins = array con todos los datos -->
                                         <!-- $adm = variable temporal para cada fila en el bucle -->
@@ -684,9 +574,7 @@ if (isset($_GET['editar'])) {
                                             </td>
                                         </tr>
 
-                                        <!-- ================================================== -->
                                         <!-- MODAL CAMBIAR CONTRASEÑA -->
-                                        <!-- ================================================== -->
                                         <!-- ID dinámico: id="modalPassword1", id="modalPassword2", etc. -->
                                         <div class="modal fade" id="modalPassword<?= $adm['id'] ?>" tabindex="-1">
                                             <div class="modal-dialog">
@@ -713,9 +601,7 @@ if (isset($_GET['editar'])) {
                                             </div>
                                         </div>
 
-                                        <!-- ================================================== -->
                                         <!-- MODAL ELIMINAR -->
-                                        <!-- ================================================== -->
                                         <?php if($adm['id'] != $admin_id): ?>
                                         <div class="modal fade" id="modalEliminar<?= $adm['id'] ?>" tabindex="-1">
                                             <div class="modal-dialog">

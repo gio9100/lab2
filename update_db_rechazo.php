@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Abrimos PHP
 // Este archivo agrega la columna 'mensaje_rechazo' a la tabla publicaciones
 // Se usa para guardar el motivo cuando un admin rechaza una publicación

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ============================================================================
 // 📄 ARCHIVO: guardar_publicacion.php
 // ============================================================================
@@ -186,70 +186,6 @@ function enviarNotificacionAdmin($titulo_publicacion, $nombre_publicador, $tipo_
             // PASO 4: CONFIGURAR REMITENTE Y ASUNTO
             // ============================================================
             $mail->setFrom('lab.explorer2025@gmail.com', 'Notificaciones Lab Explorer');
-            $mail->Subject = "⚠️ Nueva Publicación Pendiente de Revisión: $titulo_publicacion";
-            $mail->isHTML(true);  // El correo será en formato HTML
-            
-            // ============================================================
-            // PASO 5: CREAR EL CUERPO DEL CORREO EN HTML
-            // ============================================================
-            // Usamos los colores de Lab Explorer (#7390A0)
-            $cuerpo = "
-                <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-                    <!-- ENCABEZADO -->
-                    <div style='text-align: center; margin-bottom: 30px; background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%); padding: 30px; border-radius: 10px;'>
-                        <h1 style='color: white; margin: 0;'>📝 Nueva Publicación Pendiente de Revisión</h1>
-                    </div>
-                    
-                    <!-- MENSAJE PRINCIPAL -->
-                    <p style='font-size: 16px; color: #333; line-height: 1.6;'>
-                        El publicador <strong>$nombre_publicador</strong> ha enviado una nueva publicación que requiere tu aprobación.
-                    </p>
-                    
-                    <!-- DETALLES DE LA PUBLICACIÓN -->
-                    <div style='background: #f0f4f6; padding: 20px; border-left: 4px solid #7390A0; margin: 20px 0; border-radius: 5px;'>
-                        <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>📌 Título:</strong> $titulo_publicacion</p>
-                        <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>📂 Tipo:</strong> " . ucfirst($tipo_contenido) . "</p>
-                        <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>👤 Autor:</strong> $nombre_publicador</p>
-                        <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>📅 Fecha:</strong> " . date('d/m/Y H:i') . "</p>
-                    </div>
-                    
-                    <!-- INSTRUCCIONES -->
-                    <p style='font-size: 16px; color: #333; line-height: 1.6;'>
-                        Por favor, ingresa al panel de administración para revisar y aprobar o rechazar esta publicación.
-                    </p>
-                    
-                    <!-- BOTÓN DE ACCIÓN -->
-                    <div style='text-align: center; margin: 30px 0;'>
-                        <a href='http://localhost/lab/forms/admins/login-admin.php' 
-                           style='background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%); 
-                           color: white; padding: 15px 40px; text-decoration: none; 
-                           border-radius: 25px; display: inline-block; font-weight: bold; 
-                           font-size: 16px; box-shadow: 0 4px 15px rgba(115, 144, 160, 0.4);'>
-                            🔐 Ir al Panel de Administración
-                        </a>
-                    </div>
-                    
-                    <!-- PIE DE PÁGINA -->
-                    <div style='border-top: 2px solid #e9ecef; padding-top: 20px; margin-top: 30px;'>
-                        <p style='color: #6c757d; font-size: 14px; text-align: center; margin: 0;'>
-                            Este es un correo automático del sistema Lab Explorer.<br>
-                            Por favor no respondas a este mensaje.
-                        </p>
-                    </div>
-                </div>
-            ";
-            
-            // ============================================================
-            // PASO 6: ASIGNAR CUERPO DEL CORREO
-            // ============================================================
-            $mail->Body = $cuerpo;  // Versión HTML
-            // Versión de texto plano (para clientes que no soportan HTML)
-            $mail->AltBody = "Nueva publicación de $nombre_publicador: $titulo_publicacion. Estado: Pendiente de revisión. Ingresa al panel de administración para revisarla.";
-            
-            // ============================================================
-            // PASO 7: ENVIAR CORREO A CADA ADMINISTRADOR
-            // ============================================================
-            // Recorremos todos los admins y enviamos un correo a cada uno
             foreach ($admins as $admin) {
                 $mail->addAddress($admin['email'], $admin['nombre']);  // Agregar destinatario
                 $mail->send();                                         // Enviar

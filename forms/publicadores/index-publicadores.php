@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once 'config-publicadores.php';
 
@@ -156,9 +156,12 @@ $stmt_recientes->close();
     <a href="crear_nueva_publicacion.php" class="list-group-item list-group-item-action">
         <i class="bi bi-plus-circle me-2"></i>Nueva Publicación
     </a>
-    <!-- ENLACE CORREGIDO: Agregar "active" a Mis Publicaciones -->
+
     <a href="mis-publicaciones.php" class="list-group-item list-group-item-action active">
         <i class="bi bi-file-text me-2"></i>Mis Publicaciones
+    </a>
+    <a href="../../mensajes/chat.php?as=publicador" class="list-group-item list-group-item-action">
+        <i class="bi bi-chat-left-text me-2"></i>Mensajes
     </a>
     <a href="estadisticas.php" class="list-group-item list-group-item-action">
         <i class="bi bi-graph-up me-2"></i>Estadísticas

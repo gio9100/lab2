@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 // Abrimos PHP
 require_once("usuario.php");
 // Traemos el archivo usuario.php para manejar sesiones

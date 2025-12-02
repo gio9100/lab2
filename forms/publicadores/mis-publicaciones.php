@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once 'config-publicadores.php';
 
@@ -36,6 +36,19 @@ if (isset($_GET['eliminar'])) {
         }
     } else {
         $mensaje_error = "No tienes permiso para eliminar esta publicación";
+    }
+}
+
+/* -------------------------------
+   ELIMINAR TODAS LAS PUBLICACIONES
+-------------------------------- */
+if (isset($_GET['eliminar_todas'])) {
+    $delete_all = $conn->prepare("DELETE FROM publicaciones WHERE publicador_id = ?");
+    $delete_all->bind_param("i", $publicador_id);
+    if ($delete_all->execute()) {
+        $mensaje_exito = "Todas tus publicaciones han sido eliminadas correctamente.";
+    } else {
+        $mensaje_error = "Error al eliminar todas las publicaciones.";
     }
 }
 
@@ -151,6 +164,9 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
         </div>
         <a href="crear_nueva_publicacion.php" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Nueva Publicación
+        </a>
+        <a href="mis-publicaciones.php?eliminar_todas=1" class="btn btn-danger ms-2" onclick="return confirm('¿Estás SEGURO de que quieres eliminar TODAS tus publicaciones? Esta acción no se puede deshacer.')">
+            <i class="bi bi-trash"></i> Eliminar Todas
         </a>
     </div>
 

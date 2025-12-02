@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Abrimos PHP
 // Este archivo es para DEPURACIÓN (debugging)
 // Se usa para ver qué está pasando con las sesiones

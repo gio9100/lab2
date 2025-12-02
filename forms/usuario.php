@@ -1,186 +1,282 @@
-<?php
-// ============================================================================
-// 👤 GESTOR DE SESIÓN DEL USUARIO - USUARIO.PHP
-// ============================================================================
-// Este archivo es el "corazón" de la gestión de usuarios en el sitio público.
-// Se encarga de verificar quién está visitando la página y qué permisos tiene.
-//
-// 🔗 INTEGRACIÓN CON OTRAS PÁGINAS:
-//
-// 1. EN INDEX.PHP (Página Principal):
-//    - Permite mostrar el saludo personalizado: "Hola, Juan"
-//    - Decide qué botones mostrar en el menú:
-//      * Si NO está logueado -> Muestra "Inicia sesión" y "Crear Cuenta"
-//      * Si SÍ está logueado -> Muestra "Cerrar Sesión"
-//
-// 2. EN PERFIL.PHP (Página de Perfil):
-//    - Actúa como "guardia de seguridad". Si no hay usuario logueado,
-//      redirige inmediatamente al login.
-//    - Provee los datos para mostrar la foto de perfil y el correo.
-//
-// ============================================================================
-
-// ============================================================================
-// 📌 EXPLICACIÓN DE session_status() y session_start()
-// ============================================================================
-// Antes de iniciar una sesión, verificamos si ya hay una activa.
-// PHP_SESSION_NONE significa que las sesiones están habilitadas pero no hay una iniciada.
-// Esto evita errores de "session already started" si este archivo se incluye varias veces.
+﻿<?php
+// Iniciamos la sesión si no está iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Incluimos la conexión a la base de datos para poder hacer consultas
-require_once "conexion.php";
+// Incluimos la conexión a la base de datos
+require_once __DIR__ . "/conexion.php";
 
-// ----------------------------------------------------------------------------
-// 1. INICIALIZACIÓN DE VARIABLES
-// ----------------------------------------------------------------------------
-// Definimos estas variables por defecto para evitar errores de "undefined variable"
-// si el usuario no está logueado.
-$usuario_logueado = false; // Asumimos que NO está logueado al principio
-$usuario = null;           // No hay datos de usuario todavía
+// Variables globales para el usuario
+$usuario_logueado = false;
+$usuario = null;
 
-// ----------------------------------------------------------------------------
-// 2. VERIFICACIÓN DE SESIÓN ACTIVA
-// ----------------------------------------------------------------------------
-// isset() verifica si la variable $_SESSION['usuario_id'] existe.
-// Esta variable se crea en 'inicio-sesion.php' cuando el login es exitoso.
-if (isset($_SESSION['usuario_id']) && !empty($_SESSION['usuario_id'])) {
+// Verificamos si hay una sesión activa
+if (isset($_SESSION['usuario_id'])) {
+    $usuario_logueado = true;
     
-    // Preparamos la consulta SQL (SELECT)
-    // Buscamos id, nombre, correo e imagen del usuario con el ID de la sesión
-    $stmt = $conexion->prepare("SELECT id, nombre, correo, imagen FROM usuarios WHERE id = ?");
+    // Obtenemos los datos del usuario de la base de datos
+    $query = "SELECT * FROM usuarios WHERE id = ?";
+    $stmt = $conexion->prepare($query);
+    $stmt->bind_param("i", $_SESSION['usuario_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
-    if ($stmt) {
-        // Vinculamos el parámetro ID (es un entero "i")
-        $stmt->bind_param("i", $_SESSION['usuario_id']);
-        
-        // Ejecutamos la consulta
-        $stmt->execute();
-        
-        // Obtenemos el resultado
-        $resultado = $stmt->get_result();
-        
-        // Si encontramos exactamente 1 usuario (lo normal)
-        if ($resultado->num_rows === 1) {
-            // fetch_assoc() convierte la fila de la BD en un array asociativo de PHP
-            // $usuario['nombre'], $usuario['correo'], etc.
-            $usuario = $resultado->fetch_assoc();
-            
-            // Ahora SÍ marcamos al usuario como logueado
-            $usuario_logueado = true;
-            
-            // ================================================================
-            // 💾 ACTUALIZAR VARIABLES DE SESIÓN
-            // ================================================================
-            // Actualizamos la sesión con los datos frescos de la BD.
-            // Esto asegura que 'index.php' muestre el nombre y foto correctos.
-            $_SESSION['usuario_nombre'] = $usuario['nombre'];
-            $_SESSION['usuario_correo'] = $usuario['correo'];
-            $_SESSION['usuario_imagen'] = $usuario['imagen'];
-            
-            // ================================================================
-            // 🕵️ VERIFICACIÓN DE ROLES (PUBLICADOR / ADMIN)
-            // ================================================================
-            // Aquí verificamos si este usuario normal también tiene privilegios especiales.
-            // Lo hacemos buscando su correo en las tablas 'publicadores' y 'admins'.
-            
-            // A) ¿ES PUBLICADOR?
-            // Buscamos en la tabla 'publicadores' por email y que esté 'activo'
-            $stmt_pub = $conexion->prepare("SELECT id FROM publicadores WHERE email = ? AND estado = 'activo'");
-            if ($stmt_pub) {
-                $stmt_pub->bind_param("s", $usuario['correo']);
-                $stmt_pub->execute();
-                $resultado_pub = $stmt_pub->get_result();
-                
-                // Si encontramos una fila, es publicador
-                if ($resultado_pub->num_rows > 0) {
-                    $_SESSION['es_publicador'] = true;
-                } else {
-                    $_SESSION['es_publicador'] = false;
-                }
-                $stmt_pub->close(); // Cerramos esta consulta secundaria
-            }
-            
-            // B) ¿ES ADMINISTRADOR?
-            // Buscamos en la tabla 'admins' por email y que esté 'activo'
-            $stmt_admin = $conexion->prepare("SELECT id FROM admins WHERE email = ? AND estado = 'activo'");
-            if ($stmt_admin) {
-                $stmt_admin->bind_param("s", $usuario['correo']);
-                $stmt_admin->execute();
-                $resultado_admin = $stmt_admin->get_result();
-                
-                // Si encontramos una fila, es administrador
-                if ($resultado_admin->num_rows > 0) {
-                    $_SESSION['es_admin'] = true;
-                } else {
-                    $_SESSION['es_admin'] = false;
-                }
-                $stmt_admin->close(); // Cerramos esta consulta secundaria
-            }
-            
-        } else {
-            // ================================================================
-            // ⚠️ CASO EXTRAÑO: USUARIO NO ENCONTRADO
-            // ================================================================
-            // Si la sesión dice que hay un ID, pero la BD no lo encuentra
-            // (ej. el usuario fue borrado manualmente de la BD).
-            
-            // Destruimos la sesión por seguridad
-            session_destroy();
-            $usuario_logueado = false;
-            $usuario = null;
-        }
-        
-        $stmt->close();
+    if ($result->num_rows > 0) {
+        $usuario = $result->fetch_assoc();
     }
 }
 
-// ----------------------------------------------------------------------------
-// 3. FUNCIÓN UTILITARIA: VERIFICAR CORREO
-// ----------------------------------------------------------------------------
+// ============================================================================
+// FUNCIONES DE INTERACCIÓN CON PUBLICACIONES
+// ============================================================================
 
 /**
- * 📧 FUNCIÓN: correoExiste
- * Verifica si un correo electrónico ya está registrado en la base de datos.
- * Se usa principalmente en el registro para evitar duplicados.
- * 
- * @param string $correo - El email a verificar (ej: "juan@gmail.com")
- * @param object $conexion - La conexión activa a la base de datos
- * @return bool - true si existe, false si no existe
+ * Filtra palabras ofensivas reemplazándolas con asteriscos
+ */
+function filtrarMalasPalabras($texto) {
+    $palabras_prohibidas = [
+        // Groserías comunes en español (variantes y conjugaciones)
+        'puto', 'puta', 'putas', 'putos', 'putita', 'putito',
+        'pendejo', 'pendeja', 'pendejos', 'pendejas', 'pendejada', 'pendejadas',
+        'cabrón', 'cabrona', 'cabrones', 'cabronas', 'cabronada', 'cabron',
+        'chingar', 'chingada', 'chingado', 'chingón', 'chingona', 'chinga', 'chingas',
+        'verga', 'vergón', 'vergota', 'averga',
+        'mierda', 'mierdas', 'mierdero',
+        'coño', 'coñazo', 'coñazos',
+        'joder', 'jodido', 'jodida', 'jodete', 'jódete',
+        'carajo', 'carajos', 'me cago', 'cagada', 'cagado',
+        'hijo de puta', 'hijueputa', 'hp', 'hdp', 'hijo puta',
+        'mamada', 'mamadas', 'mamar', 'mamón', 'mamona',
+        'huevón', 'huevona', 'huevones', 'güey', 'wey', 'guey',
+        'culero', 'culera', 'culo', 'ojete', 'ojetes',
+        'pinche', 'pinches', 'pinchi',
+        'perra', 'perro', 'perras', 'perros',
+        'zorra', 'zorras', 'zorro',
+        'pija', 'pijas', 'pijudo',
+        'concha', 'conchas', 'conchudo',
+        'boludo', 'boluda', 'boludos', 'boludez',
+        'pelotudo', 'pelotuda', 'pelotudez',
+        'gilipollas', 'gilipolla', 'gili',
+        'imbécil', 'imbecil', 'idiota', 'estúpido', 'estupido', 'tonto',
+        'marica', 'maricon', 'maricón', 'maricona',
+        'panocha', 'papaya', 'chocha',
+        'chupame', 'chúpame', 'chupala', 'chúpala',
+        'vete a la mierda', 'vete al carajo', 'vete a la verga',
+        'me vale verga', 'me vale madre', 'me vale madres',
+        'culiao', 'culiado', 'conchesumadre', 'conchetumare',
+        'la puta madre', 'puta madre', 'putamadre',
+        'malparido', 'malparida', 'gonorrea',
+        'hijueperra', 'hijo de perra',
+        'chucha', 'chuchas', 'chupavergas',
+        'vergas', 'a la verga', 'que vergas',
+        'maldito', 'maldita', 'malditos', 'maldición',
+        'perra vida', 'perra mierda',
+        'chingadazo', 'chingadazos', 'chingadera',
+        'putazo', 'putazos', 'putada',
+        'mamerto', 'mamerta',
+        'pendejete', 'pendejón',
+        'culeros',
+        'vergazo', 'vergazos', 'vergueada',
+        'chingaquedito', 'chingue', 'chinguense',
+        'joto', 'jotos', 'jota',
+        'puto amo', 'puta vida',
+        'cagón', 'cagona', 'cagones',
+        'mierdon', 'mierdón',
+        'recontra', 'requete', 'recontraputamadre'
+    ];
+    foreach($palabras_prohibidas as $palabra) {
+        $texto = str_ireplace($palabra, '***', $texto);
+    }
+    return $texto;
+}
+
+/**
+ * Agrega un comentario a una publicación
+ */
+function agregarComentario($publicacion_id, $usuario_id, $contenido, $conexion) {
+    $contenido = filtrarMalasPalabras($contenido);
+    $query = "INSERT INTO comentarios (publicacion_id, usuario_id, contenido, fecha_creacion, estado) 
+              VALUES (?, ?, ?, NOW(), 'activo')";
+    $stmt = $conexion->prepare($query);
+    if (!$stmt) return false;
+    $stmt->bind_param("iis", $publicacion_id, $usuario_id, $contenido);
+    return $stmt->execute();
+}
+
+/**
+ * Elimina un comentario (solo si es del usuario actual)
+ */
+function eliminarComentario($comentario_id, $usuario_id, $conexion) {
+    // Verificamos que el comentario pertenezca al usuario
+    $query = "UPDATE comentarios SET estado = 'eliminado' 
+              WHERE id = ? AND usuario_id = ?";
+    $stmt = $conexion->prepare($query);
+    if (!$stmt) return false;
+    $stmt->bind_param("ii", $comentario_id, $usuario_id);
+    return $stmt->execute();
+}
+
+/**
+ * Obtiene todos los comentarios activos de una publicación
+ */
+function obtenerComentarios($publicacion_id, $conexion) {
+    $query = "SELECT c.*, u.nombre as usuario_nombre, u.imagen as usuario_imagen
+              FROM comentarios c
+              LEFT JOIN usuarios u ON c.usuario_id = u.id
+              WHERE c.publicacion_id = ? AND c.estado = 'activo'
+              ORDER BY c.fecha_creacion DESC";
+    $stmt = $conexion->prepare($query);
+    if (!$stmt) return [];
+    $stmt->bind_param("i", $publicacion_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+/**
+ * Agrega, cambia o elimina un like/dislike (funciona como toggle)
+ */
+function agregarLike($publicacion_id, $usuario_id, $tipo, $conexion) {
+    $query_check = "SELECT id, tipo FROM likes WHERE publicacion_id = ? AND usuario_id = ?";
+    $stmt_check = $conexion->prepare($query_check);
+    $stmt_check->bind_param("ii", $publicacion_id, $usuario_id);
+    $stmt_check->execute();
+    $result = $stmt_check->get_result();
+    
+    if ($result->num_rows > 0) {
+        $voto_actual = $result->fetch_assoc();
+        if ($voto_actual['tipo'] == $tipo) {
+            $query = "DELETE FROM likes WHERE publicacion_id = ? AND usuario_id = ?";
+            $stmt = $conexion->prepare($query);
+            $stmt->bind_param("ii", $publicacion_id, $usuario_id);
+        } else {
+            $query = "UPDATE likes SET tipo = ? WHERE publicacion_id = ? AND usuario_id = ?";
+            $stmt = $conexion->prepare($query);
+            $stmt->bind_param("sii", $tipo, $publicacion_id, $usuario_id);
+        }
+    } else {
+        $query = "INSERT INTO likes (publicacion_id, usuario_id, tipo, fecha_creacion) 
+                  VALUES (?, ?, ?, NOW())";
+        $stmt = $conexion->prepare($query);
+        $stmt->bind_param("iis", $publicacion_id, $usuario_id, $tipo);
+    }
+    return $stmt->execute();
+}
+
+/**
+ * Cuenta cuántos likes y dislikes tiene una publicación
+ */
+function contarLikes($publicacion_id, $conexion) {
+    $query = "SELECT 
+                SUM(CASE WHEN tipo = 'like' THEN 1 ELSE 0 END) as likes,
+                SUM(CASE WHEN tipo = 'dislike' THEN 1 ELSE 0 END) as dislikes
+              FROM likes WHERE publicacion_id = ?";
+    $stmt = $conexion->prepare($query);
+    $stmt->bind_param("i", $publicacion_id);
+    $stmt->execute();
+    $conteo = $stmt->get_result()->fetch_assoc();
+    return [
+        'likes' => $conteo['likes'] ?? 0,
+        'dislikes' => $conteo['dislikes'] ?? 0
+    ];
+}
+
+/**
+ * Guarda o quita una publicación de la lista "leer más tarde"
+ */
+function guardarParaLeerMasTarde($publicacion_id, $usuario_id, $conexion) {
+    $query_check = "SELECT id FROM leer_mas_tarde WHERE publicacion_id = ? AND usuario_id = ?";
+    $stmt_check = $conexion->prepare($query_check);
+    $stmt_check->bind_param("ii", $publicacion_id, $usuario_id);
+    $stmt_check->execute();
+    $result = $stmt_check->get_result();
+    
+    if ($result->num_rows > 0) {
+        $query = "DELETE FROM leer_mas_tarde WHERE publicacion_id = ? AND usuario_id = ?";
+        $stmt = $conexion->prepare($query);
+        $stmt->bind_param("ii", $publicacion_id, $usuario_id);
+    } else {
+        $query = "INSERT INTO leer_mas_tarde (publicacion_id, usuario_id, fecha_agregado) 
+                  VALUES (?, ?, NOW())";
+        $stmt = $conexion->prepare($query);
+        $stmt->bind_param("ii", $publicacion_id, $usuario_id);
+    }
+    return $stmt->execute();
+}
+
+/**
+ * Obtiene la lista de publicaciones guardadas de un usuario
+ */
+function obtenerLeerMasTarde($usuario_id, $conexion) {
+    $query = "SELECT p.*, lmt.fecha_agregado, pub.nombre as publicador_nombre
+              FROM leer_mas_tarde lmt
+              LEFT JOIN publicaciones p ON lmt.publicacion_id = p.id
+              LEFT JOIN publicadores pub ON p.publicador_id = pub.id
+              WHERE lmt.usuario_id = ?
+              ORDER BY lmt.fecha_agregado DESC";
+    $stmt = $conexion->prepare($query);
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+/**
+ * Crea un reporte de publicación o comentario inapropiado
+ */
+function crearReporte($tipo, $referencia_id, $usuario_id, $motivo, $descripcion, $conexion) {
+    $query = "INSERT INTO reportes (tipo, referencia_id, usuario_id, motivo, descripcion, estado, fecha_creacion) 
+              VALUES (?, ?, ?, ?, ?, 'pendiente', NOW())";
+    $stmt = $conexion->prepare($query);
+    if (!$stmt) return false;
+    $stmt->bind_param("siiss", $tipo, $referencia_id, $usuario_id, $motivo, $descripcion);
+    return $stmt->execute();
+}
+
+/**
+ * Verifica si una publicación está en la lista "leer más tarde" del usuario
+ */
+function verificarSiGuardada($publicacion_id, $usuario_id, $conexion) {
+    $query = "SELECT id FROM leer_mas_tarde WHERE publicacion_id = ? AND usuario_id = ?";
+    $stmt = $conexion->prepare($query);
+    $stmt->bind_param("ii", $publicacion_id, $usuario_id);
+    $stmt->execute();
+    return $stmt->get_result()->num_rows > 0;
+}
+
+/**
+ * Obtiene el voto actual del usuario en una publicación
+ */
+function obtenerVotoUsuario($publicacion_id, $usuario_id, $conexion) {
+    $query = "SELECT tipo FROM likes WHERE publicacion_id = ? AND usuario_id = ?";
+    $stmt = $conexion->prepare($query);
+    $stmt->bind_param("ii", $publicacion_id, $usuario_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        return $result->fetch_assoc()['tipo'];
+    }
+    return null;
+}
+
+/**
+ * Verifica si un correo ya existe en la base de datos
  */
 function correoExiste($correo, $conexion) {
-    try {
-        // Preparamos la consulta SQL
-        // SELECT id es más eficiente que SELECT * porque trae menos datos
-        $query = "SELECT id FROM usuarios WHERE correo = ?";
-        $stmt = $conexion->prepare($query);
-        
-        // Si la preparación falla (ej. error de sintaxis SQL), retornamos false
-        if (!$stmt) {
-            return false;
-        }
-        
-        // Vinculamos el parámetro ("s" = string)
-        $stmt->bind_param("s", $correo);
-        
-        // Ejecutamos
-        $stmt->execute();
-        
-        // Obtenemos el resultado
-        $result = $stmt->get_result();
-        
-        // Cerramos el statement para liberar memoria
-        $stmt->close();
-        
-        // Si num_rows > 0, significa que encontró al menos un registro con ese correo
-        return $result->num_rows > 0;
-        
-    } catch (Exception $e) {
-        // Si hay error, lo registramos y asumimos que no existe (o devolvemos false para manejar el error)
-        error_log("Error en correoExiste: " . $e->getMessage());
-        return false;
-    }
+    $query = "SELECT id FROM usuarios WHERE correo = ?";
+    $stmt = $conexion->prepare($query);
+    $stmt->bind_param("s", $correo);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    return $resultado->num_rows > 0;
 }
-?>
+
+/**
+ * Obtiene los correos de todos los administradores
+ */
+function obtenerCorreosAdmins($conexion) {
+    $query = "SELECT email FROM admins WHERE estado = 'activo'";
+    $stmt = $conexion->prepare($query);
+    if (!$stmt) return [];
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}

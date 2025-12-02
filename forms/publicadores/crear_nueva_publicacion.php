@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ============================================================================
 // ARCHIVO: crear_nueva_publicacion.php
 // PROPÓSITO: Formulario para que los publicadores creen nuevas publicaciones

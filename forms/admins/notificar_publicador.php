@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ============================================================================
 // 📄 ARCHIVO: notificar_publicador.php
 // ============================================================================
@@ -187,86 +187,41 @@ function enviarNotificacionPublicador($email_publicador, $nombre_publicador, $ti
         // ================================================================
         // PASO 8: CREAR EL CUERPO DEL CORREO EN HTML
         // ================================================================
-        // Usamos los mismos colores que guardar_publicacion.php (#7390A0)
-        $cuerpo = "
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-                <!-- ENCABEZADO -->
-                <div style='text-align: center; margin-bottom: 30px; background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%); padding: 30px; border-radius: 10px;'>
-                    <h1 style='color: white; margin: 0;'>$emoji $titulo_email</h1>
-                </div>
-                
-                <!-- SALUDO PERSONALIZADO -->
-                <p style='font-size: 16px; color: #333; line-height: 1.6;'>
-                    Hola <strong>$nombre_publicador</strong>,
-                </p>
-                
-                <!-- MENSAJE PRINCIPAL -->
-                <p style='font-size: 16px; color: #333; line-height: 1.6;'>
-                    $mensaje_principal
-                </p>
-                
-                <!-- DETALLES DE LA PUBLICACIÓN -->
-                <div style='background: #f0f4f6; padding: 20px; border-left: 4px solid $color_estado; margin: 20px 0; border-radius: 5px;'>
-                    <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>📌 Título:</strong> $titulo_publicacion</p>
-                    <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>📂 Tipo:</strong> " . ucfirst($tipo_publicacion) . "</p>
-                    <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>📊 Estado:</strong> <span style='color: $color_estado; font-weight: bold;'>" . ucfirst($nuevo_estado) . "</span></p>
-                    <p style='margin: 5px 0; color: #333;'><strong style='color: #7390A0;'>📅 Fecha:</strong> " . date('d/m/Y H:i') . "</p>
-                </div>
-        ";
+        // ================================================================
+        // PASO 8: CREAR EL CUERPO DEL CORREO EN HTML
+        // ================================================================
         
-        // ================================================================
-        // PASO 9: AGREGAR MOTIVO DE RECHAZO SI APLICA
-        // ================================================================
+        // Incluimos el Helper de Emails
+        require_once __DIR__ . '/../EmailHelper.php';
+        
+        $detalles = [
+            'Título' => $titulo_publicacion,
+            'Tipo' => ucfirst($tipo_publicacion),
+            'Estado' => ucfirst($nuevo_estado),
+            'Fecha' => date('d/m/Y H:i')
+        ];
+        
         if ($nuevo_estado === 'rechazada' && !empty($mensaje_rechazo)) {
-            // Si fue rechazada y hay un motivo, lo agregamos
-            $cuerpo .= "
-                <!-- MOTIVO DEL RECHAZO -->
-                <div style='background: #fff3cd; padding: 20px; border-left: 4px solid #ffc107; margin: 20px 0; border-radius: 5px;'>
-                    <p style='margin: 0 0 10px 0; color: #856404; font-weight: bold;'>
-                        💬 Motivo del rechazo:
-                    </p>
-                    <p style='margin: 0; color: #856404; font-style: italic;'>
-                        $mensaje_rechazo
-                    </p>
-                </div>
-            ";
+            $detalles['Motivo del rechazo'] = $mensaje_rechazo;
         }
         
-        // ================================================================
-        // PASO 10: AGREGAR INSTRUCCIONES Y BOTÓN
-        // ================================================================
-        $cuerpo .= "
-                <!-- INSTRUCCIONES -->
-                <p style='font-size: 16px; color: #333; line-height: 1.6;'>
-                    $texto_adicional
-                </p>
-                
-                <!-- BOTÓN DE ACCIÓN -->
-                <div style='text-align: center; margin: 30px 0;'>
-                    <a href='http://localhost/lab/forms/publicadores/mis-publicaciones.php' 
-                       style='background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%); 
-                       color: white; padding: 15px 40px; text-decoration: none; 
-                       border-radius: 25px; display: inline-block; font-weight: bold; 
-                       font-size: 16px; box-shadow: 0 4px 15px rgba(115, 144, 160, 0.4);'>
-                        📝 Ver Mis Publicaciones
-                    </a>
-                </div>
-                
-                <!-- PIE DE PÁGINA -->
-                <div style='border-top: 2px solid #e9ecef; padding-top: 20px; margin-top: 30px;'>
-                    <p style='color: #6c757d; font-size: 14px; text-align: center; margin: 0;'>
-                        Este es un correo automático del sistema Lab Explorer.<br>
-                        Por favor no respondas a este mensaje.
-                    </p>
-                </div>
-            </div>
-        ";
+        $boton = [
+            'texto' => 'Ver Mis Publicaciones',
+            'url' => 'http://localhost/lab/forms/publicadores/mis-publicaciones.php'
+        ];
         
-        // ================================================================
-        // PASO 11: ASIGNAR CUERPO DEL CORREO
-        // ================================================================
-        $mail->Body = $cuerpo;
-        // Versión HTML del correo
+        $tipo_estado_helper = 'info';
+        if ($nuevo_estado === 'publicado') $tipo_estado_helper = 'aprobado';
+        if ($nuevo_estado === 'rechazada') $tipo_estado_helper = 'rechazado';
+        
+        $mail->Body = EmailHelper::render(
+            "$emoji $titulo_email",
+            $nombre_publicador,
+            $mensaje_principal . "<br><br>" . $texto_adicional,
+            $detalles,
+            $boton,
+            $tipo_estado_helper
+        );
         
         // Versión de texto plano (para clientes que no soportan HTML)
         $mail->AltBody = "Hola $nombre_publicador, tu publicación '$titulo_publicacion' ha cambiado a estado: $nuevo_estado. " . 

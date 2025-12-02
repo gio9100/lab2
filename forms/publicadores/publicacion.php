@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 class Publicacion {
     private $conn;
     private $table_name = "publicaciones";

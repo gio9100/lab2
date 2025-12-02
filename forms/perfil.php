@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Abrimos PHP para escribir código del lado del servidor
 require_once "usuario.php";
 // Traemos el archivo usuario.php que maneja todo lo de las sesiones y verifica si hay alguien logueado
@@ -216,7 +216,56 @@ if (isset($_GET['error'])) {
                 </div>
                 <!-- Cerramos stat-card -->
             </div>
+            </div>
             <!-- Cerramos perfil-stats -->
+
+            <!-- Sección de Publicaciones Guardadas -->
+            <div class="saved-publications" style="margin-top: 40px; width: 100%;">
+                <h3 style="color: #7390A0; margin-bottom: 20px; font-size: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <i class="bi bi-bookmark-heart-fill"></i> Guardado para leer más tarde
+                </h3>
+                
+                <?php 
+                // Obtenemos las publicaciones guardadas
+                $guardados = obtenerLeerMasTarde($usuario['id'], $conexion);
+                ?>
+
+                <?php if (empty($guardados)): ?>
+                    <div class="no-saved" style="text-align: center; padding: 30px; background: #f8f9fa; border-radius: 15px; color: #6c757d;">
+                        <i class="bi bi-bookmark" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                        <p style="margin-top: 10px;">No has guardado ninguna publicación aún.</p>
+                        <a href="../index.php" style="color: #7390A0; text-decoration: none; font-weight: 600;">Explorar publicaciones</a>
+                    </div>
+                <?php else: ?>
+                    <div class="saved-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                        <?php foreach ($guardados as $pub): ?>
+                        <div class="saved-card" style="background: white; border: 1px solid #eee; border-radius: 12px; padding: 20px; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="margin-bottom: 10px;">
+                                <span class="badge" style="background: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                                    <?= htmlspecialchars($pub['tipo'] ?? 'Artículo') ?>
+                                </span>
+                                <small style="float: right; color: #adb5bd;">
+                                    <i class="bi bi-calendar"></i> <?= date('d/m/Y', strtotime($pub['fecha_agregado'])) ?>
+                                </small>
+                            </div>
+                            
+                            <h4 style="margin: 0 0 10px 0; font-size: 1.1rem;">
+                                <a href="../ver-publicacion.php?id=<?= $pub['id'] ?>" style="color: #212529; text-decoration: none;">
+                                    <?= htmlspecialchars($pub['titulo']) ?>
+                                </a>
+                            </h4>
+                            
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f3f5;">
+                                <div style="width: 30px; height: 30px; background: #7390A0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
+                                    <?= strtoupper(substr($pub['publicador_nombre'], 0, 1)) ?>
+                                </div>
+                                <span style="font-size: 0.9rem; color: #6c757d;"><?= htmlspecialchars($pub['publicador_nombre']) ?></span>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
 
             <!-- Formulario para subir nueva foto de perfil -->
             <form action="procesar_imagen.php" method="POST" enctype="multipart/form-data" class="form-imagen">
@@ -229,11 +278,14 @@ if (isset($_GET['error'])) {
                     <input type="file" name="imagen" accept="image/jpeg,image/png,image/gif" required>
                     <!-- Input de tipo file para seleccionar la imagen -->
                     <!-- accept limita a solo JPEG, PNG y GIF -->
-                    <!-- required hace que sea obligatorio seleccionar un archivo -->
+                    <button type="submit" class="btn-submit">
+                    <!-- Botón para enviar el formulario -->
+                        <i class="bi bi-upload"></i> Subir imagen
+                        <!-- Icono de subir y texto del botón -->
+                    </button>
+                    <!-- Cerramos el botón -->
                 </div>
-                <!-- Cerramos form-group -->
-                <button type="submit" class="btn-subir">📤 Subir Imagen</button>
-                <!-- Botón para enviar el formulario con emoji de subida -->
+                <!-- Cerramos el form-group -->
             </form>
             <!-- Cerramos el formulario -->
         </div>

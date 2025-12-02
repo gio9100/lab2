@@ -1,7 +1,5 @@
-<?php
-// ============================================================================
+﻿<?php
 // 📊 PANEL PRINCIPAL DE ADMINISTRACIÓN - INDEX-ADMIN.PHP
-// ============================================================================
 // Este es el "dashboard" o panel principal del sistema de administración.
 // Es la primera página que ven los administradores después de iniciar sesión.
 //
@@ -25,62 +23,46 @@
 // SEGURIDAD:
 // - Solo administradores logueados pueden acceder
 // - Se verifica con requerirAdmin() al inicio
-// ============================================================================
 
-// ============================================================================
 // 📌 EXPLICACIÓN DE session_start()
-// ============================================================================
 // session_start() inicia una nueva sesión o reanuda la existente.
 // Es fundamental llamarlo antes de cualquier salida HTML para poder acceder
 // a la variable superglobal $_SESSION, donde guardamos los datos del admin.
 session_start();
 
-// ============================================================================
 // 📌 EXPLICACIÓN DE require_once
-// ============================================================================
 // require_once incluye y evalúa el archivo especificado.
 // Si el archivo ya fue incluido anteriormente, no lo vuelve a incluir (evita errores de redefinición).
 // Es vital aquí porque config-admin.php tiene la conexión a la BD ($conn) y las funciones.
 require_once "config-admin.php";
 
-// ----------------------------------------------------------------------------
 // 🔐 VERIFICACIÓN DE SEGURIDAD
-// ----------------------------------------------------------------------------
 // Llamamos a la función requerirAdmin() definida en config-admin.php.
 // Esta función verifica si $_SESSION['admin_id'] existe.
 // Si no existe, redirige al usuario al login y detiene el script.
 requerirAdmin();
 
-// ----------------------------------------------------------------------------
 // 👤 OBTENER DATOS DEL ADMINISTRADOR LOGUEADO
-// ----------------------------------------------------------------------------
 // Accedemos a los datos guardados en la sesión durante el login.
 $admin_id = $_SESSION['admin_id'];          // ID numérico del admin
 $admin_nombre = $_SESSION['admin_nombre'];  // Nombre completo
 $admin_nivel = $_SESSION['admin_nivel'];    // Nivel ('admin' o 'superadmin')
 
-// ----------------------------------------------------------------------------
 // 📊 OBTENER ESTADÍSTICAS DEL SISTEMA
-// ----------------------------------------------------------------------------
 // Llamamos a obtenerEstadisticasAdmin($conn) de config-admin.php.
 // Esta función ejecuta 5 consultas COUNT(*) a la base de datos y devuelve un array.
 $stats = obtenerEstadisticasAdmin($conn);
+$stats_reportes = obtenerEstadisticasReportes($conn);
 
-// ----------------------------------------------------------------------------
 // 🔄 PROCESAR ACCIONES SOBRE PUBLICADORES (POST)
-// ----------------------------------------------------------------------------
 // Verificamos si el servidor recibió una petición POST (envío de formulario).
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
-    // ========================================================================
     // ACCIÓN 1: APROBAR PUBLICADOR
-    // ========================================================================
     // isset() verifica si se envió el botón con name="aprobar_publicador"
     if (isset($_POST['aprobar_publicador'])) {
         
-        // ====================================================================
         // 📌 EXPLICACIÓN DE intval()
-        // ====================================================================
         // intval() convierte el valor a un número entero.
         // Es una medida de seguridad importante: asegura que el ID sea un número
         // y no un código SQL malicioso (Inyección SQL).
@@ -93,15 +75,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
     
-    // ========================================================================
     // ACCIÓN 2: RECHAZAR PUBLICADOR
-    // ========================================================================
     if (isset($_POST['rechazar_publicador'])) {
         $publicador_id = intval($_POST['publicador_id']);
         
-        // ====================================================================
         // 📌 EXPLICACIÓN DE trim() y Operador ??
-        // ====================================================================
         // trim() elimina espacios en blanco al inicio y final del texto.
         // $_POST['motivo'] ?? "" es el Operador de Fusión de Null (Null Coalescing).
         // Significa: "Si $_POST['motivo'] existe y no es null, úsalo; si no, usa una cadena vacía".
@@ -113,9 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
     
-    // ========================================================================
     // ACCIÓN 3: SUSPENDER PUBLICADOR
-    // ========================================================================
     if (isset($_POST['suspender_publicador'])) {
         $publicador_id = intval($_POST['publicador_id']);
         $motivo = trim($_POST['motivo'] ?? "");
@@ -126,9 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
     
-    // ========================================================================
     // ACCIÓN 4: ACTIVAR PUBLICADOR
-    // ========================================================================
     if (isset($_POST['activar_publicador'])) {
         $publicador_id = intval($_POST['publicador_id']);
         
@@ -139,9 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// ----------------------------------------------------------------------------
 // 📋 OBTENER DATOS PARA MOSTRAR EN LAS TABLAS
-// ----------------------------------------------------------------------------
 // Llamamos a las funciones de config-admin.php para obtener los arrays de datos.
 
 // Publicadores pendientes (para la primera tabla)
@@ -156,9 +128,7 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- ================================================================ -->
     <!-- CONFIGURACIÓN BÁSICA DEL DOCUMENTO HTML -->
-    <!-- ================================================================ -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administración - Lab-Explorer</title>
@@ -191,9 +161,7 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <!-- ==================================================== -->
                         <!-- 📌 EXPLICACIÓN DE htmlspecialchars() -->
-                        <!-- ==================================================== -->
                         <!-- Convierte caracteres especiales en entidades HTML. -->
                         <!-- Es CRÍTICO para prevenir ataques XSS (Cross-Site Scripting). -->
                         <!-- Siempre úsalo al mostrar datos que vienen de la BD o del usuario. -->
@@ -219,9 +187,14 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                                 <i class="bi bi-speedometer2 me-2"></i>Página principal
                             </a>
                             <a href="../../ollama_ia/panel-moderacion.php" class="list-group-item list-group-item-action">
-    <i class="bi bi-robot me-2"></i>Moderación Automática
-</a>
-
+                                <i class="bi bi-robot me-2"></i>Moderación Automática
+                            </a>
+                            <a href="gestionar-reportes.php" class="list-group-item list-group-item-action">
+                                <i class="bi bi-flag me-2"></i>Gestionar Reportes
+                                <?php if($stats_reportes['pendientes'] > 0): ?>
+                                <span class="badge bg-danger float-end"><?= $stats_reportes['pendientes'] ?></span>
+                                <?php endif; ?>
+                            </a>
                             <a href="gestionar_publicadores.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-people me-2"></i>Gestionar Publicadores
                             </a>
@@ -231,11 +204,13 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                             <a href="gestionar-publicaciones.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
                             </a>
-                            <a href="./categorias/crear_categoria.php" class="list-group-item list-group-item-action">
+                            <a href="categorias/listar_categorias.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-tags me-2"></i>Categorías
                             </a>
-                            
-                            <!-- Solo mostramos "Administradores" si es superadmin -->
+                            <a href="../../mensajes/chat.php?as=admin" class="list-group-item list-group-item-action">
+    <i class="bi bi-chat-left-text me-2"></i>
+    <span>Mensajes</span>
+</a>
                             <?php if($admin_nivel == 'superadmin'): ?>
                             <a href="admins.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-shield-check me-2"></i>Administradores
@@ -333,6 +308,16 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Reportes Pendientes -->
+                        <div class="col-md-2 col-6 mb-3">
+                            <div class="stat-card danger">
+                                <div class="stat-content text-center">
+                                    <h4><?= $stats_reportes['pendientes'] ?></h4>
+                                    <small>Reportes</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- TABLA 1: PUBLICADORES PENDIENTES -->
@@ -344,9 +329,7 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                             </h5>
                         </div>
                         <div class="card-body">
-                            <!-- ==================================================== -->
                             <!-- 📌 EXPLICACIÓN DE empty() -->
-                            <!-- ==================================================== -->
                             <!-- empty() determina si una variable está vacía. -->
                             <!-- Devuelve true si la variable no existe, es false, null, 0, o un array vacío. -->
                             <?php if(empty($publicadores_pendientes)): ?>
@@ -365,9 +348,7 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!-- ================================================ -->
                                             <!-- 📌 EXPLICACIÓN DE foreach -->
-                                            <!-- ================================================ -->
                                             <!-- Bucle diseñado para iterar sobre arrays. -->
                                             <!-- En cada iteración, el valor del elemento actual se asigna a $publicador. -->
                                             <?php foreach($publicadores_pendientes as $publicador): ?>
@@ -377,9 +358,7 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                                                 <td><?= htmlspecialchars($publicador['especialidad']) ?></td>
                                                 <td><?= htmlspecialchars($publicador['institucion'] ?? 'No especificada') ?></td>
                                                 
-                                                <!-- ============================================ -->
                                                 <!-- 📌 EXPLICACIÓN DE date() y strtotime() -->
-                                                <!-- ============================================ -->
                                                 <!-- strtotime() convierte un string de fecha a un timestamp Unix. -->
                                                 <!-- date() formatea ese timestamp al formato deseado (d/m/Y). -->
                                                 <td><?= date('d/m/Y', strtotime($publicador['fecha_registro'])) ?></td>
@@ -471,9 +450,7 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                                                 
                                                 <td>
                                                     <span class="status-badge <?= $publicador['estado'] ?>">
-                                                        <!-- ======================================== -->
                                                         <!-- 📌 EXPLICACIÓN DE ucfirst() -->
-                                                        <!-- ======================================== -->
                                                         <!-- Convierte el primer caracter de la cadena a mayúscula. -->
                                                         <!-- 'activo' -> 'Activo' -->
                                                         <?= ucfirst($publicador['estado']) ?>

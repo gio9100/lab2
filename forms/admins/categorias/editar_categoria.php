@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ============================================================================
 // 📝 EDITAR CATEGORÍA - editar_categoria.php
 // ============================================================================
@@ -202,18 +202,19 @@ if ($categoria->leerUna()) {
             </div>
         </div>
     </header>
-
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
-
-                <!-- SIDEBAR (MENÚ LATERAL) -->
+                <!-- Sidebar -->
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
+                            <a href="../../../index.php" class="list-group-item list-group-item-action">
+                                <i class="bi bi-speedometer2 me-2"></i>Página principal
+                            </a>
                             <a href="../index-admin.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                <i class="bi bi-speedometer2 me-2"></i>Panel Principal
                             </a>
                             <a href="../gestionar_publicadores.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-people me-2"></i>Gestionar Publicadores
