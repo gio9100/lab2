@@ -16,6 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 // Clase con métodos estáticos para enviar correos
 // Se usa así: EmailHelper::enviarCorreo(...)
 class EmailHelper {
+    // Helper para envío de correos centralizado
     
     // Envía un correo electrónico con diseño profesional
     // Parámetros: email destino, asunto, mensaje, botón opcional

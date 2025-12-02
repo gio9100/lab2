@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $tipo = $_POST["tipo"] ?? "articulo";                // Tipo: articulo, caso_clinico, etc.
     $tags = trim($_POST["tags"] ?? "");                  // Etiquetas separadas por comas
     $estado = $_POST["estado"] ?? "borrador";            // Estado: borrador, revision, publicado
-    $publicador_id = intval($_POST["publicador_id"] ?? 0); // ID del publicador
+    $publicador_id = $_SESSION['publicador_id']; // ID del publicador desde sesión
     $publicador_nombre = $_SESSION['publicador_nombre'] ?? 'Un publicador'; // Nombre del publicador
     
     // ================================================================
