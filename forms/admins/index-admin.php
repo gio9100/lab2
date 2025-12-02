@@ -46,7 +46,8 @@ requerirAdmin();
 // Accedemos a los datos guardados en la sesión durante el login.
 $admin_id = $_SESSION['admin_id'];          // ID numérico del admin
 $admin_nombre = $_SESSION['admin_nombre'];  // Nombre completo
-$admin_nivel = $_SESSION['admin_nivel'];    // Nivel ('admin' o 'superadmin')
+$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';    // Nivel ('admin' o 'superadmin'), con valor por defecto
+
 
 // 📊 OBTENER ESTADÍSTICAS DEL SISTEMA
 // Llamamos a obtenerEstadisticasAdmin($conn) de config-admin.php.
