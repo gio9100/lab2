@@ -140,20 +140,30 @@ function obtenerEstadisticasAdmin($conn) {
 function obtenerEstadisticasReportes($conn) {
     $stats = [
         'pendientes' => 0,
-        'revisados' => 0,
+        'resueltos' => 0,
+        'descartados' => 0,
         'total' => 0
     ];
     
+    // Reportes pendientes
     $result = $conn->query("SELECT COUNT(*) as total FROM reportes WHERE estado = 'pendiente'");
     if ($result) {
         $stats['pendientes'] = $result->fetch_assoc()['total'];
     }
     
-    $result = $conn->query("SELECT COUNT(*) as total FROM reportes WHERE estado = 'revisado'");
+    // Reportes resueltos (aprobados)
+    $result = $conn->query("SELECT COUNT(*) as total FROM reportes WHERE estado = 'resuelto'");
     if ($result) {
-        $stats['revisados'] = $result->fetch_assoc()['total'];
+        $stats['resueltos'] = $result->fetch_assoc()['total'];
     }
     
+    // Reportes descartados (ignorados)
+    $result = $conn->query("SELECT COUNT(*) as total FROM reportes WHERE estado = 'ignorado'");
+    if ($result) {
+        $stats['descartados'] = $result->fetch_assoc()['total'];
+    }
+    
+    // Total de reportes
     $result = $conn->query("SELECT COUNT(*) as total FROM reportes");
     if ($result) {
         $stats['total'] = $result->fetch_assoc()['total'];
@@ -220,6 +230,87 @@ function requerirAdmin() {
     if (!isset($_SESSION['admin_id'])) {
         header("Location: login-admin.php");
         exit;
+    }
+}
+
+// Obtiene todos los reportes con filtros opcionales
+function obtenerTodosReportes($tipo = null, $estado = null, $conn) {
+    $query = "SELECT r.*, 
+              u.nombre as usuario_nombre,
+              c.contenido as comentario_contenido,
+              uc.nombre as comentario_autor_nombre
+              FROM reportes r
+              LEFT JOIN usuarios u ON r.usuario_id = u.id
+              LEFT JOIN comentarios c ON r.tipo = 'comentario' AND r.referencia_id = c.id
+              LEFT JOIN usuarios uc ON c.usuario_id = uc.id
+              WHERE 1=1";
+    
+    $params = [];
+    $types = "";
+    
+    if ($tipo) {
+        $query .= " AND r.tipo = ?";
+        $params[] = $tipo;
+        $types .= "s";
+    }
+    
+    if ($estado) {
+        $query .= " AND r.estado = ?";
+        $params[] = $estado;
+        $types .= "s";
+    }
+    
+    $query .= " ORDER BY r.fecha_creacion DESC";
+    
+    $stmt = $conn->prepare($query);
+    
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+    
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+// Procesa un reporte (aprobar o rechazar)
+function procesarReporte($reporte_id, $accion, $admin_id, $conn) {
+    // Obtener información del reporte
+    $query = "SELECT tipo, referencia_id FROM reportes WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $reporte_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        return false;
+    }
+    
+    $reporte = $result->fetch_assoc();
+    
+    if ($accion === 'aprobar') {
+        // Eliminar el contenido reportado
+        if ($reporte['tipo'] === 'publicacion') {
+            $delete_query = "DELETE FROM publicaciones WHERE id = ?";
+        } else {
+            $delete_query = "DELETE FROM comentarios WHERE id = ?";
+        }
+        
+        $delete_stmt = $conn->prepare($delete_query);
+        $delete_stmt->bind_param("i", $reporte['referencia_id']);
+        $delete_stmt->execute();
+        
+        // Actualizar estado del reporte
+        $update_query = "UPDATE reportes SET estado = 'resuelto', admin_id = ?, fecha_resolucion = NOW() WHERE id = ?";
+        $update_stmt = $conn->prepare($update_query);
+        $update_stmt->bind_param("ii", $admin_id, $reporte_id);
+        return $update_stmt->execute();
+    } else {
+        // Rechazar el reporte
+        $update_query = "UPDATE reportes SET estado = 'ignorado', admin_id = ?, fecha_resolucion = NOW() WHERE id = ?";
+        $update_stmt = $conn->prepare($update_query);
+        $update_stmt->bind_param("ii", $admin_id, $reporte_id);
+        return $update_stmt->execute();
     }
 }
 ?>
