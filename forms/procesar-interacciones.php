@@ -13,13 +13,7 @@ session_start();
 // Incluimos el archivo de usuario que tiene todas las funciones
 require_once "usuario.php";
 
-// Incluimos PHPMailer
-require 'PHPMailer/PHPMailer.php';
-require 'PHPMailer/SMTP.php';
-require 'PHPMailer/Exception.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 // Configuramos el header para retornar JSON
 header('Content-Type: application/json');
@@ -258,66 +252,30 @@ switch ($accion) {
         if (crearReporte($tipo, $referencia_id, $usuario_id, $motivo, $descripcion, $conexion)) {
             
             // ENVIAR CORREO A LOS ADMINS (sin detener el proceso si falla)
-            @$email_enviado = false;
             try {
                 // Verificamos que la función existe antes de llamarla
                 if (function_exists('obtenerCorreosAdmins')) {
                     $admins = @obtenerCorreosAdmins($conexion);
                     
                     if (!empty($admins) && is_array($admins)) {
-                        $mail = new PHPMailer(true);
+                        require_once 'EmailHelper.php';
                         
-                        // Configuración del servidor
-                        $mail->isSMTP();
-                        $mail->Host = 'smtp.gmail.com';
-                        $mail->SMTPAuth = true;
-                        $mail->Username = 'lab.explorer2025@gmail.com';
-                        $mail->Password = 'yero ewft jacf vjzp';
-                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                        $mail->Port = 587;
-                        $mail->CharSet = 'UTF-8';
+                        $asunto = "⚠️ Nuevo Reporte: " . ucfirst($tipo);
                         
-                        $mail->setFrom('lab.explorer2025@gmail.com', 'Sistema de Reportes Lab Explorer');
+                        $mensaje_html = "Se ha recibido un nuevo reporte que requiere atención.";
                         
-                        // Agregamos a todos los admins
+                        // Enviamos correo a cada admin
                         foreach ($admins as $admin) {
                             if (isset($admin['email']) && !empty($admin['email'])) {
-                                $mail->addAddress($admin['email']);
+                                EmailHelper::enviarCorreo(
+                                    $admin['email'],
+                                    $asunto,
+                                    $mensaje_html . "<br><br><strong>Tipo:</strong> " . ucfirst($tipo) . "<br><strong>Motivo:</strong> " . htmlspecialchars($motivo) . "<br><strong>Descripción:</strong> " . htmlspecialchars($descripcion),
+                                    'Ver Panel de Reportes',
+                                    'http://localhost/Lab/forms/admins/gestionar-reportes.php'
+                                );
                             }
                         }
-                        
-                        // Incluimos el Helper de Emails
-                        require_once 'EmailHelper.php';
-
-                        $mail->SMTPDebug = 0; // Ensure debug output is off
-                        $mail->isHTML(true);
-                        $mail->Subject = "⚠️ Nuevo Reporte: $tipo";
-                        
-                        $link = "http://localhost/Lab/forms/admins/gestionar-reportes.php";
-                        
-                        $detalles = [
-                            'Tipo' => ucfirst($tipo),
-                            'Motivo' => $motivo,
-                            'Descripción' => $descripcion,
-                            'ID Referencia' => $referencia_id
-                        ];
-                        
-                        $boton = [
-                            'texto' => 'Ver Panel de Reportes',
-                            'url' => $link
-                        ];
-                        
-                        $mail->Body = EmailHelper::render(
-                            "Nuevo Reporte Recibido",
-                            "Administrador",
-                            "Se ha recibido un nuevo reporte que requiere atención.",
-                            $detalles,
-                            $boton,
-                            'error' // Usamos 'error' para que salga rojo (alerta)
-                        );
-                        
-                        @$mail->send();
-                        $email_enviado = true;
                     }
                 }
             } catch (Exception $e) {

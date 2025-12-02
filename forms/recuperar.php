@@ -24,16 +24,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 // Le decimos a PDO que nos avise si hay errores
 
 // Traemos la librería PHPMailer para enviar correos
-require 'PHPMailer/PHPMailer.php';
-// Archivo principal de PHPMailer
-require 'PHPMailer/SMTP.php';
-// Protocolo para enviar correos
-require 'PHPMailer/Exception.php';
-// Manejo de errores de PHPMailer
 
-// Importamos las clases para poder usarlas
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 // Variables para mostrar mensajes
 $mensaje = "";
@@ -81,77 +72,30 @@ if (isset($_POST['correo']) && !isset($_POST['nueva_password'])) {
             // El enlace incluye el token como parámetro
 
             // Preparamos el correo electrónico
-            $mail = new PHPMailer(true);
-            // Creamos un nuevo objeto de PHPMailer
+            // Preparamos el correo electrónico
+            require_once 'EmailHelper.php';
+            
+            $enlace_html = "<a href='$enlace' style='background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;'>Restablecer contraseña</a>";
+            
+            $mensaje_html = "
+                <p>Has solicitado recuperar tu contraseña. Haz clic en el siguiente botón para restablecerla.</p>
+                <p>Este enlace expira en 1 hora.</p>
+            ";
+            
+            $exito = EmailHelper::enviarCorreo(
+                $correo,
+                "Restablecer password Lab Explorer",
+                $mensaje_html,
+                'Restablecer contraseña',
+                $enlace
+            );
 
-            try {
-                // Intentamos enviar el correo
-
-                // Configuración del servidor de correo (Gmail)
-                $mail->isSMTP();
-                // Usamos SMTP (protocolo para enviar correos)
-                $mail->Host = 'smtp.gmail.com';
-                // Servidor de Gmail
-                $mail->SMTPAuth = true;
-                // Requiere autenticación (usuario y contraseña)
-                $mail->Username = 'lab.explorer2025@gmail.com';
-                // Correo desde el que enviamos
-                $mail->Password = 'yero ewft jacf vjzp';
-                // Contraseña de aplicación de Gmail (NO es la contraseña normal)
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                // Tipo de encriptación
-                $mail->Port = 587;
-                // Puerto que usa Gmail
-
-                  $mail->CharSet = 'UTF-8';      // UTF-8 para tildes, ñ, emojis
-            $mail->Encoding = 'base64';    // Codificación base64
-
-                // De quién viene el correo
-                $mail->setFrom('lab.explorer2025@gmail.com', 'Restablecer password');
-                // Remitente
-                $mail->addAddress($correo, $usuario['nombre']);
-                // A quién se lo enviamos
-
-                // Contenido del correo
-                $mail->isHTML(true);
-                $mail->Subject = "Restablecer password Lab Explorer";
-                
-                // Usamos EmailHelper para generar el cuerpo del correo
-                require_once 'EmailHelper.php';
-                
-                $boton = [
-                    'texto' => 'Restablecer contraseña',
-                    'url' => $enlace
-                ];
-                
-                $mensaje_texto = "Has solicitado recuperar tu contraseña. Haz clic en el siguiente botón para restablecerla. Este enlace expira en 1 hora.";
-                
-                $mail->Body = EmailHelper::render(
-                    "Recuperación de contraseña",
-                    $usuario['nombre'],
-                    $mensaje_texto,
-                    [], // Sin detalles extra
-                    $boton,
-                    'info'
-                );
-
-                // Versión en texto plano
-                $mail->AltBody = "Hola {$usuario['nombre']}, usa este enlace para recuperar tu contraseña: $enlace";
-
-                // Enviamos el correo
-                $mail->send();
-
+            if ($exito) {
                 $mensaje = "Se ha enviado un correo con el enlace para recuperar tu contraseña.";
-                // Mensaje de éxito
                 $tipo_mensaje = "success";
-                // Tipo éxito
-
-            } catch (Exception $e) {
-                // Si hubo un error al enviar el correo
-                $mensaje = "No se pudo enviar el correo: " . $mail->ErrorInfo;
-                // Mostramos el error
+            } else {
+                $mensaje = "No se pudo enviar el correo. Por favor intenta más tarde.";
                 $tipo_mensaje = "error";
-                // Tipo error
             }
 
         }

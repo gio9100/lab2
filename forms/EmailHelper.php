@@ -42,8 +42,12 @@ class EmailHelper {
             $mail->CharSet = 'UTF-8'; // Para tildes y ñ
             $mail->Subject = $asunto;
 
-            // Generamos el HTML del correo
-            $mail->Body = self::generarPlantilla($asunto, $cuerpo, $botonTexto, $botonLink);
+            // Generamos el HTML del correo usando render()
+            $boton = null;
+            if ($botonTexto && $botonLink) {
+                $boton = ['texto' => $botonTexto, 'url' => $botonLink];
+            }
+            $mail->Body = self::render($asunto, '', $cuerpo, [], $boton, 'info');
             
             // Versión texto plano para clientes antiguos
             $mail->AltBody = strip_tags($cuerpo);
@@ -58,21 +62,39 @@ class EmailHelper {
         }
     }
 
-    // Genera el HTML del correo con el diseño bonito
-    private static function generarPlantilla($titulo, $contenido, $botonTexto, $botonLink) {
+    // Método público para generar HTML de correos (usado por otros archivos)
+    // Parámetros: título, nombre destinatario, mensaje, detalles (array), botón (array), tipo
+    public static function render($titulo, $nombre_destinatario, $mensaje, $detalles = [], $boton = null, $tipo = 'info') {
+        // Colores según el tipo de correo
+        $colores = [
+            'aprobado' => '#28a745',   // Verde
+            'rechazado' => '#dc3545',  // Rojo
+            'info' => '#7390A0'        // Azul (color principal)
+        ];
         
-        // Colores de la marca
-        $colorPrincipal = '#7390A0';
-        $colorFondo = '#f8f9fa';
-        $colorTexto = '#333333';
-        $anio = date('Y');
-
-        // Armamos el botón si nos lo pidieron
+        $colorPrincipal = $colores[$tipo] ?? $colores['info'];
+        
+        // Generar HTML de detalles si existen
+        $detallesHtml = '';
+        if (!empty($detalles)) {
+            $detallesHtml = '<div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">';
+            $detallesHtml .= '<table style="width: 100%; border-collapse: collapse;">';
+            foreach ($detalles as $clave => $valor) {
+                $detallesHtml .= '<tr>';
+                $detallesHtml .= '<td style="padding: 8px; font-weight: bold; color: #666; width: 40%;">' . htmlspecialchars($clave) . ':</td>';
+                $detallesHtml .= '<td style="padding: 8px; color: #333;">' . htmlspecialchars($valor) . '</td>';
+                $detallesHtml .= '</tr>';
+            }
+            $detallesHtml .= '</table>';
+            $detallesHtml .= '</div>';
+        }
+        
+        // Generar HTML del botón si existe
         $botonHtml = '';
-        if ($botonTexto && $botonLink) {
+        if ($boton && isset($boton['texto']) && isset($boton['url'])) {
             $botonHtml = "
                 <div style='text-align: center; margin: 30px 0;'>
-                    <a href='{$botonLink}' style='
+                    <a href='{$boton['url']}' style='
                         background-color: {$colorPrincipal};
                         color: #ffffff;
                         padding: 12px 25px;
@@ -80,10 +102,20 @@ class EmailHelper {
                         border-radius: 5px;
                         font-weight: bold;
                         display: inline-block;
-                    '>{$botonTexto}</a>
+                    '>{$boton['texto']}</a>
                 </div>
             ";
         }
+        
+        return self::generarPlantilla($titulo, $mensaje, $detallesHtml, $botonHtml, $colorPrincipal, $nombre_destinatario);
+    }
+
+    // Genera el HTML del correo con el diseño bonito
+    private static function generarPlantilla($titulo, $contenido, $detallesHtml, $botonHtml, $colorPrincipal = '#7390A0', $nombre_destinatario = '') {
+        
+        $colorFondo = '#f8f9fa';
+        $colorTexto = '#333333';
+        $anio = date('Y');
 
         // Leemos el logo en base64 del archivo
         $logoData = '';
@@ -122,6 +154,9 @@ class EmailHelper {
                             <div style="color: {$colorTexto}; line-height: 1.6; font-size: 16px;">
                                 {$contenido}
                             </div>
+
+                            <!-- Detalles (si existen) -->
+                            {$detallesHtml}
 
                             <!-- Botón de acción (si existe) -->
                             {$botonHtml}

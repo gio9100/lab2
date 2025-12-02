@@ -17,17 +17,8 @@
 //
 // =============================================================================
 
-// Incluimos la librería PHPMailer para el envío de correos
-require_once __DIR__ . '/../forms/PHPMailer/PHPMailer.php';
-require_once __DIR__ . '/../forms/PHPMailer/SMTP.php';
-require_once __DIR__ . '/../forms/PHPMailer/Exception.php';
-
 // Incluimos el Helper de Emails para el diseño profesional
 require_once __DIR__ . '/../forms/EmailHelper.php';
-
-// Importamos las clases de PHPMailer al espacio de nombres actual
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 // Definición de la clase ModeradorLocal
 class ModeradorLocal {
@@ -345,22 +336,6 @@ class ModeradorLocal {
         }
     }
     
-    // Configuración de PHPMailer con credenciales de Gmail
-    private function configurarPHPMailer() {
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'lab.explorer2025@gmail.com';
-        $mail->Password = 'yero ewft jacf vjzp'; // Contraseña de aplicación
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-        $mail->CharSet = 'UTF-8';
-        $mail->Encoding = 'base64';
-        $mail->setFrom('lab.explorer2025@gmail.com', 'Lab Explorer');
-        return $mail;
-    }
-    
     // Envío de correo a un administrador
     private function enviarCorreoAdmin($email_admin, $nombre_admin, $datos_pub, $estado, $razon = null) {
         if ($estado !== 'publicado' && $estado !== 'rechazada') return;
@@ -395,16 +370,16 @@ class ModeradorLocal {
         // Generar HTML usando el Helper
         $mensaje_html = EmailHelper::render($asunto, $nombre_admin, $mensaje, $detalles, $boton, $tipo_estado);
         
-        try {
-            $mail = $this->configurarPHPMailer();
-            $mail->addAddress($email_admin, $nombre_admin);
-            $mail->Subject = $asunto;
-            $mail->isHTML(true);
-            $mail->Body = $mensaje_html;
-            $mail->send();
+        $exito = EmailHelper::enviarCorreo(
+            $email_admin,
+            $asunto,
+            $mensaje_html
+        );
+        
+        if ($exito) {
             $this->log("Correo enviado a admin: {$email_admin}");
-        } catch (Exception $e) {
-            $this->log("Error enviando correo a admin: " . $e->getMessage());
+        } else {
+            $this->log("Error enviando correo a admin: {$email_admin}");
         }
     }
     
@@ -445,16 +420,16 @@ class ModeradorLocal {
         // Generar HTML usando el Helper
         $mensaje_html = EmailHelper::render($asunto, $nombre, $mensaje, $detalles, $boton, $tipo_estado);
             
-        try {
-            $mail = $this->configurarPHPMailer();
-            $mail->addAddress($email, $nombre);
-            $mail->Subject = $asunto;
-            $mail->isHTML(true);
-            $mail->Body = $mensaje_html;
-            $mail->send();
+        $exito = EmailHelper::enviarCorreo(
+            $email,
+            $asunto,
+            $mensaje_html
+        );
+        
+        if ($exito) {
             $this->log("✅ Correo enviado a publicador: {$email}");
-        } catch (Exception $e) {
-            $this->log("❌ Error enviando correo a publicador: " . $e->getMessage());
+        } else {
+            $this->log("❌ Error enviando correo a publicador: {$email}");
         }
     }
     

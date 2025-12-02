@@ -211,10 +211,49 @@ function rechazarPublicador($id, $motivo, $conn) {
 
 // Suspende un publicador
 function suspenderPublicador($id, $motivo, $conn) {
+    // Primero obtenemos los datos del publicador para enviar el correo
+    $query_datos = "SELECT nombre, email FROM publicadores WHERE id = ?";
+    $stmt_datos = $conn->prepare($query_datos);
+    $stmt_datos->bind_param("i", $id);
+    $stmt_datos->execute();
+    $result_datos = $stmt_datos->get_result();
+    $publicador_datos = $result_datos->fetch_assoc();
+    
+    // Actualizamos el estado a suspendido
     $query = "UPDATE publicadores SET estado = 'suspendido', motivo_suspension = ? WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("si", $motivo, $id);
-    return $stmt->execute();
+    $exito = $stmt->execute();
+    
+    // Si se suspendió exitosamente, enviamos correo
+    if ($exito && $publicador_datos) {
+        require_once __DIR__ . '/../EmailHelper.php';
+        
+        $asunto = "⚠️ Tu cuenta de publicador ha sido suspendida";
+        
+        $mensaje_html = "
+            <p>Lamentamos informarte que tu cuenta de publicador en <strong>Lab Explorer</strong> ha sido <strong>suspendida</strong>.</p>
+            <h3>📋 Motivo de la suspensión:</h3>
+            <p style='background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 4px;'>
+                " . htmlspecialchars($motivo) . "
+            </p>
+            <h3>ℹ️ ¿Qué significa esto?</h3>
+            <ul>
+                <li>No podrás acceder a tu panel de publicador</li>
+                <li>Tus publicaciones existentes permanecen visibles</li>
+                <li>No podrás crear nuevas publicaciones</li>
+            </ul>
+            <p>Si consideras que esto es un error o deseas apelar esta decisión, por favor contacta al equipo de administración.</p>
+        ";
+        
+        EmailHelper::enviarCorreo(
+            $publicador_datos['email'],
+            $asunto,
+            $mensaje_html
+        );
+    }
+    
+    return $exito;
 }
 
 // Activa un publicador suspendido
@@ -276,7 +315,9 @@ function obtenerTodosReportes($tipo = null, $estado = null, $conn) {
 // Procesa un reporte (aprobar o rechazar)
 function procesarReporte($reporte_id, $accion, $admin_id, $conn) {
     // Obtener información del reporte
-    $query = "SELECT tipo, referencia_id FROM reportes WHERE id = ?";
+    $query = "SELECT r.tipo, r.referencia_id, r.motivo, r.usuario_id 
+              FROM reportes r 
+              WHERE r.id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $reporte_id);
     $stmt->execute();
@@ -289,16 +330,72 @@ function procesarReporte($reporte_id, $accion, $admin_id, $conn) {
     $reporte = $result->fetch_assoc();
     
     if ($accion === 'aprobar') {
-        // Eliminar el contenido reportado
+        // Obtener datos del contenido reportado ANTES de eliminarlo
+        $datos_contenido = null;
         if ($reporte['tipo'] === 'publicacion') {
+            $query_pub = "SELECT p.titulo, p.publicador_id, pub.nombre as publicador_nombre, pub.email as publicador_email
+                          FROM publicaciones p
+                          INNER JOIN publicadores pub ON p.publicador_id = pub.id
+                          WHERE p.id = ?";
+            $stmt_pub = $conn->prepare($query_pub);
+            $stmt_pub->bind_param("i", $reporte['referencia_id']);
+            $stmt_pub->execute();
+            $result_pub = $stmt_pub->get_result();
+            $datos_contenido = $result_pub->fetch_assoc();
+            
+            // Eliminar la publicación
             $delete_query = "DELETE FROM publicaciones WHERE id = ?";
         } else {
+            // Para comentarios, también obtenemos datos
+            $query_com = "SELECT c.contenido, c.usuario_id, u.nombre as usuario_nombre, u.correo as usuario_email
+                          FROM comentarios c
+                          INNER JOIN usuarios u ON c.usuario_id = u.id
+                          WHERE c.id = ?";
+            $stmt_com = $conn->prepare($query_com);
+            $stmt_com->bind_param("i", $reporte['referencia_id']);
+            $stmt_com->execute();
+            $result_com = $stmt_com->get_result();
+            $datos_contenido = $result_com->fetch_assoc();
+            
+            // Eliminar el comentario
             $delete_query = "DELETE FROM comentarios WHERE id = ?";
         }
         
         $delete_stmt = $conn->prepare($delete_query);
         $delete_stmt->bind_param("i", $reporte['referencia_id']);
         $delete_stmt->execute();
+        
+        // Enviar correo al publicador/usuario notificando la eliminación
+        if ($datos_contenido) {
+            require_once __DIR__ . '/../EmailHelper.php';
+            
+            if ($reporte['tipo'] === 'publicacion') {
+                $asunto = "⚠️ Tu publicación ha sido eliminada por reportes";
+                
+                $mensaje_html = "
+                    <p>Lamentamos informarte que tu publicación ha sido <strong>eliminada</strong> debido a reportes de usuarios.</p>
+                    <h3>📋 Detalles:</h3>
+                    <ul>
+                        <li><strong>Publicación:</strong> " . htmlspecialchars($datos_contenido['titulo']) . "</li>
+                        <li><strong>Motivo del reporte:</strong> " . htmlspecialchars($reporte['motivo'] ?? 'No especificado') . "</li>
+                        <li><strong>Fecha:</strong> " . date('d/m/Y H:i') . "</li>
+                    </ul>
+                    <h3>ℹ️ ¿Qué significa esto?</h3>
+                    <ul>
+                        <li>La publicación ha sido eliminada permanentemente</li>
+                        <li>Fue reportada por violar las normas de la comunidad</li>
+                        <li>Puedes crear nuevas publicaciones respetando las normas</li>
+                    </ul>
+                    <p>Por favor, asegúrate de que tus futuras publicaciones cumplan con nuestras políticas de contenido.</p>
+                ";
+                
+                EmailHelper::enviarCorreo(
+                    $datos_contenido['publicador_email'],
+                    $asunto,
+                    $mensaje_html
+                );
+            }
+        }
         
         // Actualizar estado del reporte
         $update_query = "UPDATE reportes SET estado = 'resuelto', admin_id = ?, fecha_resolucion = NOW() WHERE id = ?";

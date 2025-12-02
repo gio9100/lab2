@@ -25,15 +25,9 @@ session_start();
 require_once __DIR__ . '/config-publicadores.php';
 
 // ====================================================================
-// INCLUIR PHPMAILER PARA ENVÍO DE CORREOS
+// INCLUIR EMAILHELPER PARA ENVÍO DE CORREOS
 // ====================================================================
-require_once __DIR__ . '/../PHPMailer/PHPMailer.php';
-require_once __DIR__ . '/../PHPMailer/SMTP.php';
-require_once __DIR__ . '/../PHPMailer/Exception.php';
-
-// Importamos las clases de PHPMailer
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+require_once __DIR__ . '/../EmailHelper.php';
 
 // ====================================================================
 // VERIFICAR AUTENTICACIÓN
@@ -156,47 +150,39 @@ function enviarNotificacionAdmin($titulo_publicacion, $nombre_publicador, $tipo_
     $query = "SELECT email, nombre FROM admins WHERE estado = 'activo'";
     $result = $conn->query($query);
     
-    // Si hay administradores activos, procedemos a enviar correos
-    if ($result && $result->num_rows > 0) {
-        // Obtenemos todos los admins en un array
-        $admins = $result->fetch_all(MYSQLI_ASSOC);
-        
-        // Creamos una instancia de PHPMailer
-        $mail = new PHPMailer(true);
-        
-        try {
-            // ============================================================
-            // PASO 2: CONFIGURAR SMTP
-            // ============================================================
-            $mail->isSMTP();                                    // Usar SMTP
-            $mail->Host = 'smtp.gmail.com';                     // Servidor Gmail
-            $mail->SMTPAuth = true;                             // Activar autenticación
-            $mail->Username = 'lab.explorer2025@gmail.com';     // Email de Lab Explorer
-            $mail->Password = 'yero ewft jacf vjzp';            // Contraseña de aplicación
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encriptación TLS
-            $mail->Port = 587;                                  // Puerto TLS
-            
-            // ============================================================
-            // PASO 3: CONFIGURAR CODIFICACIÓN (para emojis y caracteres especiales)
-            // ============================================================
-            $mail->CharSet = 'UTF-8';      // UTF-8 para tildes, ñ, emojis
-            $mail->Encoding = 'base64';    // Codificación base64
-            
-            // ============================================================
-            // PASO 4: CONFIGURAR REMITENTE Y ASUNTO
-            // ============================================================
-            $mail->setFrom('lab.explorer2025@gmail.com', 'Notificaciones Lab Explorer');
-            foreach ($admins as $admin) {
-                $mail->addAddress($admin['email'], $admin['nombre']);  // Agregar destinatario
-                $mail->send();                                         // Enviar
-                $mail->clearAddresses();                               // Limpiar para el siguiente
-            }
-            
-        } catch (Exception $e) {
-            // Si hay error, lo guardamos en el log del servidor
-            // No detenemos la ejecución porque el correo es secundario
-            error_log("Error enviando notificación al admin: " . $mail->ErrorInfo);
-        }
+    // Si no hay administradores activos, salimos
+    if (!$result || $result->num_rows === 0) {
+        return;
+    }
+    
+    // ====================================================================
+    // PASO 2: PREPARAR EL CONTENIDO DEL CORREO
+    // ====================================================================
+    $asunto = "📝 Nueva Publicación Pendiente de Revisión";
+    
+    $mensaje_html = "
+        <p>Se ha enviado una nueva publicación para revisión en Lab Explorer.</p>
+        <h3>📋 Detalles de la Publicación:</h3>
+        <ul>
+            <li><strong>Título:</strong> " . htmlspecialchars($titulo_publicacion) . "</li>
+            <li><strong>Publicador:</strong> " . htmlspecialchars($nombre_publicador) . "</li>
+            <li><strong>Tipo:</strong> " . htmlspecialchars(ucfirst($tipo_contenido)) . "</li>
+            <li><strong>Fecha:</strong> " . date('d/m/Y H:i') . "</li>
+        </ul>
+        <p>Por favor, revisa la publicación desde el panel de administración y procede con su aprobación o rechazo.</p>
+    ";
+    
+    // ====================================================================
+    // PASO 3: ENVIAR CORREO A CADA ADMINISTRADOR
+    // ====================================================================
+    while ($admin = $result->fetch_assoc()) {
+        EmailHelper::enviarCorreo(
+            $admin['email'],
+            $asunto,
+            $mensaje_html,
+            'Ver Publicaciones Pendientes',
+            'http://localhost/lab/forms/admins/gestionar-publicaciones.php'
+        );
     }
 }
 ?>

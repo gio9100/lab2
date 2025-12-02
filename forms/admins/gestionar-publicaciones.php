@@ -21,8 +21,8 @@ $admin_id = $_SESSION['admin_id'];
 // Guardamos el ID del administrador desde la sesión
 $admin_nombre = $_SESSION['admin_nombre'];
 // Guardamos el nombre del administrador desde la sesión
-$admin_nivel = $_SESSION['admin_nivel'];
-// Guardamos el nivel del administrador (admin o superadmin)
+$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';    // Su nivel: 'admin' o 'superadmin'
+
 
 // ============================================================================
 // CONEXIÓN A BASE DE DATOS

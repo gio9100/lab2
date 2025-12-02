@@ -30,7 +30,8 @@ requerirAdmin();
 // ----------------------------------------------------------------------------
 $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
-$admin_nivel = $_SESSION['admin_nivel'];
+$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';    // Su nivel: 'admin' o 'superadmin'
+
 
 // ----------------------------------------------------------------------------
 // 🔌 CONEXIÓN A LA BASE DE DATOS

@@ -50,88 +50,27 @@ require_once __DIR__ . '/../EmailHelper.php';
  * enviarCorreoAprobacion('juan@gmail.com', 'Juan Pérez');
  */
 function enviarCorreoAprobacion($email_publicador, $nombre_publicador) {
-    // Creamos una nueva instancia de PHPMailer
-    // El parámetro 'true' activa las excepciones para mejor manejo de errores
-    $mail = new PHPMailer(true);
+    $asunto = "✅ ¡Bienvenido a Lab Explorer! Tu cuenta ha sido aprobada";
     
-    try {
-        // ====================================================================
-        // PASO 1: CONFIGURAR LA CONEXIÓN SMTP
-        // ====================================================================
-        $mail->isSMTP();                                    // Usamos SMTP (no mail() de PHP)
-        $mail->Host = 'smtp.gmail.com';                     // Servidor SMTP de Gmail
-        $mail->SMTPAuth = true;                             // Activamos autenticación
-        $mail->Username = 'lab.explorer2025@gmail.com';     // Email de Lab Explorer
-        $mail->Password = 'yero ewft jacf vjzp';            // Contraseña de aplicación
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encriptación TLS
-        $mail->Port = 587;                                  // Puerto para TLS
-        
-        // ====================================================================
-        // PASO 2: CONFIGURAR CODIFICACIÓN (para emojis, tildes, ñ)
-        // ====================================================================
-        $mail->CharSet = 'UTF-8';      // Conjunto de caracteres UTF-8
-        $mail->Encoding = 'base64';    // Codificación base64 para compatibilidad
-        
-        // ====================================================================
-        // PASO 3: CONFIGURAR REMITENTE Y DESTINATARIO
-        // ====================================================================
-        $mail->setFrom('lab.explorer2025@gmail.com', 'Lab Explorer');  // Quién envía
-        $mail->addAddress($email_publicador, $nombre_publicador);      // Quién recibe
-        
-        // ====================================================================
-        // PASO 4: CONFIGURAR EL ASUNTO Y FORMATO
-        // ====================================================================
-        $mail->Subject = "✅ ¡Bienvenido a Lab Explorer! Tu cuenta ha sido aprobada";
-        $mail->isHTML(true);  // El correo será en formato HTML (no texto plano)
-        
-        // ====================================================================
-        // PASO 5: CREAR EL CUERPO DEL CORREO EN HTML
-        // ====================================================================
-        // ====================================================================
-        // PASO 5: CREAR EL CUERPO DEL CORREO EN HTML
-        // ====================================================================
-        
-        $boton = [
-            'texto' => '🚀 Iniciar Sesión Ahora',
-            'url' => 'http://localhost/lab/forms/publicadores/inicio-sesion-publicadores.php'
-        ];
-        
-        $mensaje_html = "
-            <p>¡Tenemos excelentes noticias! Tu solicitud para ser publicador en <strong>Lab Explorer</strong> ha sido revisada y <strong>aprobada exitosamente</strong>.</p>
-            <p>Ahora formas parte de nuestra comunidad de profesionales de laboratorio clínico. Podrás compartir tus conocimientos, experiencias y contribuir al crecimiento de la comunidad científica.</p>
-            <h3>📝 ¿Qué puedes hacer ahora?</h3>
-            <ul>
-                <li>Crear y publicar artículos científicos</li>
-                <li>Compartir casos clínicos interesantes</li>
-                <li>Publicar estudios y revisiones</li>
-                <li>Interactuar con otros profesionales</li>
-            </ul>
-        ";
-     $mail->Body = EmailHelper::render(
-    "¡Felicidades! Tu cuenta ha sido aprobada",
-    $nombre_publicador,
-    $mensaje_html,
-    [],
-    $boton,
-    'aprobado'
-);
-
-
-
-        // Versión de texto plano (para clientes que no soportan HTML)
-        $mail->AltBody = "Hola $nombre_publicador, tu cuenta de publicador en Lab Explorer ha sido aprobada. Ya puedes iniciar sesión y comenzar a publicar.";
-        
-        // ====================================================================
-        // PASO 7: ENVIAR EL CORREO
-        // ====================================================================
-        $mail->send();
-        return true;  // Éxito
-        
-    } catch (Exception $e) {
-        // Si algo sale mal, guardamos el error en el log del servidor
-        error_log("Error enviando correo de aprobación: " . $mail->ErrorInfo);
-        return false;  // Fallo
-    }
+    $mensaje_html = "
+        <p>¡Tenemos excelentes noticias! Tu solicitud para ser publicador en <strong>Lab Explorer</strong> ha sido revisada y <strong>aprobada exitosamente</strong>.</p>
+        <p>Ahora formas parte de nuestra comunidad de profesionales de laboratorio clínico. Podrás compartir tus conocimientos, experiencias y contribuir al crecimiento de la comunidad científica.</p>
+        <h3>📝 ¿Qué puedes hacer ahora?</h3>
+        <ul>
+            <li>Crear y publicar artículos científicos</li>
+            <li>Compartir casos clínicos interesantes</li>
+            <li>Publicar estudios y revisiones</li>
+            <li>Interactuar con otros profesionales</li>
+        </ul>
+    ";
+    
+    return EmailHelper::enviarCorreo(
+        $email_publicador,
+        $asunto,
+        $mensaje_html,
+        '🚀 Iniciar Sesión Ahora',
+        'http://localhost/lab/forms/publicadores/inicio-sesion-publicadores.php'
+    );
 }
 
 /**
@@ -158,73 +97,34 @@ function enviarCorreoAprobacion($email_publicador, $nombre_publicador) {
  * enviarCorreoRechazo('juan@gmail.com', 'Juan Pérez', 'Información incompleta');
  */
 function enviarCorreoRechazo($email_publicador, $nombre_publicador, $motivo = '') {
-    // Creamos una nueva instancia de PHPMailer
-    $mail = new PHPMailer(true);
+    $asunto = "❌ Actualización sobre tu solicitud en Lab Explorer";
     
-    try {
-        // CONFIGURACIÓN SMTP (igual que en enviarCorreoAprobacion)
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'lab.explorer2025@gmail.com';
-        $mail->Password = 'yero ewft jacf vjzp';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-        
-        // CONFIGURACIÓN DE CODIFICACIÓN
-        $mail->CharSet = 'UTF-8';
-        $mail->Encoding = 'base64';
-        
-        // REMITENTE Y DESTINATARIO
-        $mail->setFrom('lab.explorer2025@gmail.com', 'Lab Explorer');
-        $mail->addAddress($email_publicador, $nombre_publicador);
-        
-        // ASUNTO
-        $mail->Subject = "❌ Actualización sobre tu solicitud en Lab Explorer";
-        $mail->isHTML(true);
-        
-        // ====================================================================
-        // PREPARAR SECCIÓN DEL MOTIVO (si existe)
-        // ====================================================================
-        // ====================================================================
-        // CUERPO DEL CORREO
-        // ====================================================================
-        
-        $detalles = [];
-        if (!empty($motivo)) {
-            $detalles['Motivo del rechazo'] = $motivo;
-        }
-        
-        $mensaje_html = "
-            <p>Gracias por tu interés en formar parte de <strong>Lab Explorer</strong> como publicador.</p>
-            <p>Lamentablemente, después de revisar tu solicitud, <strong>no hemos podido aprobarla en este momento</strong>.</p>
-            <h3>🔄 ¿Qué puedes hacer?</h3>
-            <ul>
-                <li>Revisa los requisitos para ser publicador en nuestra plataforma</li>
-                <li>Asegúrate de proporcionar información completa y verificable</li>
-                <li>Puedes volver a solicitar el registro más adelante</li>
-            </ul>
-        ";
-        
-        $mail->Body = EmailHelper::render(
-            "Actualización de tu Solicitud",
-            $nombre_publicador,
-            $mensaje_html,
-            $detalles,
-            null, // Sin botón
-            'rechazado'
-        );
-        
-        $mail->AltBody = "Hola $nombre_publicador, lamentablemente tu solicitud para ser publicador en Lab Explorer no ha sido aprobada. " . ($motivo ? "Motivo: $motivo" : "");
-        
-        // ENVIAR
-        $mail->send();
-        return true;
-        
-    } catch (Exception $e) {
-        error_log("Error enviando correo de rechazo: " . $mail->ErrorInfo);
-        return false;
+    $mensaje_html = "
+        <p>Gracias por tu interés en formar parte de <strong>Lab Explorer</strong> como publicador.</p>
+        <p>Lamentablemente, después de revisar tu solicitud, <strong>no hemos podido aprobarla en este momento</strong>.</p>";
+    
+    if (!empty($motivo)) {
+        $mensaje_html .= "
+        <h3>📋 Motivo del rechazo:</h3>
+        <p style='background-color: #f8f9fa; padding: 15px; border-left: 4px solid #dc3545; border-radius: 4px;'>
+            " . htmlspecialchars($motivo) . "
+        </p>";
     }
+    
+    $mensaje_html .= "
+        <h3>🔄 ¿Qué puedes hacer?</h3>
+        <ul>
+            <li>Revisa los requisitos para ser publicador en nuestra plataforma</li>
+            <li>Asegúrate de proporcionar información completa y verificable</li>
+            <li>Puedes volver a solicitar el registro más adelante</li>
+        </ul>
+    ";
+    
+    return EmailHelper::enviarCorreo(
+        $email_publicador,
+        $asunto,
+        $mensaje_html
+    );
 }
 
 /**
@@ -264,38 +164,42 @@ function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicado
         return false;
     }
     
-    // Creamos instancia de PHPMailer
-    $mail = new PHPMailer(true);
+    // ====================================================================
+    // PASO 2: PREPARAR EL CONTENIDO DEL CORREO
+    // ====================================================================
+    $asunto = "🔔 Nuevo Publicador Pendiente de Aprobación";
     
-    try {
-        // CONFIGURACIÓN SMTP
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'lab.explorer2025@gmail.com';
-        $mail->Password = 'yero ewft jacf vjzp';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
+    $mensaje_html = "
+        <p>Se ha registrado un nuevo publicador en la plataforma y está esperando tu aprobación.</p>
+        <h3>📋 Datos del Publicador:</h3>
+        <ul>
+            <li><strong>Nombre:</strong> " . htmlspecialchars($nombre_publicador) . "</li>
+            <li><strong>Email:</strong> " . htmlspecialchars($email_publicador) . "</li>
+            <li><strong>Especialidad:</strong> " . htmlspecialchars($especialidad) . "</li>
+            <li><strong>Fecha de registro:</strong> " . date('d/m/Y H:i') . "</li>
+        </ul>
+        <p>Por favor, revisa la información del publicador y procede con la aprobación o rechazo desde el panel de administración.</p>
+    ";
+    
+    // ====================================================================
+    // PASO 3: ENVIAR CORREO A CADA ADMINISTRADOR
+    // ====================================================================
+    $enviados = 0;
+    while ($admin = $result->fetch_assoc()) {
+        $exito = EmailHelper::enviarCorreo(
+            $admin['email'],
+            $asunto,
+            $mensaje_html,
+            'Ver Panel de Administración',
+            'http://localhost/lab/forms/admins/index-admin.php'
+        );
         
-        // CONFIGURACIÓN DE CODIFICACIÓN
-        $mail->CharSet = 'UTF-8';
-        $mail->Encoding = 'base64';
-        
-        // REMITENTE
-        $mail->setFrom('lab.explorer2025@gmail.com', 'Lab Explorer - Sistema');
-        
-        // ====================================================================
-        // PASO 2: AGREGAR TODOS LOS ADMINS COMO DESTINATARIOS
-        // ====================================================================
-        while ($admin = $result->fetch_assoc()) {
-            $mail->addAddress($admin['email'], $admin['nombre']);
+        if ($exito) {
+            $enviados++;
         }
-        
-        // ASUNTO
-        $mail->Subject = "🔔 Nuevo Publicador Pendiente de Aprobación";
-    } catch (Exception $e) {
-        error_log("Error enviando correo a admins: " . $mail->ErrorInfo);
-        return false;
     }
+    
+    // Retornamos true si se envió al menos a un admin
+    return $enviados > 0;
 }
 ?>
