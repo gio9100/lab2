@@ -195,7 +195,7 @@ function obtenerUsuariosNormales($conn) {
 
 // Aprueba un publicador
 function aprobarPublicador($id, $conn) {
-    $query = "UPDATE publicadores SET estado = 'activo', fecha_aprobacion = NOW() WHERE id = ?";
+    $query = "UPDATE publicadores SET estado = 'activo' WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $id);
     return $stmt->execute();
