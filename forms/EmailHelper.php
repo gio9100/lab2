@@ -2,14 +2,16 @@
 // Clase para enviar correos con diseño profesional
 // Centraliza el envío de emails para que todos tengan el mismo estilo
 
+// Cargamos las clases de PHPMailer directamente
+// PHPMailer está instalado en la carpeta PHPMailer, no con Composer
+require_once __DIR__ . '/PHPMailer/Exception.php';
+require_once __DIR__ . '/PHPMailer/PHPMailer.php';
+require_once __DIR__ . '/PHPMailer/SMTP.php';
+
 // Importamos las clases de PHPMailer que vamos a usar
 // Así no tenemos que escribir el nombre completo cada vez
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-// Cargamos las librerías instaladas con Composer
-// autoload.php se encarga de encontrar PHPMailer automáticamente
-require_once __DIR__ . '/../vendor/autoload.php';
 
 // Clase con métodos estáticos para enviar correos
 // Se usa así: EmailHelper::enviarCorreo(...)
