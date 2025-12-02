@@ -59,7 +59,7 @@ requerirAdmin();
 // Esta info se guardó en $_SESSION cuando hizo login exitosamente.
 $admin_id = $_SESSION['admin_id'];          // El ID único del admin (número)
 $admin_nombre = $_SESSION['admin_nombre'];  // Su nombre completo
-$admin_nivel = $_SESSION['admin_nivel'];    // Su nivel: 'admin' o 'superadmin'
+$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';    // Su nivel: 'admin' o 'superadmin'
 
 // ----------------------------------------------------------------------------
 // 🔄 PROCESAR ACCIONES SOBRE USUARIOS (POST)

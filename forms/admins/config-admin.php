@@ -313,4 +313,75 @@ function procesarReporte($reporte_id, $accion, $admin_id, $conn) {
         return $update_stmt->execute();
     }
 }
+
+// Verifica si un usuario existe por email
+function usuarioExiste($email, $conn, $excluir_id = null) {
+    if ($excluir_id) {
+        // Si se proporciona un ID, excluirlo de la búsqueda (para edición)
+        $query = "SELECT id FROM usuarios WHERE correo = ? AND id != ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("si", $email, $excluir_id);
+    } else {
+        // Búsqueda simple
+        $query = "SELECT id FROM usuarios WHERE correo = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $email);
+    }
+    
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->num_rows > 0;
+}
+
+// Crea un nuevo usuario
+function crearUsuario($datos, $conn) {
+    $query = "INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    
+    // Hashear la contraseña
+    $password_hash = password_hash($datos['password'], PASSWORD_DEFAULT);
+    
+    $stmt->bind_param("sss", 
+        $datos['nombre'],
+        $datos['correo'],
+        $password_hash
+    );
+    
+    return $stmt->execute();
+}
+
+// Edita un usuario existente
+function editarUsuario($id, $datos, $conn) {
+    // Si se proporciona nueva contraseña, actualizarla también
+    if (isset($datos['password']) && !empty($datos['password'])) {
+        $query = "UPDATE usuarios SET nombre = ?, correo = ?, password = ? WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $password_hash = password_hash($datos['password'], PASSWORD_DEFAULT);
+        $stmt->bind_param("sssi", 
+            $datos['nombre'],
+            $datos['correo'],
+            $password_hash,
+            $id
+        );
+    } else {
+        // Solo actualizar nombre y correo
+        $query = "UPDATE usuarios SET nombre = ?, correo = ? WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssi", 
+            $datos['nombre'],
+            $datos['correo'],
+            $id
+        );
+    }
+    
+    return $stmt->execute();
+}
+
+// Elimina un usuario
+function eliminarUsuario($id, $conn) {
+    $query = "DELETE FROM usuarios WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
 ?>
