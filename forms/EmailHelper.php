@@ -19,8 +19,8 @@ class EmailHelper {
     // Helper para envío de correos centralizado
     
     // Envía un correo electrónico con diseño profesional
-    // Parámetros: email destino, asunto, mensaje, botón opcional
-    public static function enviarCorreo($destinatario, $asunto, $cuerpo, $botonTexto = null, $botonLink = null) {
+    // Parámetros: email destino, asunto, mensaje, botón opcional, detalles opcionales, tipo de mensaje
+    public static function enviarCorreo($destinatario, $asunto, $cuerpo, $botonTexto = null, $botonLink = null, $detalles = [], $tipo = 'info') {
         
         $mail = new PHPMailer(true);
 
@@ -48,7 +48,13 @@ class EmailHelper {
             if ($botonTexto && $botonLink) {
                 $boton = ['texto' => $botonTexto, 'url' => $botonLink];
             }
-            $mail->Body = self::render($asunto, '', $cuerpo, [], $boton, 'info');
+            
+            // Si el cuerpo YA es HTML completo (contiene <html>), no lo renderizamos de nuevo
+            if (strpos($cuerpo, '<html') !== false) {
+                $mail->Body = $cuerpo;
+            } else {
+                $mail->Body = self::render($asunto, '', $cuerpo, $detalles, $boton, $tipo);
+            }
             
             // Versión texto plano para clientes antiguos
             $mail->AltBody = strip_tags($cuerpo);

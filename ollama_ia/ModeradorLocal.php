@@ -367,13 +367,15 @@ class ModeradorLocal {
             'url' => 'http://localhost/Lab/forms/admins/gestionar-publicaciones.php'
         ];
         
-        // Generar HTML usando el Helper
-        $mensaje_html = EmailHelper::render($asunto, $nombre_admin, $mensaje, $detalles, $boton, $tipo_estado);
-        
+        // Usamos enviarCorreo directamente con los nuevos parámetros
         $exito = EmailHelper::enviarCorreo(
             $email_admin,
             $asunto,
-            $mensaje_html
+            $mensaje,
+            $boton['texto'],
+            $boton['url'],
+            $detalles,
+            $tipo_estado
         );
         
         if ($exito) {
@@ -417,13 +419,15 @@ class ModeradorLocal {
             'url' => 'http://localhost/Lab/forms/publicadores/mis-publicaciones.php'
         ];
         
-        // Generar HTML usando el Helper
-        $mensaje_html = EmailHelper::render($asunto, $nombre, $mensaje, $detalles, $boton, $tipo_estado);
-            
+        // Usamos enviarCorreo directamente con los nuevos parámetros
         $exito = EmailHelper::enviarCorreo(
             $email,
             $asunto,
-            $mensaje_html
+            $mensaje,
+            $boton['texto'],
+            $boton['url'],
+            $detalles,
+            $tipo_estado
         );
         
         if ($exito) {
