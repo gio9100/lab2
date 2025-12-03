@@ -60,8 +60,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // FILTER_VALIDATE_EMAIL verifica que sea un email válido
         $mensaje = "El email no tiene un formato válido";
     }
-    else {
         // Si todo está bien hasta ahora
+        elseif(preg_match('/[0-9]/', $nombre)) {
+            $mensaje = "El nombre no puede contener números";
+        }
+        elseif(!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\'-]+$/', $nombre)) {
+            $mensaje = "El nombre solo puede contener letras, espacios, tildes y guiones";
+        }
+    else {
         
         $partes_email = explode('@', $email);
         // explode() divide un texto en partes
@@ -287,9 +293,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Cerramos función
     </script>
     <!-- Cerramos script -->
+    <!-- Script de validaciones frontend adicional (capa extra de seguridad) -->
+    <script src="../../assets/js/validaciones-frontend.js"></script>
+    <!-- Cargamos el archivo de validaciones como medida de seguridad adicional -->
     <?php endif; ?>
     <!-- Cerramos if -->
     
+    <script>
+        // Validación del nombre en tiempo real (bloquea números mientras escribes)
+        const nombreInput = document.querySelector('input[name="nombre"]');
+
+        if (nombreInput) {
+            nombreInput.addEventListener('input', function() {
+                // Removemos números mientras el usuario escribe
+                this.value = this.value.replace(/[0-9]/g, '');
+                
+                // Removemos caracteres especiales (excepto espacios, tildes, ñ, apóstrofes y guiones)
+                this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'\-]/g, '');
+                
+                // Removemos espacios múltiples
+                this.value = this.value.replace(/\s{2,}/g, ' ');
+            });
+        }
+    </script>
 </body>
 <!-- Cerramos body -->
 </html>

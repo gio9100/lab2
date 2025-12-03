@@ -43,9 +43,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
        $mensaje = "El correo no tiene un formato valido";
        // Mensaje de error
    }
+     elseif(preg_match('/[0-9]/', $nombre)) {
+       $mensaje = "El nombre no puede contener números";
+   }
+   elseif(!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\'-]+$/', $nombre)) {
+       $mensaje = "El nombre solo puede contener letras, espacios, tildes y guiones";
+   }
    else {
-       // Si todo está bien hasta ahora
-
        // Verificamos que el dominio del correo esté en la lista de permitidos
        $partes_correo = explode('@', $correo);
        // Separamos el correo en dos partes: antes y después del @
@@ -390,6 +394,26 @@ contrasenaInput.addEventListener('input', function() {
 
 </script>
 <!-- Cerramos el script -->
+<!-- Script de validaciones frontend adicional (capa extra de seguridad) -->
+<script src="../../assets/js/validaciones-frontend.js"></script>
+<!-- Cargamos el archivo de validaciones como medida de seguridad adicional -->
+<script>
+// Validación del nombre en tiempo real (bloquea números mientras escribes)
+const nombreInput = document.getElementById('nombre');
+
+if (nombreInput) {
+    nombreInput.addEventListener('input', function() {
+        // Removemos números mientras el usuario escribe
+        this.value = this.value.replace(/[0-9]/g, '');
+        
+        // Removemos caracteres especiales (excepto espacios, tildes, ñ, apóstrofes y guiones)
+        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'\-]/g, '');
+        
+        // Removemos espacios múltiples
+        this.value = this.value.replace(/\s{2,}/g, ' ');
+    });
+}
+</script>
 </body>
 <!-- Cerramos el body -->
 </html>
