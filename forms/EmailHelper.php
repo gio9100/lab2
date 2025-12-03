@@ -38,6 +38,18 @@ class EmailHelper {
             $mail->setFrom('lab.explorer2025@gmail.com', 'LabExplorer');
             $mail->addAddress($destinatario);
 
+            // Adjuntar logo como imagen embebida (CID)
+            // Esto evita que el correo se corte por ser muy largo (base64)
+            $logoPath = __DIR__ . '/../assets/img/logo/logobrayan2.ico';
+            // Fallback si no existe el .ico, intentar con png o jpg si existieran, o usar el otro ico
+            if (!file_exists($logoPath)) {
+                $logoPath = __DIR__ . '/../assets/img/logo/logobrayan.ico';
+            }
+            
+            if (file_exists($logoPath)) {
+                $mail->addEmbeddedImage($logoPath, 'logo_lab');
+            }
+
             // Configuración del correo
             $mail->isHTML(true);
             $mail->CharSet = 'UTF-8'; // Para tildes y ñ
@@ -72,11 +84,11 @@ class EmailHelper {
     // Método público para generar HTML de correos (usado por otros archivos)
     // Parámetros: título, nombre destinatario, mensaje, detalles (array), botón (array), tipo
     public static function render($titulo, $nombre_destinatario, $mensaje, $detalles = [], $boton = null, $tipo = 'info') {
-        // Colores según el tipo de correo
+        // Colores según el tipo de correo (Actualizados a gris/azul del sitio)
         $colores = [
-            'aprobado' => '#28a745',   // Verde
-            'rechazado' => '#dc3545',  // Rojo
-            'info' => '#7390A0'        // Azul (color principal)
+            'aprobado' => '#28a745',   // Verde (mantener para éxito)
+            'rechazado' => '#dc3545',  // Rojo (mantener para error)
+            'info' => '#7390A0'        // Azul Grisáceo (Color principal del sitio)
         ];
         
         $colorPrincipal = $colores[$tipo] ?? $colores['info'];
@@ -89,7 +101,7 @@ class EmailHelper {
             foreach ($detalles as $clave => $valor) {
                 $detallesHtml .= '<tr>';
                 $detallesHtml .= '<td style="padding: 8px; font-weight: bold; color: #666; width: 40%;">' . htmlspecialchars($clave) . ':</td>';
-                $detallesHtml .= '<td style="padding: 8px; color: #333;">' . htmlspecialchars($valor) . '</td>';
+                $detallesHtml .= '<td style="padding: 8px; color: #212529;">' . htmlspecialchars($valor) . '</td>';
                 $detallesHtml .= '</tr>';
             }
             $detallesHtml .= '</table>';
@@ -121,15 +133,11 @@ class EmailHelper {
     private static function generarPlantilla($titulo, $contenido, $detallesHtml, $botonHtml, $colorPrincipal = '#7390A0', $nombre_destinatario = '') {
         
         $colorFondo = '#f8f9fa';
-        $colorTexto = '#333333';
+        $colorTexto = '#212529'; // Color de texto principal del sitio
         $anio = date('Y');
 
-        // Leemos el logo en base64 del archivo
-        $logoData = '';
-        $base64File = __DIR__ . '/logo_base64.txt';
-        if (file_exists($base64File)) {
-            $logoData = file_get_contents($base64File);
-        }
+        // Usamos CID para el logo en lugar de base64 gigante
+        $logoSrc = 'cid:logo_lab';
 
         // HTML del correo (usamos heredoc para escribir HTML cómodamente)
         return <<<HTML
@@ -144,7 +152,7 @@ class EmailHelper {
         <tr>
             <td style="padding: 20px 0; text-align: center; background-color: #ffffff; border-bottom: 3px solid {$colorPrincipal};">
                 <!-- Cabecera con Logo -->
-                <img src="{$logoData}" alt="LabExplorer Logo" style="max-width: 150px; height: auto;">
+                <img src="{$logoSrc}" alt="LabExplorer Logo" style="max-width: 150px; height: auto;">
             </td>
         </tr>
         <tr>

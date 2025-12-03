@@ -74,51 +74,41 @@ if (isset($_POST['cambiar_estado'])) {
         // ============================================================
         // ENVIAR NOTIFICACIÓN POR EMAIL AL PUBLICADOR
         // ============================================================
-        // Obtenemos los datos de la publicación y del publicador para el email
-        $query_pub = "SELECT p.titulo, p.tipo, pub.email, pub.nombre 
-                      FROM publicaciones p 
-                      JOIN publicadores pub ON p.publicador_id = pub.id 
-                      WHERE p.id = ?";
-        // Consulta para obtener título, tipo, email y nombre del publicador
-        $stmt_pub = $conn->prepare($query_pub);
-        // Preparamos la consulta
-        $stmt_pub->bind_param("i", $publicacion_id);
-        // Vinculamos el ID de la publicación
-        $stmt_pub->execute();
-        // Ejecutamos la consulta
-        $result_pub = $stmt_pub->get_result();
-        // Obtenemos el resultado
-        
-        if ($result_pub && $result_pub->num_rows > 0) {
-            // Si encontramos la publicación y el publicador
-            $datos = $result_pub->fetch_assoc();
-            // Guardamos los datos en un array asociativo
-            
-            // Llamamos a la función para enviar el email de notificación
-            enviarNotificacionPublicador(
-                $datos['email'],           // Email del publicador
-                $datos['nombre'],          // Nombre del publicador
-                $datos['titulo'],          // Título de la publicación
-                $datos['tipo'],            // Tipo de publicación
-                $nuevo_estado,             // Nuevo estado (publicado, rechazada, revision)
-                $publicacion_id,           // ID de la publicación
-                $conn                      // Conexión a la base de datos
-            );
-            // Esta función está definida en notificar_publicador.php
-        }
-        $stmt_pub->close();
-        // Cerramos el statement de la consulta de publicación
-        
         // Lógica especial para rechazos
         if ($nuevo_estado == 'rechazada') {
-            // Si el nuevo estado es "rechazada"
+            // Si es rechazada, NO enviamos el email todavía.
+            // Esperamos a que el admin llene el motivo en el modal.
             $_SESSION['pedir_motivo_id'] = $publicacion_id;
-            // Guardamos el ID en sesión para abrir el modal de motivo automáticamente
         } else {
-            // Si NO es rechazada (se aprobó o cambió a borrador)
-            // Limpiamos cualquier mensaje de rechazo anterior
+            // Si NO es rechazada (aprobada, borrador, revision), enviamos el email YA.
+            
+            // Obtenemos los datos de la publicación y del publicador para el email
+            $query_pub = "SELECT p.titulo, p.tipo, pub.email, pub.nombre 
+                          FROM publicaciones p 
+                          JOIN publicadores pub ON p.publicador_id = pub.id 
+                          WHERE p.id = ?";
+            $stmt_pub = $conn->prepare($query_pub);
+            $stmt_pub->bind_param("i", $publicacion_id);
+            $stmt_pub->execute();
+            $result_pub = $stmt_pub->get_result();
+            
+            if ($result_pub && $result_pub->num_rows > 0) {
+                $datos = $result_pub->fetch_assoc();
+                
+                enviarNotificacionPublicador(
+                    $datos['email'],
+                    $datos['nombre'],
+                    $datos['titulo'],
+                    $datos['tipo'],
+                    $nuevo_estado,
+                    $publicacion_id,
+                    $conn
+                );
+            }
+            $stmt_pub->close();
+
+            // Limpiamos cualquier mensaje de rechazo anterior si ahora se aprueba
             $conn->query("UPDATE publicaciones SET mensaje_rechazo = NULL WHERE id = $publicacion_id");
-            // Ejecutamos update directo para poner NULL en mensaje_rechazo
         }
     } else {
         // Si falló la ejecución
@@ -157,8 +147,36 @@ if (isset($_POST['guardar_motivo'])) {
     
     if ($stmt->execute()) {
         // Si se guardó bien
-        $_SESSION['mensaje'] = "✅ Motivo de rechazo guardado correctamente";
+        $_SESSION['mensaje'] = "✅ Motivo de rechazo guardado y notificado correctamente";
         $_SESSION['tipo_mensaje'] = "success";
+
+        // AHORA enviamos el correo de rechazo, ya que tenemos el motivo guardado
+        $query_pub = "SELECT p.titulo, p.tipo, pub.email, pub.nombre 
+                      FROM publicaciones p 
+                      JOIN publicadores pub ON p.publicador_id = pub.id 
+                      WHERE p.id = ?";
+        $stmt_pub = $conn->prepare($query_pub);
+        $stmt_pub->bind_param("i", $publicacion_id);
+        $stmt_pub->execute();
+        $result_pub = $stmt_pub->get_result();
+
+        if ($result_pub && $result_pub->num_rows > 0) {
+            $datos = $result_pub->fetch_assoc();
+            
+            // Enviamos la notificación con estado 'rechazada'
+            // La función buscará el mensaje_rechazo en la BD que acabamos de guardar
+            enviarNotificacionPublicador(
+                $datos['email'],
+                $datos['nombre'],
+                $datos['titulo'],
+                $datos['tipo'],
+                'rechazada',
+                $publicacion_id,
+                $conn
+            );
+        }
+        $stmt_pub->close();
+
     } else {
         // Si hubo error
         $_SESSION['mensaje'] = "❌ Error al guardar motivo";
