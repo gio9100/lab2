@@ -8,6 +8,14 @@ session_start();
 // Iniciamos la sesión para saber si hay alguien conectado
 require_once './forms/conexion.php';
 // Traemos la conexión a la base de datos para poder hacer consultas
+require_once './forms/usuario.php';
+// Incluimos las funciones de usuario e interacción
+
+// Función para procesar el contenido de la publicación
+function procesarContenido($contenido) {
+    // Decodificamos entidades HTML para que se muestre el formato correcto
+    return html_entity_decode($contenido);
+}
 
 // Línea vacía
 // Checamos si nos mandaron un ID en la URL

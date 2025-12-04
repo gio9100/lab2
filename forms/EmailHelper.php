@@ -170,6 +170,9 @@ class EmailHelper {
         // Logo externo optimizado (PostImg)
         $logoUrl = 'https://i.postimg.cc/4dHvYPSG/logobrayan-removebg-preview.png';
 
+        // Sanitize title to prevent HTML breakage
+        $tituloSeguro = htmlspecialchars($titulo);
+
         // HTML ultra-compacto para Gmail
         return <<<HTML
 <!DOCTYPE html>
@@ -182,7 +185,7 @@ class EmailHelper {
 <table style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px" cellspacing="0" cellpadding="0">
 <tr><td style="height:3px;background:{$colorPrincipal}"></td></tr>
 <tr><td style="padding:25px">
-<h1 style="color:{$colorPrincipal};margin:0 0 15px;font-size:20px;text-align:center">{$titulo}</h1>
+<h1 style="color:{$colorPrincipal};margin:0 0 15px;font-size:20px;text-align:center">{$tituloSeguro}</h1>
 <div style="color:{$colorTexto};line-height:1.6;font-size:14px">{$contenido}</div>
 {$detallesHtml}
 {$botonHtml}

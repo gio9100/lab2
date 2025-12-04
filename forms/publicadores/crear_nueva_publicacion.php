@@ -199,13 +199,15 @@ $categorias = obtenerCategorias($conn);
                                     <div id="editor-container"></div>
                                     <!-- Input oculto para enviar el contenido HTML -->
                                     <input type="hidden" name="contenido" id="contenido">
+                                    <!-- Estado por defecto al enviar: revisión -->
+                                    <input type="hidden" name="estado" value="revision">
                                 </div>
 
                                 <!-- Botones de acción -->
                                 <div class="d-flex justify-content-end gap-3 mt-5">
                                     <a href="index-publicadores.php" class="btn btn-secondary px-4">Cancelar</a>
                                     <button type="submit" class="btn btn-primary px-5" id="btn-publicar">
-                                        <i class="bi bi-send me-2"></i>Publicar Artículo
+                                        <i class="bi bi-send me-2"></i>Enviar Para Revision
                                     </button>
                                 </div>
                             </form>
