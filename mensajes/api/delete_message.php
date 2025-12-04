@@ -1,3 +1,4 @@
+<?php
 // Incluimos el archivo de inicialización que conecta a la base de datos y gestiona la sesión
 require_once '../init.php';
 
