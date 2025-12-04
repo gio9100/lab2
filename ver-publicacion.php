@@ -60,55 +60,6 @@ if ($result->num_rows === 0) {
 // Línea vacía
 $publicacion = $result->fetch_assoc();
 // Guardamos los datos de la publicación en un array
-$stmt->close();
-// Cerramos la consulta preparada
-
-// Línea vacía
-// Función para arreglar el contenido HTML antes de mostrarlo
-function procesarContenido($contenido) {
-// Definimos la función que recibe el contenido
-    // Si el contenido ya tiene etiquetas HTML (del editor Quill), solo lo retornamos
-    if (strip_tags($contenido) !== $contenido) {
-// Si tiene etiquetas HTML, significa que ya viene con formato
-        // Ya tiene HTML, solo aseguramos que las imágenes tengan las clases correctas
-        $contenido = preg_replace('/<img(?![^>]*class=)/', '<img class="content-image"', $contenido);
-// Le ponemos la clase "content-image" a las imágenes que no la tengan
-        return $contenido;
-// Devolvemos el contenido arreglado
-    } else {
-// Si no tiene HTML (es texto plano)
-        // Contenido plano, convertir saltos de línea
-        $contenido = nl2br(htmlspecialchars($contenido));
-// Convertimos los enters en <br> y protegemos caracteres especiales
-        
-// Línea vacía
-        // Buscar rutas de imágenes (uploads/contenido/...)
-        $patron = '/uploads\/contenido\/[a-zA-Z0-9_\-\.]+\.(jpg|jpeg|png|gif|webp|jfif)/i';
-// Expresión regular para encontrar rutas de imágenes en el texto
-        
-// Línea vacía
-        // Reemplazar rutas por etiquetas <img>
-        $contenido = preg_replace_callback($patron, function($matches) {
-// Buscamos las rutas y las reemplazamos con una función
-            $ruta = $matches[0];
-// Agarramos la ruta que encontramos
-            return '<img src="' . htmlspecialchars($ruta) . '" alt="Imagen de contenido" class="content-image" onclick="abrirLightbox(this.src)">';
-// Devolvemos la etiqueta <img> completa con la ruta y el evento onclick para el lightbox
-        }, $contenido);
-// Cerramos el replace_callback
-        
-// Línea vacía
-        return $contenido;
-// Devolvemos el contenido final
-    }
-// Cerramos el else
-}
-// Cerramos la función
-
-// Línea vacía
-// Incluir configuración de usuario para el header
-require_once __DIR__ . "/forms/usuario.php";
-// Traemos el archivo de usuario para saber si hay sesión iniciada
 ?>
 <!-- Cerramos el código PHP -->
 
@@ -1140,6 +1091,9 @@ require_once __DIR__ . "/forms/usuario.php";
             <span class="category-badge">
                 <i class="bi bi-folder2-open"></i> <?= htmlspecialchars($publicacion['categoria_nombre'] ?? 'General') ?>
             </span>
+            <span class="category-badge" style="margin-left: 10px;">
+                <i class="bi bi-file-text"></i> <?= htmlspecialchars(ucfirst($publicacion['tipo'] ?? 'Artículo')) ?>
+            </span>
             <div style="margin-top: 20px;">
                 <a href="#comments-section" style="color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; background: rgba(255,255,255,0.15); border-radius: 30px; backdrop-filter: blur(5px); transition: all 0.3s;">
                     <i class="bi bi-chat-dots-fill"></i>
@@ -1148,6 +1102,7 @@ require_once __DIR__ . "/forms/usuario.php";
             </div>
         </div>
     </section>
+
 
     <!-- Main Content Mejorado -->
     <main class="main-content">

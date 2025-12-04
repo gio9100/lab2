@@ -216,8 +216,18 @@ if (isset($_GET['error'])) {
                 </div>
                 <!-- Cerramos stat-card -->
             </div>
-            </div>
             <!-- Cerramos perfil-stats -->
+
+            <!-- Formulario para subir nueva foto de perfil -->
+            <form action="procesar_imagen.php" method="POST" enctype="multipart/form-data" class="form-imagen" style="margin-top: 30px;">
+                <div class="form-group">
+                    <label>Actualizar imagen de perfil:</label>
+                    <input type="file" name="imagen" accept="image/jpeg,image/png,image/gif" required>
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-upload"></i> Subir imagen
+                    </button>
+                </div>
+            </form>
 
             <!-- Sección de Publicaciones Guardadas -->
             <div class="saved-publications" style="margin-top: 40px; width: 100%;">
@@ -255,11 +265,19 @@ if (isset($_GET['error'])) {
                                 </a>
                             </h4>
                             
-                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f3f5;">
-                                <div style="width: 30px; height: 30px; background: #7390A0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
-                                    <?= strtoupper(substr($pub['publicador_nombre'], 0, 1)) ?>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f3f5;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 30px; height: 30px; background: #7390A0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
+                                        <?= strtoupper(substr($pub['publicador_nombre'], 0, 1)) ?>
+                                    </div>
+                                    <span style="font-size: 0.9rem; color: #6c757d;"><?= htmlspecialchars($pub['publicador_nombre']) ?></span>
                                 </div>
-                                <span style="font-size: 0.9rem; color: #6c757d;"><?= htmlspecialchars($pub['publicador_nombre']) ?></span>
+                                <button onclick="eliminarGuardado(<?= $pub['id'] ?>)" 
+                                        style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#c82333'" 
+                                        onmouseout="this.style.background='#dc3545'">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -267,27 +285,33 @@ if (isset($_GET['error'])) {
                 <?php endif; ?>
             </div>
 
-            <!-- Formulario para subir nueva foto de perfil -->
-            <form action="procesar_imagen.php" method="POST" enctype="multipart/form-data" class="form-imagen">
-            <!-- Form que envía a procesar_imagen.php por POST -->
-            <!-- enctype="multipart/form-data" es necesario para subir archivos -->
-                <div class="form-group">
-                <!-- Grupo del formulario -->
-                    <label>Actualizar imagen de perfil:</label>
-                    <!-- Etiqueta que dice qué hace el input -->
-                    <input type="file" name="imagen" accept="image/jpeg,image/png,image/gif" required>
-                    <!-- Input de tipo file para seleccionar la imagen -->
-                    <!-- accept limita a solo JPEG, PNG y GIF -->
-                    <button type="submit" class="btn-submit">
-                    <!-- Botón para enviar el formulario -->
-                        <i class="bi bi-upload"></i> Subir imagen
-                        <!-- Icono de subir y texto del botón -->
-                    </button>
-                    <!-- Cerramos el botón -->
-                </div>
-                <!-- Cerramos el form-group -->
-            </form>
-            <!-- Cerramos el formulario -->
+            <script>
+            function eliminarGuardado(publicacionId) {
+                if (!confirm('¿Estás seguro de eliminar esta publicación de tus guardados?')) {
+                    return;
+                }
+                
+                fetch('procesar-interacciones.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `accion=guardar_leer_mas_tarde&publicacion_id=${publicacionId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al eliminar');
+                });
+            }
+            </script>
         </div>
         <!-- Cerramos perfil-card -->
     </div>

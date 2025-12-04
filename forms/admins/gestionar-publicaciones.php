@@ -1,88 +1,52 @@
 ﻿<?php
-// Abrimos PHP para escribir código del lado del servidor
+// Gestión de publicaciones (Admin)
+
+// Iniciar sesión
 session_start();
-// Iniciamos la sesión para poder acceder a las variables de sesión ($_SESSION)
+
+// Incluir configuración y notificaciones
 require_once "config-admin.php";
-// Incluimos el archivo de configuración del administrador que tiene funciones y conexión
 require_once "notificar_publicador.php";
-// Incluimos el archivo con la función para enviar notificaciones por email a publicadores
 
-// ============================================================================
-// VERIFICACIÓN DE PERMISOS
-// ============================================================================
+// Verificar permisos de administrador
 requerirAdmin();
-// Llamamos a la función que verifica si el usuario es administrador
-// Si no lo es, lo redirige al login automáticamente
 
-// ============================================================================
-// OBTENER DATOS DEL ADMINISTRADOR
-// ============================================================================
+// Obtener datos del admin logueado
 $admin_id = $_SESSION['admin_id'];
-// Guardamos el ID del administrador desde la sesión
 $admin_nombre = $_SESSION['admin_nombre'];
-// Guardamos el nombre del administrador desde la sesión
-$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';    // Su nivel: 'admin' o 'superadmin'
+$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
 
-
-// ============================================================================
-// CONEXIÓN A BASE DE DATOS
-// ============================================================================
-// Creamos una conexión directa usando MySQLi
-// "localhost" = servidor, "root" = usuario, "" = contraseña, "lab_exp_db" = base de datos
+// Conexión a base de datos
 $conn = new mysqli("localhost", "root", "", "lab_exp_db");
 
-// Verificamos si hubo error en la conexión
+// Verificar conexión
 if ($conn->connect_error) {
-    // Si hay error, detenemos todo y mostramos el mensaje
     die("ERROR DE CONEXIÓN: " . $conn->connect_error);
 }
 
-// ============================================================================
-// OBTENER ESTADÍSTICAS
-// ============================================================================
+// Obtener estadísticas generales
 $stats = obtenerEstadisticasAdmin($conn);
-// Llamamos a una función auxiliar para obtener conteos generales (usuarios, pubs, etc.)
 
-// ============================================================================
-// LÓGICA: CAMBIAR ESTADO DE PUBLICACIÓN
-// ============================================================================
-// Verificamos si se envió el formulario para cambiar estado
+// Procesar cambio de estado
 if (isset($_POST['cambiar_estado'])) {
-    // Si existe $_POST['cambiar_estado']
     
     $publicacion_id = intval($_POST['publicacion_id']);
-    // Obtenemos el ID de la publicación y lo convertimos a entero por seguridad
     $nuevo_estado = $_POST['nuevo_estado'];
-    // Obtenemos el nuevo estado seleccionado (publicado, borrador, rechazada, etc.)
     
-    // Preparamos la consulta SQL para actualizar
+    // Actualizar estado
     $query = "UPDATE publicaciones SET estado = ? WHERE id = ?";
-    // Usamos ? como marcadores de posición para evitar inyección SQL
     $stmt = $conn->prepare($query);
-    // Preparamos la consulta
     $stmt->bind_param("si", $nuevo_estado, $publicacion_id);
-    // Vinculamos los parámetros: "s" (string) para estado, "i" (integer) para ID
     
-    // Ejecutamos la consulta
     if ($stmt->execute()) {
-        // Si se ejecutó correctamente
         $_SESSION['mensaje'] = "✅ Estado actualizado a " . ucfirst($nuevo_estado);
-        // Guardamos mensaje de éxito en sesión
         $_SESSION['tipo_mensaje'] = "success";
-        // Definimos el tipo de mensaje para el color de la alerta
         
-        // ============================================================
-        // ENVIAR NOTIFICACIÓN POR EMAIL AL PUBLICADOR
-        // ============================================================
-        // Lógica especial para rechazos
+        // Si es rechazo, pedir motivo antes de notificar
         if ($nuevo_estado == 'rechazada') {
-            // Si es rechazada, NO enviamos el email todavía.
-            // Esperamos a que el admin llene el motivo en el modal.
             $_SESSION['pedir_motivo_id'] = $publicacion_id;
         } else {
-            // Si NO es rechazada (aprobada, borrador, revision), enviamos el email YA.
-            
-            // Obtenemos los datos de la publicación y del publicador para el email
+            // Si no es rechazo, notificar inmediatamente
             $query_pub = "SELECT p.titulo, p.tipo, pub.email, pub.nombre 
                           FROM publicaciones p 
                           JOIN publicadores pub ON p.publicador_id = pub.id 
@@ -107,50 +71,35 @@ if (isset($_POST['cambiar_estado'])) {
             }
             $stmt_pub->close();
 
-            // Limpiamos cualquier mensaje de rechazo anterior si ahora se aprueba
+            // Limpiar mensaje de rechazo previo si existe
             $conn->query("UPDATE publicaciones SET mensaje_rechazo = NULL WHERE id = $publicacion_id");
         }
     } else {
-        // Si falló la ejecución
         $_SESSION['mensaje'] = "❌ Error al actualizar estado";
-        // Guardamos mensaje de error
         $_SESSION['tipo_mensaje'] = "danger";
-        // Tipo danger = rojo
     }
     $stmt->close();
-    // Cerramos el statement para liberar recursos
     
-    // Redirigimos a la misma página para evitar reenvío de formulario
     header("Location: gestionar-publicaciones.php");
     exit;
-    // Detenemos la ejecución
 }
 
-// ============================================================================
-// LÓGICA: GUARDAR MOTIVO DE RECHAZO
-// ============================================================================
-// Verificamos si se envió el formulario de motivo
+// Procesar motivo de rechazo
 if (isset($_POST['guardar_motivo'])) {
-    // Si existe $_POST['guardar_motivo']
     
     $publicacion_id = intval($_POST['publicacion_id']);
-    // ID de la publicación
     $mensaje = $_POST['mensaje_rechazo'];
-    // El texto del motivo de rechazo
     
-    // Preparamos consulta para actualizar el mensaje
+    // Guardar motivo
     $query = "UPDATE publicaciones SET mensaje_rechazo = ? WHERE id = ?";
     $stmt = $conn->prepare($query);
-    // Preparamos
     $stmt->bind_param("si", $mensaje, $publicacion_id);
-    // Vinculamos: string, integer
     
     if ($stmt->execute()) {
-        // Si se guardó bien
         $_SESSION['mensaje'] = "✅ Motivo de rechazo guardado y notificado correctamente";
         $_SESSION['tipo_mensaje'] = "success";
 
-        // AHORA enviamos el correo de rechazo, ya que tenemos el motivo guardado
+        // Notificar rechazo con motivo
         $query_pub = "SELECT p.titulo, p.tipo, pub.email, pub.nombre 
                       FROM publicaciones p 
                       JOIN publicadores pub ON p.publicador_id = pub.id 
@@ -163,8 +112,6 @@ if (isset($_POST['guardar_motivo'])) {
         if ($result_pub && $result_pub->num_rows > 0) {
             $datos = $result_pub->fetch_assoc();
             
-            // Enviamos la notificación con estado 'rechazada'
-            // La función buscará el mensaje_rechazo en la BD que acabamos de guardar
             enviarNotificacionPublicador(
                 $datos['email'],
                 $datos['nombre'],
@@ -178,58 +125,40 @@ if (isset($_POST['guardar_motivo'])) {
         $stmt_pub->close();
 
     } else {
-        // Si hubo error
         $_SESSION['mensaje'] = "❌ Error al guardar motivo";
         $_SESSION['tipo_mensaje'] = "danger";
     }
     $stmt->close();
-    // Cerramos statement
     
     header("Location: gestionar-publicaciones.php");
-    // Redirigimos
     exit;
 }
 
-// ============================================================================
-// LÓGICA: ELIMINAR PUBLICACIÓN
-// ============================================================================
-// Verificamos si viene el parámetro 'eliminar' en la URL (GET)
+// Eliminar publicación
 if (isset($_GET['eliminar'])) {
     $publicacion_id = intval($_GET['eliminar']);
-    // Convertimos a entero por seguridad
     
-    // Preparamos consulta de eliminación
     $query = "DELETE FROM publicaciones WHERE id = ?";
     $stmt = $conn->prepare($query);
     
     if ($stmt) {
-        // Si se preparó bien
         $stmt->bind_param("i", $publicacion_id);
-        // Vinculamos ID
         
         if ($stmt->execute()) {
-            // Si se eliminó correctamente
             $_SESSION['mensaje'] = "✅ Publicación eliminada correctamente";
             $_SESSION['tipo_mensaje'] = "success";
         } else {
-            // Si falló
             $_SESSION['mensaje'] = "❌ Error al eliminar publicación";
             $_SESSION['tipo_mensaje'] = "danger";
         }
         $stmt->close();
-        // Cerramos
     }
     header("Location: gestionar-publicaciones.php");
-    // Redirigimos
     exit;
 }
 
-// ============================================================================
-// LÓGICA: ELIMINAR TODAS LAS PUBLICACIONES
-// ============================================================================
+// Eliminar todas las publicaciones
 if (isset($_GET['eliminar_todas'])) {
-    // Usamos TRUNCATE para reiniciar la tabla y los IDs, o DELETE si hay restricciones FK
-    // DELETE es más seguro si hay claves foráneas con CASCADE
     $query = "DELETE FROM publicaciones";
     
     if ($conn->query($query)) {
@@ -244,10 +173,7 @@ if (isset($_GET['eliminar_todas'])) {
     exit;
 }
 
-// ============================================================================
-// OBTENER TODAS LAS PUBLICACIONES
-// ============================================================================
-// Consulta compleja para traer datos de publicación, publicador y categoría
+// Obtener todas las publicaciones
 $query = "SELECT 
     p.id, 
     p.titulo, 
@@ -264,14 +190,9 @@ FROM publicaciones p
 LEFT JOIN publicadores pub ON p.publicador_id = pub.id
 LEFT JOIN categorias c ON p.categoria_id = c.id
 ORDER BY p.fecha_creacion DESC";
-// LEFT JOIN une tablas aunque no haya coincidencias (trae null si no hay)
-// ORDER BY fecha_creacion DESC pone las más nuevas primero
 
 $result = $conn->query($query);
-// Ejecutamos la consulta
 $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
-// Si hay resultado, obtenemos todas las filas como array asociativo
-// Si no, asignamos un array vacío [] para evitar errores en el foreach
 ?>
 
 <!DOCTYPE html>
@@ -281,18 +202,17 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestionar Publicaciones - Lab-Explorer</title>
     
-    <!-- Fonts -->
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-    <!-- Vendor CSS -->
+    <!-- CSS Vendors -->
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/vendor/aos/aos.css" rel="stylesheet">
 
-    <!-- Main CSS -->
+    <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
     
@@ -304,6 +224,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 </head>
 <body class="admin-page">
 
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
@@ -357,7 +278,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                             <?php endif; ?>
                         </div>
                         
-                        <!-- Información rápida -->
+                        <!-- Resumen Rápido -->
                         <div class="quick-stats-card mt-4">
                             <div class="card-header">
                                 <h6 class="card-title mb-0">Resumen Publicaciones</h6>
@@ -398,7 +319,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                         <p>Administra todas las publicaciones del sistema</p>
                     </div>
 
-                    <!-- Estadísticas rápidas -->
+                    <!-- Estadísticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up" data-aos-delay="100">
                         <div class="col-md-3 col-6 mb-3">
                             <div class="stat-card primary">
@@ -434,7 +355,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                         </div>
                     </div>
 
-                    <!-- Filtros y Búsqueda -->
+                    <!-- Filtros -->
                     <div class="admin-card mb-4" data-aos="fade-up">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
@@ -478,7 +399,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                         </div>
                     </div>
 
-                    <!-- Lista de Publicaciones -->
+                    <!-- Tabla de Publicaciones -->
                     <div class="admin-card" data-aos="fade-up">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
@@ -523,7 +444,6 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                                     <small class="text-muted">
                                                         <?= htmlspecialchars($publicacion['tipo']) ?> • 
                                                         <?php 
-                                                        // CORRECCIÓN: Manejar contenido NULL o vacío
                                                         $contenido_preview = $publicacion['contenido'] ?? '';
                                                         if (!empty($contenido_preview)) {
                                                             $contenido_limpio = strip_tags($contenido_preview);
@@ -596,11 +516,9 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <!-- Vendor JS -->
+    <!-- Scripts -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
-
-    <!-- Main JS-->
     <script src="../../assets/js/main.js"></script>
 
     <script>
@@ -673,9 +591,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                 
                 // Limpiar y resetear cuando se cierra el modal
                 modalEl.addEventListener('hidden.bs.modal', function () {
-                    // Si se cerró sin enviar (cancelar), restaurar el select al valor original
                     if (selectActual && publicacionActual) {
-                        // Buscamos el estado original en el atributo data-estado de la fila
                         const fila = selectActual.closest('tr');
                         const estadoOriginal = fila.dataset.estado;
                         if (estadoOriginal && selectActual.value === 'rechazada') {
@@ -683,7 +599,6 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                         }
                     }
                     
-                    // Limpiar variables
                     publicacionActual = null;
                     selectActual = null;
                     document.getElementById('mensajeRechazo').value = '';
@@ -693,7 +608,6 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
         
         // Función para cambiar estado
         function cambiarEstado(selectElement, publicacionId) {
-            // Simplemente enviamos el formulario. El backend manejará si es rechazo.
             const form = document.getElementById('form-estado-' + publicacionId);
             if (form) form.submit();
         }
@@ -703,15 +617,12 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const id = <?= $_SESSION['pedir_motivo_id'] ?>;
-            // Establecer ID en el formulario del modal
             document.getElementById('modal_publicacion_id').value = id;
             
-            // Mostrar modal automáticamente
             const modalEl = document.getElementById('modalRechazo');
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
             
-            // Enfocar el textarea
             document.getElementById('mensajeRechazo').focus();
         });
     </script>
@@ -720,7 +631,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     endif; 
     ?>
 
-    <!-- Modal para Mensaje de Rechazo -->
+    <!-- Modal Rechazo -->
     <div class="modal fade" id="modalRechazo" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -729,7 +640,6 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                         <i class="bi bi-exclamation-triangle me-2"></i>
                         Motivo del Rechazo
                     </h5>
-                    <!-- No permitimos cerrar sin escribir motivo, o si cierran se queda sin motivo -->
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="formRechazo" method="POST" action="gestionar-publicaciones.php">

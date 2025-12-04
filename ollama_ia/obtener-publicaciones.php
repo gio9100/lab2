@@ -1,23 +1,14 @@
 <?php
-// =============================================================================
-// ARCHIVO: obtener-publicaciones.php
-// PROPÓSITO: Endpoint para obtener publicaciones pendientes de moderación
-// IMPORTANTE: Guardar como UTF-8 SIN BOM
-// =============================================================================
+// Endpoint para obtener publicaciones pendientes de moderación
+// Retorna lista de publicaciones en estado borrador/revision
 
-// Iniciar sesión
 session_start();
-
-// Incluir configuración de admin
 require_once '../forms/admins/config-admin.php';
 
-// Configurar headers primero
 header('Content-Type: application/json; charset=utf-8');
 
-// Verificar que sea administrador
 requerirAdmin();
 
-// Verificar conexión a base de datos
 if (!isset($conn) || !$conn->ping()) {
     echo json_encode([
         'success' => false,
@@ -27,7 +18,8 @@ if (!isset($conn) || !$conn->ping()) {
 }
 
 try {
-    // Consulta SQL para obtener publicaciones pendientes
+    // DATE_FORMAT() = función MySQL para formatear fechas
+    // COALESCE() = retorna primer valor no-null
     $sql = "SELECT 
                 p.id,
                 p.titulo,
@@ -50,11 +42,11 @@ try {
     }
     
     $publicaciones = [];
+    // while = recorre todos los resultados
     while ($fila = $resultado->fetch_assoc()) {
         $publicaciones[] = $fila;
     }
     
-    // Enviar respuesta JSON
     echo json_encode([
         'success' => true,
         'publicaciones' => $publicaciones,
@@ -68,7 +60,6 @@ try {
     ]);
 }
 
-// Cerrar conexión si existe
 if (isset($conn)) {
     $conn->close();
 }

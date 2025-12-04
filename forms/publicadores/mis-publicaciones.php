@@ -1,10 +1,10 @@
 ﻿<?php
+// Iniciar sesión
 session_start();
+// Incluir configuración
 require_once 'config-publicadores.php';
 
-/* -------------------------------
-   VALIDACIÓN DE SESIÓN PUBLICADOR
--------------------------------- */
+// Verificar sesión
 if (!isset($_SESSION['publicador_id'])) {
     header("Location: login.php");
     exit();
@@ -14,13 +14,11 @@ $publicador_id = $_SESSION['publicador_id'];
 $publicador_nombre = $_SESSION['publicador_nombre'] ?? 'Publicador';
 
 
-/* -------------------------------
-   ELIMINAR PUBLICACIÓN
--------------------------------- */
+// Eliminar una publicación
 if (isset($_GET['eliminar'])) {
     $id = intval($_GET['eliminar']);
 
-    // Verificar que la publicación sea suya
+    // Verificar propiedad
     $q = $conn->prepare("SELECT id FROM publicaciones WHERE id = ? AND publicador_id = ?");
     $q->bind_param("ii", $id, $publicador_id);
     $q->execute();
@@ -39,9 +37,7 @@ if (isset($_GET['eliminar'])) {
     }
 }
 
-/* -------------------------------
-   ELIMINAR TODAS LAS PUBLICACIONES
--------------------------------- */
+// Eliminar todas las publicaciones
 if (isset($_GET['eliminar_todas'])) {
     $delete_all = $conn->prepare("DELETE FROM publicaciones WHERE publicador_id = ?");
     $delete_all->bind_param("i", $publicador_id);
@@ -53,9 +49,7 @@ if (isset($_GET['eliminar_todas'])) {
 }
 
 
-/* -------------------------------
-   OBTENER PUBLICACIONES DEL PUBLICADOR
--------------------------------- */
+// Obtener publicaciones del publicador
 $q = $conn->prepare("
     SELECT 
         p.id,
@@ -147,7 +141,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
 
 <div class="container mt-4">
 
-    <!-- MENSAJES -->
+    <!-- Mensajes -->
     <?php if(isset($mensaje_exito)): ?>
     <div class="alert alert-success"><?= $mensaje_exito ?></div>
     <?php endif; ?>
@@ -171,7 +165,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
     </div>
 
 
-    <!-- LISTA DE PUBLICACIONES -->
+    <!-- Lista de Publicaciones -->
     <div class="row">
         <?php if(empty($publicaciones)): ?>
             <div class="col-12 text-center text-muted mt-5">
@@ -212,12 +206,12 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
                         <strong>Creada:</strong> <?= date("d/m/Y", strtotime($p['fecha_creacion'])) ?>
                     </p>
 
-                    <!-- RESUMEN -->
+                    <!-- Resumen -->
                     <?php if(!empty($p['resumen'])): ?>
                     <p><?= htmlspecialchars(substr($p['resumen'], 0, 100)) ?>...</p>
                     <?php endif; ?>
 
-                    <!-- BOTONES -->
+                    <!-- Botones -->
                     <div class="mt-3 d-flex justify-content-between">
                         <div>
                             <a href="editar_publicacion.php?id=<?= $p['id'] ?>" class="btn btn-primary btn-sm">
@@ -247,7 +241,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
 
 </div>
 
-<!-- MODAL ELIMINAR -->
+<!-- Modal Eliminar -->
 <div class="modal fade" id="modalEliminar" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -267,7 +261,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
     </div>
 </div>
 
-<!-- MODAL RECHAZO -->
+<!-- Modal Rechazo -->
 <div class="modal fade" id="modalRechazo" tabindex="-1" aria-labelledby="modalRechazoLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

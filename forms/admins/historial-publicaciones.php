@@ -1,60 +1,37 @@
 ﻿<?php
-// ============================================================================
-// 📜 HISTORIAL DE PUBLICACIONES - HISTORIAL-PUBLICACIONES.PHP
-// ============================================================================
-// PROPÓSITO: Este archivo muestra un historial completo de todas las 
-// publicaciones del sistema con información detallada de estados y rechazos.
-//
-// FUNCIONALIDADES:
-// 1. Ver historial completo de publicaciones
-// 2. Filtrar por estado, publicador, categoría y rango de fechas
-// 3. Ver mensajes de rechazo directamente en la tabla
-// 4. Exportar datos (futuro)
-// 5. Estadísticas detalladas
-// ============================================================================
+// Historial de Publicaciones (Admin)
+// Muestra un historial completo de todas las publicaciones con filtros
 
-// Iniciamos la sesión para acceder a los datos del administrador logueado
+// Iniciar sesión
 session_start();
 
-// Cargamos el archivo de configuración que contiene funciones auxiliares
+// Incluir configuración y funciones de admin
 require_once "config-admin.php";
 
-// ----------------------------------------------------------------------------
-// 🔐 VERIFICACIÓN DE AUTENTICACIÓN
-// ----------------------------------------------------------------------------
-// Verificamos que el usuario actual sea un administrador válido
+// Verificar permisos de administrador
 requerirAdmin();
 
-// ----------------------------------------------------------------------------
-// 👤 OBTENCIÓN DE DATOS DEL ADMINISTRADOR
-// ----------------------------------------------------------------------------
+// Obtener datos del admin actual
 $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
-$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';    // Su nivel: 'admin' o 'superadmin'
+$admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
 
-
-// ----------------------------------------------------------------------------
-// 🔌 CONEXIÓN A LA BASE DE DATOS
-// ----------------------------------------------------------------------------
+// Conexión a la base de datos
 $conn = new mysqli("localhost", "root", "", "lab_exp_db");
 
+// Verificar conexión
 if ($conn->connect_error) {
     die("ERROR DE CONEXIÓN: " . $conn->connect_error);
 }
 
-// ----------------------------------------------------------------------------
-// 🔍 PROCESAMIENTO DE FILTROS
-// ----------------------------------------------------------------------------
+// Obtener filtros de la URL
 $filtro_estado = $_GET['estado'] ?? '';
 $filtro_publicador = $_GET['publicador'] ?? '';
 $filtro_categoria = $_GET['categoria'] ?? '';
 $filtro_fecha_desde = $_GET['fecha_desde'] ?? '';
 $filtro_fecha_hasta = $_GET['fecha_hasta'] ?? '';
 
-// ----------------------------------------------------------------------------
-// 📋 CONSULTA: OBTENER HISTORIAL DE PUBLICACIONES
-// ----------------------------------------------------------------------------
-// Construimos la consulta base
+// Construir consulta base
 $query = "SELECT 
     p.id,
     p.titulo,
@@ -72,11 +49,11 @@ LEFT JOIN publicadores pub ON p.publicador_id = pub.id
 LEFT JOIN categorias c ON p.categoria_id = c.id
 WHERE 1=1";
 
-// Array para almacenar los parámetros
+// Parámetros para la consulta preparada
 $params = [];
 $types = "";
 
-// Agregamos filtros dinámicamente
+// Aplicar filtros dinámicamente
 if (!empty($filtro_estado)) {
     $query .= " AND p.estado = ?";
     $params[] = $filtro_estado;
@@ -107,9 +84,10 @@ if (!empty($filtro_fecha_hasta)) {
     $types .= "s";
 }
 
+// Ordenar por fecha descendente
 $query .= " ORDER BY p.fecha_creacion DESC";
 
-// Preparamos y ejecutamos la consulta
+// Preparar y ejecutar consulta
 $stmt = $conn->prepare($query);
 
 if (!empty($params)) {
@@ -120,26 +98,22 @@ $stmt->execute();
 $result = $stmt->get_result();
 $publicaciones = $result->fetch_all(MYSQLI_ASSOC);
 
-// ----------------------------------------------------------------------------
-// 📊 ESTADÍSTICAS DEL HISTORIAL
-// ----------------------------------------------------------------------------
+// Calcular estadísticas
 $total_publicaciones = count($publicaciones);
 $total_publicadas = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'publicado'));
 $total_borradores = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'borrador'));
 $total_revision = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'revision'));
 $total_rechazadas = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'rechazada'));
 
-// Obtener lista de publicadores para el filtro
+// Obtener listas para filtros (publicadores y categorías)
 $publicadores_query = "SELECT id, nombre FROM publicadores ORDER BY nombre";
 $publicadores_result = $conn->query($publicadores_query);
-$publicadores = $publicadores_result->fetch_all(MYSQLI_ASSOC);
+$lista_publicadores = $publicadores_result->fetch_all(MYSQLI_ASSOC);
 
-// Obtener lista de categorías para el filtro
 $categorias_query = "SELECT id, nombre FROM categorias ORDER BY nombre";
 $categorias_result = $conn->query($categorias_query);
-$categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
+$lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -147,61 +121,36 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Publicaciones - Lab-Explorer</title>
     
-    <!-- Fuentes de Google Fonts -->
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Archivos CSS de librerías externas -->
+    <!-- CSS Vendors -->
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/vendor/aos/aos.css" rel="stylesheet">
 
-    <!-- Archivos CSS personalizados -->
+    <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
     
     <style>
-        /* Estilos para la tabla de historial */
-        .historial-table {
-            font-size: 0.9rem;
-        }
-        .historial-table td {
-            vertical-align: middle;
-        }
-        .mensaje-rechazo-cell {
-            max-width: 300px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .badge-estado {
-            font-size: 0.75rem;
-            padding: 0.35em 0.65em;
-        }
-        .filtros-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
+        .historial-table { font-size: 0.9rem; }
+        .historial-table td { vertical-align: middle; }
+        .badge-estado { font-size: 0.75rem; padding: 0.35em 0.65em; }
     </style>
 </head>
 <body class="admin-page">
 
-    <!-- ================================================================ -->
-    <!-- HEADER - ENCABEZADO DE LA PÁGINA -->
-    <!-- ================================================================ -->
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <!-- Logo y nombre del sitio -->
                 <a href="../../index.php" class="logo d-flex align-items-end">
                     <img src="../../assets/img/logo/nuevologo.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
                 </a>
-                <!-- Información del administrador -->
                 <div class="d-flex align-items-center">
                     <div class="social-links">
                         <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
@@ -212,16 +161,12 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
         </div>
     </header>
 
-    <!-- ================================================================ -->
-    <!-- MAIN - CONTENIDO PRINCIPAL -->
-    <!-- ================================================================ -->
+    <!-- Contenido Principal -->
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
 
-                <!-- ======================================================== -->
-                <!-- SIDEBAR - MENÚ LATERAL DE NAVEGACIÓN -->
-                <!-- ======================================================== -->
+                <!-- Sidebar -->
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
@@ -240,7 +185,6 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                             <a href="gestionar-publicaciones.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
                             </a>
-                            <!-- Enlace activo (página actual) -->
                             <a href="historial-publicaciones.php" class="list-group-item list-group-item-action active">
                                 <i class="bi bi-clock-history me-2"></i>Historial de Publicaciones
                             </a>
@@ -256,17 +200,14 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
 
-                <!-- ======================================================== -->
-                <!-- CONTENIDO PRINCIPAL (LADO DERECHO) -->
-                <!-- ======================================================== -->
+                <!-- Contenido Derecho -->
                 <div class="col-md-9">
-                    <!-- Título de la sección -->
                     <div class="section-title" data-aos="fade-up">
                         <h2><i class="bi bi-clock-history me-2"></i>Historial de Publicaciones</h2>
                         <p>Visualiza el historial completo de todas las publicaciones del sistema</p>
                     </div>
 
-                    <!-- Estadísticas rápidas -->
+                    <!-- Estadísticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up" data-aos-delay="100">
                         <div class="col-md-2 col-6 mb-3">
                             <div class="stat-card primary">
@@ -313,14 +254,11 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                     <!-- Filtros -->
                     <div class="admin-card mb-4" data-aos="fade-up">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">
-                                <i class="bi bi-funnel me-2"></i>Filtros de Búsqueda
-                            </h5>
+                            <h5 class="card-title mb-0"><i class="bi bi-funnel me-2"></i>Filtros de Búsqueda</h5>
                         </div>
                         <div class="card-body">
                             <form method="GET" action="historial-publicaciones.php">
                                 <div class="row g-3">
-                                    <!-- Filtro por estado -->
                                     <div class="col-md-3">
                                         <label class="form-label">Estado</label>
                                         <select name="estado" class="form-select">
@@ -332,12 +270,11 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                         </select>
                                     </div>
 
-                                    <!-- Filtro por publicador -->
                                     <div class="col-md-3">
                                         <label class="form-label">Publicador</label>
                                         <select name="publicador" class="form-select">
                                             <option value="">Todos los publicadores</option>
-                                            <?php foreach($publicadores as $pub): ?>
+                                            <?php foreach($lista_publicadores as $pub): ?>
                                             <option value="<?= $pub['id'] ?>" <?= $filtro_publicador == $pub['id'] ? 'selected' : '' ?>>
                                                 <?= htmlspecialchars($pub['nombre']) ?>
                                             </option>
@@ -345,12 +282,11 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                         </select>
                                     </div>
 
-                                    <!-- Filtro por categoría -->
                                     <div class="col-md-3">
                                         <label class="form-label">Categoría</label>
                                         <select name="categoria" class="form-select">
                                             <option value="">Todas las categorías</option>
-                                            <?php foreach($categorias as $cat): ?>
+                                            <?php foreach($lista_categorias as $cat): ?>
                                             <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>>
                                                 <?= htmlspecialchars($cat['nombre']) ?>
                                             </option>
@@ -358,29 +294,23 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                         </select>
                                     </div>
 
-                                    <!-- Filtro por fecha desde -->
                                     <div class="col-md-3">
                                         <label class="form-label">Desde</label>
                                         <input type="date" name="fecha_desde" class="form-control" value="<?= htmlspecialchars($filtro_fecha_desde) ?>">
                                     </div>
 
-                                    <!-- Filtro por fecha hasta -->
                                     <div class="col-md-3">
                                         <label class="form-label">Hasta</label>
                                         <input type="date" name="fecha_hasta" class="form-control" value="<?= htmlspecialchars($filtro_fecha_hasta) ?>">
                                     </div>
 
-                                    <!-- Botones -->
-                                    <div class="col-md-9">
-                                        <label class="form-label">&nbsp;</label>
-                                        <div class="d-flex gap-2">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-search me-1"></i>Filtrar
-                                            </button>
-                                            <a href="historial-publicaciones.php" class="btn btn-outline-secondary">
-                                                <i class="bi bi-arrow-clockwise me-1"></i>Limpiar
-                                            </a>
-                                        </div>
+                                    <div class="col-md-9 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-primary me-2">
+                                            <i class="bi bi-search me-1"></i>Filtrar
+                                        </button>
+                                        <a href="historial-publicaciones.php" class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-clockwise me-1"></i>Limpiar
+                                        </a>
                                     </div>
                                 </div>
                             </form>
@@ -391,8 +321,7 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                     <div class="admin-card" data-aos="fade-up">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
-                                <i class="bi bi-table me-2"></i>
-                                Historial Completo
+                                <i class="bi bi-table me-2"></i>Historial Completo
                                 <span class="badge bg-primary"><?= $total_publicaciones ?></span>
                             </h5>
                         </div>
@@ -401,13 +330,8 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                 <div class="text-center py-5">
                                     <i class="bi bi-inbox display-4 text-muted"></i>
                                     <h5 class="text-muted mt-3">No se encontraron publicaciones</h5>
-                                    <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
                                 </div>
                             <?php else: ?>
-                                
-                                <!-- ============================================ -->
-                                <!-- VISTA DE TABLA (Desktop) -->
-                                <!-- ============================================ -->
                                 <div class="table-responsive d-none d-lg-block">
                                     <table class="admin-table historial-table">
                                         <thead>
@@ -425,66 +349,43 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                         <tbody>
                                             <?php foreach($publicaciones as $pub): ?>
                                             <tr>
-                                                <!-- ID -->
                                                 <td><strong>#<?= $pub['id'] ?></strong></td>
-                                                
-                                                <!-- Título -->
                                                 <td>
                                                     <strong><?= htmlspecialchars($pub['titulo']) ?></strong>
                                                     <br>
                                                     <small class="text-muted"><?= htmlspecialchars($pub['tipo']) ?></small>
                                                 </td>
-                                                
-                                                <!-- Publicador -->
                                                 <td>
                                                     <?= htmlspecialchars($pub['publicador_nombre']) ?>
                                                     <br>
                                                     <small class="text-muted"><?= $pub['publicador_email'] ?></small>
                                                 </td>
-                                                
-                                                <!-- Categoría -->
                                                 <td><?= htmlspecialchars($pub['categoria_nombre'] ?? 'Sin categoría') ?></td>
-                                                
-                                                <!-- Estado -->
                                                 <td>
                                                     <?php
-                                                    $badge_class = '';
-                                                    switch($pub['estado']) {
-                                                        case 'publicado':
-                                                            $badge_class = 'bg-success';
-                                                            break;
-                                                        case 'borrador':
-                                                            $badge_class = 'bg-secondary';
-                                                            break;
-                                                        case 'revision':
-                                                            $badge_class = 'bg-warning';
-                                                            break;
-                                                        case 'rechazada':
-                                                            $badge_class = 'bg-danger';
-                                                            break;
-                                                    }
+                                                    $badge_class = match($pub['estado']) {
+                                                        'publicado' => 'bg-success',
+                                                        'borrador' => 'bg-secondary',
+                                                        'revision' => 'bg-warning',
+                                                        'rechazada' => 'bg-danger',
+                                                        default => 'bg-secondary'
+                                                    };
                                                     ?>
                                                     <span class="badge <?= $badge_class ?> badge-estado">
                                                         <?= ucfirst($pub['estado']) ?>
                                                     </span>
                                                 </td>
-                                                
-                                                <!-- Fecha -->
                                                 <td>
                                                     <small><?= date('d/m/Y', strtotime($pub['fecha_creacion'])) ?></small>
                                                     <br>
                                                     <small class="text-muted"><?= date('H:i', strtotime($pub['fecha_creacion'])) ?></small>
                                                 </td>
-                                                
-                                                <!-- Vistas -->
                                                 <td>
                                                     <span class="badge bg-light text-dark">
                                                         <i class="bi bi-eye me-1"></i>
                                                         <?= $pub['vistas'] ?? 0 ?>
                                                     </span>
                                                 </td>
-                                                
-                                                <!-- Mensaje de Rechazo -->
                                                 <td>
                                                     <?php if($pub['estado'] == 'rechazada' && !empty($pub['mensaje_rechazo'])): ?>
                                                         <button class="btn btn-outline-danger btn-sm" 
@@ -504,108 +405,24 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                     </table>
                                 </div>
                                 
-                                <!-- ============================================ -->
-                                <!-- VISTA DE CARDS (Móvil/Tablet) -->
-                                <!-- ============================================ -->
+                                <!-- Vista Móvil -->
                                 <div class="d-lg-none">
                                     <?php foreach($publicaciones as $pub): ?>
                                     <div class="card mb-3 shadow-sm">
                                         <div class="card-body">
-                                            <!-- Header del card -->
                                             <div class="d-flex justify-content-between align-items-start mb-3">
                                                 <div>
-                                                    <h6 class="mb-1">
-                                                        <strong><?= htmlspecialchars($pub['titulo']) ?></strong>
-                                                    </h6>
-                                                    <small class="text-muted">
-                                                        <i class="bi bi-hash"></i><?= $pub['id'] ?> • 
-                                                        <?= htmlspecialchars($pub['tipo']) ?>
-                                                    </small>
+                                                    <h6 class="mb-1"><strong><?= htmlspecialchars($pub['titulo']) ?></strong></h6>
+                                                    <small class="text-muted">#<?= $pub['id'] ?></small>
                                                 </div>
-                                                <div>
-                                                    <?php
-                                                    $badge_class = '';
-                                                    switch($pub['estado']) {
-                                                        case 'publicado':
-                                                            $badge_class = 'bg-success';
-                                                            break;
-                                                        case 'borrador':
-                                                            $badge_class = 'bg-secondary';
-                                                            break;
-                                                        case 'revision':
-                                                            $badge_class = 'bg-warning';
-                                                            break;
-                                                        case 'rechazada':
-                                                            $badge_class = 'bg-danger';
-                                                            break;
-                                                    }
-                                                    ?>
-                                                    <span class="badge <?= $badge_class ?>">
-                                                        <?= ucfirst($pub['estado']) ?>
-                                                    </span>
-                                                </div>
+                                                <span class="badge bg-primary"><?= ucfirst($pub['estado']) ?></span>
                                             </div>
-                                            
-                                            <!-- Información del publicador -->
-                                            <div class="mb-2">
-                                                <small class="text-muted">
-                                                    <i class="bi bi-person-circle"></i> 
-                                                    <strong>Publicador:</strong>
-                                                </small>
-                                                <br>
-                                                <small>
-                                                    <?= htmlspecialchars($pub['publicador_nombre']) ?>
-                                                    <br>
-                                                    <span class="text-muted"><?= $pub['publicador_email'] ?></span>
-                                                </small>
-                                            </div>
-                                            
-                                            <!-- Categoría y fecha -->
-                                            <div class="row mb-2">
-                                                <div class="col-6">
-                                                    <small class="text-muted">
-                                                        <i class="bi bi-folder"></i> 
-                                                        <strong>Categoría:</strong>
-                                                    </small>
-                                                    <br>
-                                                    <small><?= htmlspecialchars($pub['categoria_nombre'] ?? 'Sin categoría') ?></small>
-                                                </div>
-                                                <div class="col-6">
-                                                    <small class="text-muted">
-                                                        <i class="bi bi-calendar"></i> 
-                                                        <strong>Fecha:</strong>
-                                                    </small>
-                                                    <br>
-                                                    <small><?= date('d/m/Y H:i', strtotime($pub['fecha_creacion'])) ?></small>
-                                                </div>
-                                            </div>
-                                            
-                                            <!-- Vistas -->
-                                            <div class="mb-2">
-                                                <span class="badge bg-light text-dark">
-                                                    <i class="bi bi-eye me-1"></i>
-                                                    <?= $pub['vistas'] ?? 0 ?> vistas
-                                                </span>
-                                            </div>
-                                            
-                                            <!-- Mensaje de rechazo (si aplica) -->
-                                            <?php if($pub['estado'] == 'rechazada' && !empty($pub['mensaje_rechazo'])): ?>
-                                            <div class="mt-3">
-                                                <button class="btn btn-outline-danger btn-sm w-100" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#modalVerRechazo"
-                                                        data-titulo="<?= htmlspecialchars($pub['titulo']) ?>"
-                                                        data-mensaje="<?= htmlspecialchars($pub['mensaje_rechazo']) ?>">
-                                                    <i class="bi bi-exclamation-circle me-1"></i> 
-                                                    Ver Motivo de Rechazo
-                                                </button>
-                                            </div>
-                                            <?php endif; ?>
+                                            <p class="mb-1"><small><strong>Publicador:</strong> <?= htmlspecialchars($pub['publicador_nombre']) ?></small></p>
+                                            <p class="mb-1"><small><strong>Fecha:</strong> <?= date('d/m/Y', strtotime($pub['fecha_creacion'])) ?></small></p>
                                         </div>
                                     </div>
                                     <?php endforeach; ?>
                                 </div>
-                                
                             <?php endif; ?>
                         </div>
                     </div>
@@ -614,23 +431,18 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
         </div>
     </main>
 
-    <!-- ================================================================ -->
-    <!-- MODAL PARA VER MENSAJE DE RECHAZO -->
-    <!-- ================================================================ -->
+    <!-- Modal Rechazo -->
     <div class="modal fade" id="modalVerRechazo" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                        Motivo de Rechazo
-                    </h5>
+                    <h5 class="modal-title"><i class="bi bi-exclamation-circle me-2"></i>Motivo de Rechazo</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <p><strong>Publicación:</strong> <span id="modalTitulo"></span></p>
                     <hr>
-                    <p><strong>Motivo del rechazo:</strong></p>
+                    <p><strong>Motivo:</strong></p>
                     <div class="alert alert-danger" id="modalMensaje"></div>
                 </div>
                 <div class="modal-footer">
@@ -640,40 +452,21 @@ $categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
         </div>
     </div>
 
-    <!-- Botón Scroll to Top -->
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
-        <i class="bi bi-arrow-up-short"></i>
-    </a>
-
-    <!-- ================================================================ -->
-    <!-- SCRIPTS JAVASCRIPT -->
-    <!-- ================================================================ -->
+    <!-- Scripts -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
     <script src="../../assets/js/main.js"></script>
 
     <script>
-        // Inicializar AOS
-        AOS.init({
-            duration: 1000,
-            once: true
-        });
-
-        // Modal para ver mensaje de rechazo
+        AOS.init();
+        
         const modalVerRechazo = document.getElementById('modalVerRechazo');
         modalVerRechazo.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
-            const titulo = button.getAttribute('data-titulo');
-            const mensaje = button.getAttribute('data-mensaje');
-            
-            document.getElementById('modalTitulo').textContent = titulo;
-            document.getElementById('modalMensaje').textContent = mensaje;
+            document.getElementById('modalTitulo').textContent = button.getAttribute('data-titulo');
+            document.getElementById('modalMensaje').textContent = button.getAttribute('data-mensaje');
         });
     </script>
 </body>
 </html>
-
-<?php 
-// Cerramos la conexión a la base de datos
-$conn->close();
-?>
+<?php $conn->close(); ?>

@@ -105,3 +105,7 @@ Estado: publicado
 2025-12-02 21:52:43 - Correo enviado a admin: brandonioriz117@gmail.com
 2025-12-03 14:51:06 - ❌ Error enviando correo a publicador: lopez.edwin.est79@gmail.com
 2025-12-03 14:51:06 - Error enviando correo a admin: brandonioriz117@gmail.com
+2025-12-03 23:21:01 - ✅ Correo enviado a publicador: giovannidossantos929@gmail.com
+2025-12-03 23:21:05 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-12-03 23:21:09 - Correo enviado a admin: brandonioriz117@gmail.com
+2025-12-03 23:21:14 - Correo enviado a admin: perezingo70@gmail.com

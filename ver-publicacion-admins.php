@@ -68,44 +68,37 @@ $stmt->close();
 // Línea vacía
 // Función para arreglar el contenido HTML antes de mostrarlo
 function procesarContenido($contenido) {
-// Definimos la función que recibe el contenido
-    // Si el contenido ya tiene etiquetas HTML (del editor Quill), solo lo retornamos
+    // Si el contenido ya tiene etiquetas HTML (del editor Quill)
     if (strip_tags($contenido) !== $contenido) {
-// Si tiene etiquetas HTML, significa que ya viene con formato
-        // Ya tiene HTML, solo aseguramos que las imágenes tengan las clases correctas
-        $contenido = preg_replace('/<img(?![^>]*class=)/', '<img class="content-image"', $contenido);
-// Le ponemos la clase "content-image" a las imágenes que no la tengan
+        // Arreglar rutas de imágenes que puedan estar incorrectas
+        $contenido = preg_replace(
+            '/src="(?!\/|http)([^"]*uploads\/contenido\/[^"]+)"/i',
+            'src="/$1"',
+            $contenido
+        );
+        
+        // Asegurar que las imágenes tengan las clases correctas
+        $contenido = preg_replace('/\<img(?![^\>]*class=)/', '\<img class="content-image"', $contenido);
+        
+        // Agregar onclick para lightbox
+        $contenido = preg_replace(
+            '/\<img([^\>]*class="[^"]*content-image[^"]*)"([^\>]*)\>/i',
+            '\<img$1"$2 onclick="abrirLightbox(this.src)" style="cursor:pointer"\>',
+            $contenido
+        );
+        
         return $contenido;
-// Devolvemos el contenido arreglado
     } else {
-// Si no tiene HTML (es texto plano)
-        // Contenido plano, convertir saltos de línea
+        // Contenido plano
         $contenido = nl2br(htmlspecialchars($contenido));
-// Convertimos los enters en <br> y protegemos caracteres especiales
-        
-// Línea vacía
-        // Buscar rutas de imágenes (uploads/contenido/...)
-        $patron = '/uploads\/contenido\/[a-zA-Z0-9_\-\.]+\.(jpg|jpeg|png|gif|webp|jfif)/i';
-// Expresión regular para encontrar rutas de imágenes en el texto
-        
-// Línea vacía
-        // Reemplazar rutas por etiquetas <img>
+        $patron = '/uploads\\/contenido\\/[a-zA-Z0-9_\\-\\.]+\\.(jpg|jpeg|png|gif|webp|jfif)/i';
         $contenido = preg_replace_callback($patron, function($matches) {
-// Buscamos las rutas y las reemplazamos con una función
             $ruta = $matches[0];
-// Agarramos la ruta que encontramos
-            return '<img src="' . htmlspecialchars($ruta) . '" alt="Imagen de contenido" class="content-image" onclick="abrirLightbox(this.src)">';
-// Devolvemos la etiqueta <img> completa con la ruta y el evento onclick para el lightbox
+            return '\<img src="/' . htmlspecialchars($ruta) . '" alt="Imagen de contenido" class="content-image" onclick="abrirLightbox(this.src)" style="cursor:pointer"\>';
         }, $contenido);
-// Cerramos el replace_callback
-        
-// Línea vacía
         return $contenido;
-// Devolvemos el contenido final
     }
-// Cerramos el else
 }
-// Cerramos la función
 
 // Línea vacía
 // Incluir configuración de usuario para el header
@@ -874,6 +867,9 @@ require_once __DIR__ . "/forms/usuario.php";
                 <i class="bi bi-folder-fill"></i> <?= htmlspecialchars($publicacion['categoria_nombre']) ?>
 <!-- Icono y nombre -->
             </span>
+            <span class="category-badge" style="background: #6c757d; margin-left: 10px;">
+                <i class="bi bi-file-text"></i> <?= htmlspecialchars(ucfirst($publicacion['tipo'] ?? 'Artículo')) ?>
+            </span>
 <!-- Cerramos badge -->
             <?php endif; ?>
 <!-- Cerramos if -->
@@ -933,7 +929,7 @@ require_once __DIR__ . "/forms/usuario.php";
 <!-- Contenido item -->
                     <div class="meta-label">Tipo de contenido</div>
 <!-- Etiqueta Tipo -->
-                    <div class="meta-value"><?= htmlspecialchars($publicacion['tipo'] ?? 'Artículo') ?></div>
+                    <div class="meta-value"><?= htmlspecialchars($publicacion['tipo'] ?: $publicacion['tipo']) ?></div>
 <!-- Tipo de contenido (default Artículo) -->
                 </div>
 <!-- Cerramos contenido -->

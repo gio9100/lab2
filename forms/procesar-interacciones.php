@@ -1,277 +1,187 @@
-﻿<?php
-ob_start(); // Iniciar buffer de salida para evitar errores de JSON
-// ============================================================================
-// ⚡ PROCESADOR DE INTERACCIONES - PROCESAR-INTERACCIONES.PHP
-// ============================================================================
-// Este archivo procesa todas las interacciones de los usuarios con las publicaciones
-// mediante peticiones AJAX. Maneja comentarios, likes, guardar y reportes.
-// ============================================================================
+<?php
+// Archivo que procesa todas las interacciones del usuario con publicaciones
+// Maneja: likes, comentarios, reportes, guardar para leer después
 
-// Iniciamos la sesión para verificar que el usuario esté logueado
+// ob_start() = inicia buffer de salida (guarda todo en memoria antes de enviarlo)
+ob_start();
+// session_start() = inicia o continúa la sesión del usuario
 session_start();
-
-// Incluimos el archivo de usuario que tiene todas las funciones
+// require_once = incluye archivo solo una vez (evita duplicados)
 require_once "usuario.php";
 
+// Limpiar cualquier salida previa incluyendo BOM (Byte Order Mark)
+// ob_end_clean() = descarta el buffer actual
+ob_end_clean();
+// Iniciamos nuevo buffer limpio
+ob_start();
 
+// header() = envía encabezado HTTP al navegador
+// Indica que la respuesta será JSON con codificación UTF-8
+header('Content-Type: application/json; charset=utf-8');
 
-// Configuramos el header para retornar JSON
-header('Content-Type: application/json');
-
-// Verificamos que el usuario esté logueado
-// Si no está logueado, retornamos error y terminamos
+// Verificar que el usuario esté logueado
+// isset() = verifica si una variable existe y no es null
 if (!isset($_SESSION['usuario_id'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Debes iniciar sesión para realizar esta acción'
-    ]);
+    // json_encode() = convierte array PHP a formato JSON
+    // JSON_UNESCAPED_UNICODE = muestra acentos correctamente sin \u00e1
+    echo json_encode(['success' => false, 'message' => 'Debes iniciar sesión'], JSON_UNESCAPED_UNICODE);
+    // exit() = detiene la ejecución del script
     exit();
 }
 
-// Obtenemos el ID del usuario logueado
-$usuario_id = $_SESSION['usuario_id'];
-
-// Verificamos que la petición sea POST
+// Verificar que la petición sea POST (no GET)
+// $_SERVER['REQUEST_METHOD'] = método HTTP usado (GET, POST, etc)
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Método no permitido'
-    ]);
+    echo json_encode(['success' => false, 'message' => 'Método no permitido'], JSON_UNESCAPED_UNICODE);
     exit();
 }
 
-// Obtenemos la acción que se quiere realizar
+// Obtener datos del usuario y la acción solicitada
+$usuario_id = $_SESSION['usuario_id'];
+// ?? '' = operador null coalescing, si no existe usa ''
 $accion = $_POST['accion'] ?? '';
 
-// ----------------------------------------------------------------------------
-// PROCESAMOS LA ACCIÓN SOLICITADA
-// ----------------------------------------------------------------------------
-
+// switch = evalúa la variable $accion y ejecuta el caso correspondiente
 switch ($accion) {
-    
-    // ========================================================================
-    // ACCIÓN: AGREGAR COMENTARIO
-    // ========================================================================
     case 'agregar_comentario':
-        // Obtenemos los datos del comentario
+        // intval() = convierte a número entero (seguridad contra inyección SQL)
         $publicacion_id = intval($_POST['publicacion_id'] ?? 0);
+        // trim() = quita espacios al inicio y final del texto
         $contenido = trim($_POST['contenido'] ?? '');
         
-        // Validamos que los datos sean correctos
-        if ($publicacion_id <= 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'ID de publicación inválido'
-            ]);
-            break;
+        // Validar que los datos sean correctos
+        // empty() = verifica si una variable está vacía
+        if ($publicacion_id <= 0 || empty($contenido)) {
+            echo json_encode(['success' => false, 'message' => 'Datos inválidos'], JSON_UNESCAPED_UNICODE);
+            break; // break = sale del switch
         }
         
-        if (empty($contenido)) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'El comentario no puede estar vacío'
-            ]);
-            break;
-        }
-        
+        // strlen() = cuenta la cantidad de caracteres en un texto
         if (strlen($contenido) > 500) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'El comentario no puede tener más de 500 caracteres'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Máximo 500 caracteres'], JSON_UNESCAPED_UNICODE);
             break;
         }
         
-        // Intentamos agregar el comentario
+        // Intentar agregar el comentario a la base de datos
         if (agregarComentario($publicacion_id, $usuario_id, $contenido, $conexion)) {
-            // Obtenemos los datos del usuario para retornarlos
+            // Obtener datos del usuario para mostrar en el comentario
+            // prepare() = prepara consulta SQL (previene inyección SQL)
             $stmt = $conexion->prepare("SELECT nombre, imagen FROM usuarios WHERE id = ?");
+            // bind_param() = vincula variables a los ? de la consulta
+            // "i" = tipo integer (entero)
             $stmt->bind_param("i", $usuario_id);
+            // execute() = ejecuta la consulta preparada
             $stmt->execute();
+            // get_result() = obtiene los resultados
+            // fetch_assoc() = convierte resultado en array asociativo
             $usuario_data = $stmt->get_result()->fetch_assoc();
             
+            // Enviamos respuesta JSON exitosa con los datos del comentario
+            // El navegador recibirá esto y lo mostrará sin recargar la página
             echo json_encode([
                 'success' => true,
-                'message' => 'Comentario agregado correctamente',
+                'message' => 'Comentario agregado',
                 'comentario' => [
                     'usuario_nombre' => $usuario_data['nombre'],
                     'usuario_imagen' => $usuario_data['imagen'],
                     'contenido' => filtrarMalasPalabras($contenido),
+                    // date() = obtiene fecha/hora actual en formato especificado
                     'fecha_creacion' => date('Y-m-d H:i:s')
                 ]
-            ]);
+            ], JSON_UNESCAPED_UNICODE);
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error al agregar el comentario'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Error al agregar comentario'], JSON_UNESCAPED_UNICODE);
         }
         break;
-
-    // ========================================================================
-    // ACCIÓN: ELIMINAR COMENTARIO
-    // ========================================================================
+        
     case 'eliminar_comentario':
         $comentario_id = intval($_POST['comentario_id'] ?? 0);
         
         if ($comentario_id <= 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'ID de comentario inválido'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'ID inválido'], JSON_UNESCAPED_UNICODE);
             break;
         }
         
         if (eliminarComentario($comentario_id, $usuario_id, $conexion)) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Comentario eliminado correctamente'
-            ]);
+            echo json_encode(['success' => true, 'message' => 'Comentario eliminado'], JSON_UNESCAPED_UNICODE);
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error al eliminar el comentario. Verifica que sea tuyo.'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Error al eliminar'], JSON_UNESCAPED_UNICODE);
         }
         break;
-    
-    // ========================================================================
-    // ACCIÓN: DAR LIKE O DISLIKE
-    // ========================================================================
+        
     case 'dar_like':
-        // Obtenemos los datos
         $publicacion_id = intval($_POST['publicacion_id'] ?? 0);
-        $tipo = $_POST['tipo'] ?? ''; // 'like' o 'dislike'
+        $tipo = $_POST['tipo'] ?? '';
         
-        // Validamos
-        if ($publicacion_id <= 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'ID de publicación inválido'
-            ]);
+        // in_array() = verifica si un valor está en un array
+        if ($publicacion_id <= 0 || !in_array($tipo, ['like', 'dislike'])) {
+            echo json_encode(['success' => false, 'message' => 'Datos inválidos'], JSON_UNESCAPED_UNICODE);
             break;
         }
         
-        if (!in_array($tipo, ['like', 'dislike'])) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Tipo de voto inválido'
-            ]);
-            break;
-        }
-        
-        // Procesamos el like/dislike
         if (agregarLike($publicacion_id, $usuario_id, $tipo, $conexion)) {
-            // Obtenemos el conteo actualizado
             $conteo = contarLikes($publicacion_id, $conexion);
-            
             echo json_encode([
                 'success' => true,
                 'message' => 'Voto registrado',
                 'likes' => $conteo['likes'],
                 'dislikes' => $conteo['dislikes']
-            ]);
+            ], JSON_UNESCAPED_UNICODE);
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error al registrar el voto'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Error al votar'], JSON_UNESCAPED_UNICODE);
         }
         break;
-    
-    // ========================================================================
-    // ACCIÓN: GUARDAR PARA LEER MÁS TARDE
-    // ========================================================================
+        
     case 'guardar_leer_mas_tarde':
-        // Obtenemos el ID de la publicación
         $publicacion_id = intval($_POST['publicacion_id'] ?? 0);
         
-        // Validamos
         if ($publicacion_id <= 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'ID de publicación inválido'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'ID inválido'], JSON_UNESCAPED_UNICODE);
             break;
         }
         
-        // Procesamos (funciona como toggle)
         if (guardarParaLeerMasTarde($publicacion_id, $usuario_id, $conexion)) {
-            // Verificamos si quedó guardada o se quitó
             $esta_guardada = verificarSiGuardada($publicacion_id, $usuario_id, $conexion);
-            
+            // Operador ternario: condición ? si_true : si_false
             echo json_encode([
                 'success' => true,
-                'message' => $esta_guardada ? 'Publicación guardada' : 'Publicación eliminada de guardados',
+                'message' => $esta_guardada ? 'Publicación guardada' : 'Publicación eliminada',
                 'guardada' => $esta_guardada
-            ]);
+            ], JSON_UNESCAPED_UNICODE);
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error al procesar la solicitud'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Error al guardar'], JSON_UNESCAPED_UNICODE);
         }
         break;
-    
-    // ========================================================================
-    // ACCIÓN: CREAR REPORTE
-    // ========================================================================
+        
     case 'crear_reporte':
-        // Obtenemos los datos del reporte
-        $tipo = $_POST['tipo'] ?? ''; // 'publicacion' o 'comentario'
+        $tipo = $_POST['tipo'] ?? '';
         $referencia_id = intval($_POST['referencia_id'] ?? 0);
         $motivo = trim($_POST['motivo'] ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
         
-        // Validamos
-        if (!in_array($tipo, ['publicacion', 'comentario'])) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Tipo de reporte inválido'
-            ]);
+        if (!in_array($tipo, ['publicacion', 'comentario']) || $referencia_id <= 0 || empty($motivo)) {
+            echo json_encode(['success' => false, 'message' => 'Datos inválidos'], JSON_UNESCAPED_UNICODE);
             break;
         }
         
-        if ($referencia_id <= 0) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'ID de referencia inválido'
-            ]);
-            break;
-        }
-        
-        if (empty($motivo)) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Debes seleccionar un motivo'
-            ]);
-            break;
-        }
-        
-        // Creamos el reporte
         if (crearReporte($tipo, $referencia_id, $usuario_id, $motivo, $descripcion, $conexion)) {
-            
-            // ENVIAR CORREO A LOS ADMINS (sin detener el proceso si falla)
+            // try-catch = manejo de errores, intenta ejecutar código
             try {
-                // Verificamos que la función existe antes de llamarla
+                // function_exists() = verifica si una función existe
                 if (function_exists('obtenerCorreosAdmins')) {
-                    $admins = @obtenerCorreosAdmins($conexion);
-                    
-                    if (!empty($admins) && is_array($admins)) {
+                    $admins = obtenerCorreosAdmins($conexion);
+                    if (!empty($admins)) {
                         require_once 'EmailHelper.php';
-                        
                         $asunto = "⚠️ Nuevo Reporte: " . ucfirst($tipo);
-                        
-                        $mensaje_html = "Se ha recibido un nuevo reporte que requiere atención.";
-                        
-                        // Enviamos correo a cada admin
+                        $mensaje = "Se ha recibido un nuevo reporte.";
+                        // foreach = recorre cada elemento del array
                         foreach ($admins as $admin) {
-                            if (isset($admin['email']) && !empty($admin['email'])) {
+                            if (isset($admin['email'])) {
                                 EmailHelper::enviarCorreo(
                                     $admin['email'],
                                     $asunto,
-                                    $mensaje_html . "<br><br><strong>Tipo:</strong> " . ucfirst($tipo) . "<br><strong>Motivo:</strong> " . htmlspecialchars($motivo) . "<br><strong>Descripción:</strong> " . htmlspecialchars($descripcion),
-                                    'Ver Panel de Reportes',
+                                    $mensaje,
+                                    'Ver Reportes',
                                     'http://localhost/Lab/forms/admins/gestionar-reportes.php'
                                 );
                             }
@@ -279,39 +189,21 @@ switch ($accion) {
                     }
                 }
             } catch (Exception $e) {
-                // Si falla el correo, no detenemos el proceso
-                // El reporte ya fue guardado exitosamente
+                // catch = captura errores si el try falla
+                // Continuar aunque falle el correo
             }
-
-            // Limpiamos cualquier salida previa (warnings, notices, debugs)
-            ob_clean();
             
-            echo json_encode([
-                'success' => true,
-                'message' => 'Reporte enviado correctamente. Será revisado por un administrador.'
-            ]);
+            echo json_encode(['success' => true, 'message' => 'Reporte enviado'], JSON_UNESCAPED_UNICODE);
         } else {
-            // Limpiamos cualquier salida previa
-            ob_clean();
-            
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error al enviar el reporte'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Error al reportar'], JSON_UNESCAPED_UNICODE);
         }
         break;
-    
-    // ========================================================================
-    // ACCIÓN DESCONOCIDA
-    // ========================================================================
+        
     default:
-        ob_clean();
-        echo json_encode([
-            'success' => false,
-            'message' => 'Acción no válida'
-        ]);
+        // default = se ejecuta si ningún case coincide
+        echo json_encode(['success' => false, 'message' => 'Acción no válida'], JSON_UNESCAPED_UNICODE);
         break;
 }
 
-// Cerramos la conexión a la base de datos
+// close() = cierra la conexión a la base de datos
 $conexion->close();

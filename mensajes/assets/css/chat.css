@@ -1,389 +1,606 @@
-/* Variables */
+/* Estilos para el sistema de mensajería en tiempo real */
+
+/* :root = define variables CSS globales reutilizables */
 :root {
     --primary: #3b82f6;
+    /* Color principal azul */
     --success: #10b981;
+    /* Color verde para éxito */
     --warning: #f59e0b;
+    /* Color naranja para advertencias */
     --danger: #ef4444;
+    /* Color rojo para peligro */
 }
 
+/* Layout principal del body */
 body {
     margin: 0;
+    /* margin = espacio exterior, 0 elimina márgenes */
     padding: 0;
+    /* padding = espacio interior, 0 elimina relleno */
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* font-family = fuente del texto */
     background-color: #ffffff;
+    /* background-color = color de fondo */
     height: 100vh;
+    /* height = altura, 100vh = 100% del viewport */
     overflow: hidden;
+    /* overflow = qué hacer con contenido que se desborda, hidden = ocultar */
     display: flex;
+    /* display = tipo de layout, flex = flexbox */
     flex-direction: column;
+    /* flex-direction = dirección del flex, column = vertical */
 }
 
 .header {
     flex-shrink: 0;
+    /* flex-shrink = si puede encogerse, 0 = no */
     z-index: 1000;
+    /* z-index = orden de apilamiento, mayor = más arriba */
 }
 
 .chat-container {
     flex: 1;
+    /* flex = cuánto espacio toma, 1 = todo el disponible */
     overflow: hidden;
+    /* hidden = oculta scroll */
     background-color: #f8f9fa;
+    /* color de fondo gris claro */
 }
 
 .chat-layout {
     display: flex;
+    /* flexbox para layout horizontal */
     height: 100%;
+    /* 100% de altura del contenedor padre */
 }
 
-/* Sidebar */
+/* Barra lateral de contactos */
 .chat-sidebar {
     width: 340px;
+    /* width = ancho fijo en píxeles */
     background-color: #ffffff;
+    /* fondo blanco */
     border-right: 1px solid #dee2e6;
+    /* border-right = borde derecho, 1px grosor, solid = línea sólida */
     display: flex;
+    /* flexbox */
     flex-direction: column;
+    /* columna vertical */
 }
 
+/* Buscador de contactos */
 .search-container {
     padding: 15px;
+    /* padding = espacio interior de 15px en todos lados */
     border-bottom: 1px solid #dee2e6;
+    /* borde inferior */
 }
 
 .search-wrapper {
     background-color: #f8f9fa;
+    /* fondo gris claro */
     border-radius: 8px;
+    /* border-radius = esquinas redondeadas */
     padding: 10px 12px;
+    /* padding vertical 10px, horizontal 12px */
     display: flex;
+    /* flexbox */
     align-items: center;
+    /* align-items = alineación vertical, center = centrado */
     border: 1px solid #dee2e6;
+    /* border = borde en todos lados */
 }
 
 .search-wrapper i {
     color: #6c757d;
+    /* color = color del texto/icono */
     margin-right: 10px;
+    /* margin-right = margen derecho */
 }
 
 .search-wrapper input {
     background: none;
+    /* sin fondo */
     border: none;
+    /* sin borde */
     width: 100%;
+    /* 100% del ancho disponible */
     outline: none;
+    /* outline = borde de enfoque, none = sin borde */
     color: #212529;
+    /* color del texto */
 }
 
+/* Lista de contactos */
 .contacts-container {
     flex: 1;
+    /* toma todo el espacio disponible */
     overflow-y: auto;
+    /* overflow-y = scroll vertical, auto = solo si es necesario */
     padding: 10px;
+    /* espacio interior */
 }
 
 .loading-contacts {
     display: flex;
+    /* flexbox */
     justify-content: center;
+    /* justify-content = alineación horizontal, center = centrado */
     padding: 40px;
+    /* espacio interior grande */
 }
 
+/* Item de contacto individual */
 .contact-item {
     display: flex;
+    /* flexbox */
     align-items: center;
+    /* centrado vertical */
     padding: 12px;
+    /* espacio interior */
     border-radius: 8px;
+    /* esquinas redondeadas */
     cursor: pointer;
+    /* cursor = tipo de cursor, pointer = manita */
     transition: background 0.2s;
+    /* transition = animación suave, 0.2s de duración */
     margin-bottom: 4px;
+    /* margin-bottom = margen inferior */
 }
 
 .contact-item:hover {
     background-color: #f8f9fa;
+    /* :hover = al pasar el mouse */
 }
 
 .contact-item.active {
     background-color: #e7f3ff;
+    /* .active = clase cuando está seleccionado */
 }
 
+/* Avatar y estado online */
 .avatar-wrapper {
     position: relative;
+    /* position = tipo de posicionamiento, relative = relativo */
     margin-right: 12px;
+    /* margen derecho */
 }
 
 .avatar {
     width: 48px;
+    /* ancho */
     height: 48px;
+    /* height = altura */
     border-radius: 50%;
+    /* 50% = círculo perfecto */
     object-fit: cover;
+    /* object-fit = cómo ajustar imagen, cover = cubrir sin deformar */
     background-color: #dee2e6;
+    /* color de fondo */
 }
 
 .status-indicator {
     position: absolute;
+    /* absolute = posición absoluta respecto al padre */
     bottom: 2px;
+    /* bottom = distancia desde abajo */
     right: 2px;
+    /* right = distancia desde derecha */
     width: 12px;
+    /* ancho */
     height: 12px;
+    /* altura */
     border-radius: 50%;
+    /* círculo */
     background-color: #6c757d;
+    /* gris = offline */
     border: 2px solid #ffffff;
+    /* borde blanco */
 }
 
 .status-indicator.online {
     background-color: #10b981;
+    /* verde = online */
 }
 
+/* Información del contacto */
 .contact-info {
     flex: 1;
+    /* toma espacio disponible */
     min-width: 0;
+    /* min-width = ancho mínimo, 0 permite que se encoja */
 }
 
 .contact-top {
     display: flex;
+    /* flexbox */
     justify-content: space-between;
+    /* space-between = espacio entre elementos */
     align-items: center;
+    /* centrado vertical */
     margin-bottom: 4px;
+    /* margen inferior */
 }
 
 .contact-name {
     font-weight: 600;
+    /* font-weight = grosor del texto, 600 = semi-bold */
     font-size: 0.95rem;
+    /* font-size = tamaño del texto, rem = relativo al root */
     color: #212529;
+    /* color del texto */
 }
 
 .contact-time {
     font-size: 0.75rem;
+    /* texto pequeño */
     color: #6c757d;
+    /* gris */
 }
 
 .contact-preview {
     font-size: 0.85rem;
+    /* tamaño de texto */
     color: #6c757d;
+    /* gris */
     white-space: nowrap;
+    /* white-space = manejo de espacios, nowrap = no saltar línea */
     overflow: hidden;
+    /* ocultar desbordamiento */
     text-overflow: ellipsis;
+    /* text-overflow = qué mostrar si se corta, ellipsis = ... */
 }
 
 .unread-badge {
     background-color: var(--primary);
+    /* var() = usa variable CSS */
     color: white;
+    /* texto blanco */
     font-size: 0.7rem;
+    /* texto pequeño */
     padding: 2px 6px;
+    /* padding vertical 2px, horizontal 6px */
     border-radius: 10px;
+    /* esquinas redondeadas */
     margin-left: 8px;
+    /* margen izquierdo */
 }
 
-/* Role Badges */
+/* Badges de roles */
 .role-badge {
     font-size: 0.65rem;
+    /* texto muy pequeño */
     padding: 2px 6px;
+    /* espacio interior */
     border-radius: 4px;
+    /* esquinas redondeadas */
     font-weight: 600;
+    /* texto semi-bold */
     margin-left: 6px;
+    /* margen izquierdo */
 }
 
 .role-badge.superadmin {
     background-color: #f59e0b;
+    /* naranja */
     color: white;
+    /* texto blanco */
 }
 
 .role-badge.admin {
     background-color: #8b5cf6;
+    /* morado */
     color: white;
 }
 
 .role-badge.publicador {
     background-color: #10b981;
+    /* verde */
     color: white;
 }
 
+/* Footer de sidebar */
 .sidebar-footer {
     padding: 15px;
+    /* espacio interior */
     border-top: 1px solid #dee2e6;
+    /* border-top = borde superior */
 }
 
 .btn-back {
     display: flex;
+    /* flexbox */
     align-items: center;
+    /* centrado vertical */
     justify-content: center;
+    /* centrado horizontal */
     gap: 8px;
+    /* gap = espacio entre elementos flex */
     width: 100%;
+    /* ancho completo */
     padding: 10px;
+    /* espacio interior */
     background-color: #f8f9fa;
+    /* fondo gris claro */
     color: #6c757d;
+    /* texto gris */
     text-decoration: none;
+    /* text-decoration = decoración del texto, none = sin subrayado */
     border-radius: 8px;
+    /* esquinas redondeadas */
     transition: all 0.2s;
+    /* animación suave en todas las propiedades */
 }
 
 .btn-back:hover {
     background-color: #e9ecef;
+    /* fondo más oscuro al pasar mouse */
     color: #212529;
+    /* texto más oscuro */
 }
 
-/* Main Chat */
+/* Área principal del chat */
 .chat-main {
     flex: 1;
+    /* toma espacio disponible */
     display: flex;
+    /* flexbox */
     flex-direction: column;
+    /* columna vertical */
     background-color: #ffffff;
+    /* fondo blanco */
 }
 
 .chat-header {
     padding: 15px 25px;
+    /* padding vertical 15px, horizontal 25px */
     background-color: #ffffff;
+    /* fondo blanco */
     border-bottom: 1px solid #dee2e6;
+    /* borde inferior */
     display: flex;
+    /* flexbox */
     justify-content: space-between;
+    /* espacio entre elementos */
     align-items: center;
+    /* centrado vertical */
 }
 
 .contact-profile {
     display: flex;
+    /* flexbox */
     align-items: center;
+    /* centrado vertical */
     gap: 15px;
+    /* espacio entre elementos */
 }
 
 .contact-details h4 {
     margin: 0;
+    /* sin margen */
     font-size: 1rem;
+    /* tamaño de texto */
     font-weight: 600;
+    /* semi-bold */
     color: #212529;
+    /* texto oscuro */
 }
 
 .status-text {
     font-size: 0.8rem;
+    /* texto pequeño */
     color: #6c757d;
+    /* gris */
 }
 
+/* Área de mensajes */
 .messages-area {
     flex: 1;
+    /* toma espacio disponible */
     padding: 25px;
+    /* espacio interior */
     overflow-y: auto;
+    /* scroll vertical automático */
     background-color: #f8f9fa;
+    /* fondo gris claro */
 }
 
 .empty-state {
     display: flex;
+    /* flexbox */
     flex-direction: column;
+    /* columna vertical */
     align-items: center;
+    /* centrado horizontal */
     justify-content: center;
+    /* centrado vertical */
     height: 100%;
+    /* altura completa */
     color: #6c757d;
+    /* texto gris */
     text-align: center;
+    /* text-align = alineación del texto, center = centrado */
 }
 
 .empty-icon {
     font-size: 4rem;
+    /* texto muy grande */
     margin-bottom: 20px;
+    /* margen inferior */
     opacity: 0.3;
+    /* opacity = transparencia, 0.3 = 30% visible */
 }
 
+/* Burbujas de mensajes */
 .message {
     max-width: 70%;
+    /* max-width = ancho máximo, 70% del contenedor */
     display: flex;
+    /* flexbox */
     flex-direction: column;
+    /* columna vertical */
     margin-bottom: 15px;
+    /* margen inferior */
 }
 
 .message.sent {
     align-self: flex-end;
+    /* align-self = alineación propia, flex-end = a la derecha */
 }
 
 .message.received {
     align-self: flex-start;
+    /* flex-start = a la izquierda */
 }
 
 .message-bubble {
     padding: 12px 16px;
+    /* espacio interior */
     border-radius: 18px;
+    /* esquinas muy redondeadas */
     line-height: 1.5;
+    /* line-height = altura de línea, 1.5 = espaciado cómodo */
     word-wrap: break-word;
+    /* word-wrap = partir palabras largas */
 }
 
 .message.sent .message-bubble {
     background-color: var(--primary);
+    /* azul */
     color: white;
+    /* texto blanco */
     border-bottom-right-radius: 4px;
+    /* border-bottom-right-radius = esquina inferior derecha menos redondeada */
 }
 
 .message.received .message-bubble {
     background-color: #e9ecef;
+    /* gris claro */
     color: #212529;
+    /* texto oscuro */
     border-bottom-left-radius: 4px;
+    /* esquina inferior izquierda menos redondeada */
 }
 
 .message-time {
     font-size: 0.7rem;
+    /* texto muy pequeño */
     color: #6c757d;
+    /* gris */
     margin-top: 4px;
+    /* margin-top = margen superior */
     padding: 0 4px;
+    /* padding horizontal */
 }
 
+/* Área de input */
 .input-area {
     padding: 20px;
+    /* espacio interior */
     background-color: #ffffff;
+    /* fondo blanco */
     border-top: 1px solid #dee2e6;
+    /* borde superior */
 }
 
 .message-form {
     display: flex;
+    /* flexbox */
     gap: 10px;
+    /* espacio entre elementos */
     background-color: #f8f9fa;
+    /* fondo gris claro */
     padding: 8px;
+    /* espacio interior */
     border-radius: 24px;
+    /* muy redondeado */
     border: 1px solid #dee2e6;
+    /* borde */
 }
 
 .input-wrapper {
     flex: 1;
+    /* toma espacio disponible */
 }
 
 .message-form input {
     width: 100%;
+    /* ancho completo */
     background: none;
+    /* sin fondo */
     border: none;
+    /* sin borde */
     color: #212529;
+    /* texto oscuro */
     padding: 8px;
+    /* espacio interior */
     outline: none;
+    /* sin borde de enfoque */
 }
 
 .btn-send {
     background-color: var(--primary);
+    /* azul */
     border: none;
+    /* sin borde */
     color: white;
+    /* texto blanco */
     cursor: pointer;
+    /* cursor de manita */
     padding: 10px 14px;
+    /* espacio interior */
     border-radius: 50%;
+    /* círculo perfecto */
     transition: all 0.2s;
+    /* animación suave */
 }
 
 .btn-send:hover {
     background-color: #2563eb;
+    /* azul más oscuro al pasar mouse */
 }
 
-/* Scrollbar */
+/* Scrollbar personalizado */
+/* ::-webkit-scrollbar = estilo del scrollbar en Chrome/Safari */
 ::-webkit-scrollbar {
     width: 6px;
+    /* ancho del scrollbar */
 }
 
 ::-webkit-scrollbar-track {
     background: transparent;
+    /* fondo transparente */
 }
 
 ::-webkit-scrollbar-thumb {
     background: #dee2e6;
+    /* color de la barra */
     border-radius: 3px;
+    /* esquinas redondeadas */
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: #adb5bd;
+    /* más oscuro al pasar mouse */
 }
 
-/* Responsive */
+/* Responsive para móviles */
+/* @media = reglas CSS condicionales, max-width = ancho máximo */
 @media (max-width: 768px) {
     .chat-sidebar {
         width: 100%;
+        /* ancho completo en móvil */
         position: absolute;
+        /* posición absoluta */
         z-index: 20;
+        /* encima de otros elementos */
         height: 100%;
+        /* altura completa */
     }
 
     .chat-main {
         width: 100%;
+        /* ancho completo */
     }
 }

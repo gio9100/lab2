@@ -212,7 +212,7 @@ function obtenerLeerMasTarde($usuario_id, $conexion) {
               FROM leer_mas_tarde lmt
               LEFT JOIN publicaciones p ON lmt.publicacion_id = p.id
               LEFT JOIN publicadores pub ON p.publicador_id = pub.id
-              WHERE lmt.usuario_id = ?
+              WHERE lmt.usuario_id = ? AND p.id IS NOT NULL
               ORDER BY lmt.fecha_agregado DESC";
     $stmt = $conexion->prepare($query);
     $stmt->bind_param("i", $usuario_id);

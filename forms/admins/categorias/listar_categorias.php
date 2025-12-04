@@ -1,20 +1,24 @@
 ﻿<?php
-// Verificar sesión de admin
+// Listar Categorías (Admin)
+// Muestra todas las categorías existentes y permite gestionarlas
+
+// Iniciar sesión
 session_start();
+
+// Incluir configuración y funciones de admin
 require_once '../config-admin.php';
 requerirAdmin();
 
-// Obtener datos del admin
+// Obtener datos del admin actual
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
-
-// Obtener estadísticas
 $stats = obtenerEstadisticasAdmin($conn);
 
-// Incluir archivos de categorías
+// Incluir clases de categorías
 include_once 'config-categorias.php';
 include_once 'categoria.php';
 
+// Inicializar conexión y objeto categoría
 $database = new Database();
 $db = $database->getConnection();
 $categoria = new Categoria($db);
@@ -30,32 +34,30 @@ $stmt = $categoria->leer();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorías - Lab-Explorer</title>
     
-    <!-- Fuentes de Google Fonts -->
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS de Vendors -->
+    <!-- CSS Vendors -->
     <link href="../../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../../assets/vendor/aos/aos.css" rel="stylesheet">
 
-    <!-- CSS Personalizado -->
+    <!-- CSS Principal -->
     <link href="../../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../../assets/css-admins/admin.css">
 </head>
 <body class="admin-page">
 
-    <!-- HEADER -->
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                
                 <a href="../../../index.php" class="logo d-flex align-items-end">
                     <img src="../../../assets/img/logo/nuevologo.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
                 </a>
-
                 <div class="d-flex align-items-center">
                     <div class="social-links">
                         <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
@@ -66,17 +68,15 @@ $stmt = $categoria->leer();
         </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- Contenido Principal -->
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
+                
                 <!-- Sidebar -->
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
-                            <a href="../../../index.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>Página principal
-                            </a>
                             <a href="../index-admin.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-speedometer2 me-2"></i>Panel Principal
                             </a>
@@ -92,7 +92,6 @@ $stmt = $categoria->leer();
                             <a href="crear_categoria.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-plus-circle me-2"></i>Crear Categoría
                             </a>
-                            
                             <?php if($admin_nivel == 'superadmin'): ?>
                             <a href="../admins.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-shield-check me-2"></i>Administradores
@@ -123,7 +122,7 @@ $stmt = $categoria->leer();
                     </div>
                 </div>
 
-                <!-- CONTENIDO DERECHO -->
+                <!-- Contenido Derecho -->
                 <div class="col-md-9">
                     
                     <div class="section-title" data-aos="fade-up">
@@ -131,14 +130,14 @@ $stmt = $categoria->leer();
                         <p>Gestiona las categorías para organizar las publicaciones</p>
                     </div>
                     
-                    <!-- Botón para crear nueva categoría -->
+                    <!-- Botón Nueva Categoría -->
                     <div class="d-flex justify-content-between mb-4" data-aos="fade-up" data-aos-delay="100">
                         <a href="crear_categoria.php" class="btn btn-primary">
                             <i class="bi bi-plus-circle me-1"></i> Nueva Categoría
                         </a>
                     </div>
                     
-                    <!-- Grid de categorías -->
+                    <!-- Grid de Categorías -->
                     <div class="row">
                         <?php
                         if ($stmt->rowCount() > 0) {
@@ -147,29 +146,21 @@ $stmt = $categoria->leer();
                                 $estado_badge = $row['estado'] == 'activo' ? 'bg-success' : 'bg-secondary';
                                 $icono = !empty($row['icono']) ? $row['icono'] : 'bi-flask';
                                 ?>
-                                <!-- Columna de Bootstrap (3 cards por fila en pantallas medianas) -->
                                 <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="<?= $delay ?>">
-                                    <!-- Card de la categoría -->
                                     <div class="card h-100 shadow-sm">
                                         <div class="card-body">
-                                            <!-- Header con nombre e icono -->
                                             <div class="d-flex justify-content-between align-items-start mb-3">
                                                 <h5 class="card-title">
-                                                    <!-- Icono con el color de la categoría -->
                                                     <i class="bi <?php echo $icono; ?> me-2" style="color: <?php echo $row['color']; ?>"></i>
-                                                    <!-- Nombre de la categoría -->
                                                     <?php echo htmlspecialchars($row['nombre']); ?>
                                                 </h5>
-                                                <!-- Badge del estado -->
                                                 <span class="badge <?php echo $estado_badge; ?>">
                                                     <?php echo ucfirst($row['estado']); ?>
                                                 </span>
                                             </div>
-                                            <!-- Descripción -->
                                             <p class="card-text text-muted">
                                                 <?php echo htmlspecialchars($row['descripcion'] ?? 'Sin descripción'); ?>
                                             </p>
-                                            <!-- Información adicional -->
                                             <div class="mt-3">
                                                 <small class="text-muted">
                                                     <i class="bi bi-link-45deg"></i> Slug: <?= $row['slug'] ?>
@@ -179,7 +170,6 @@ $stmt = $categoria->leer();
                                                 </small>
                                             </div>
                                         </div>
-                                        <!-- Footer con botones de acción -->
                                         <div class="card-footer bg-transparent">
                                             <div class="d-grid gap-2">
                                                 <a href="editar_categoria.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">
@@ -209,7 +199,6 @@ $stmt = $categoria->leer();
                         }
                         ?>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -219,7 +208,6 @@ $stmt = $categoria->leer();
     <script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/vendor/aos/aos.js"></script>
     <script>
-        // Inicializar AOS
         AOS.init({
             duration: 1000,
             once: true

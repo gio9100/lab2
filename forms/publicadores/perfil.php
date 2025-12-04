@@ -1,5 +1,7 @@
 ﻿<?php
+// Iniciar sesión
 session_start();
+// Incluir configuración
 require_once 'config-publicadores.php';
 
 // Verificar sesión
@@ -24,6 +26,7 @@ $mensaje = "";
 $exito = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Obtener y limpiar datos
     $nombre = trim($_POST['nombre'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $especialidad = trim($_POST['especialidad'] ?? '');
@@ -55,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['publicador_email'] = $email;
                 $_SESSION['publicador_especialidad'] = $especialidad;
                 
-                // Recargar datos
+                // Recargar datos locales
                 $publicador['nombre'] = $nombre;
                 $publicador['email'] = $email;
                 $publicador['especialidad'] = $especialidad;
@@ -92,6 +95,7 @@ if (isset($_POST['cambiar_password'])) {
     } else {
         // Verificar contraseña actual
         if (password_verify($password_actual, $publicador['password'])) {
+            // Hashear nueva contraseña
             $password_hash = password_hash($password_nueva, PASSWORD_DEFAULT);
             $update_pass = $conn->prepare("UPDATE publicadores SET password = ? WHERE id = ?");
             $update_pass->bind_param("si", $password_hash, $publicador_id);
@@ -120,7 +124,7 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - Lab-Explorer</title>
     
-    <!-- Fonts -->
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
@@ -137,6 +141,7 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
 </head>
 <body class="publicador-page">
 
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">

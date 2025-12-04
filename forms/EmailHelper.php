@@ -39,9 +39,11 @@ class EmailHelper {
             $mail->addAddress($destinatario);
 
             // Adjuntar logo como imagen embebida (CID)
-            // Esto evita que el correo se corte por ser muy largo (base64)
-            $logoPath = __DIR__ . '/../assets/img/logo/logobrayan2.ico';
-            // Fallback si no existe el .ico, intentar con png o jpg si existieran, o usar el otro ico
+            // Intentamos buscar un PNG o JPG primero, si no, usamos el ICO
+            $logoPath = __DIR__ . '/../assets/img/logo/logo.png'; // Idealmente PNG
+            if (!file_exists($logoPath)) {
+                $logoPath = __DIR__ . '/../assets/img/logo/logobrayan2.ico';
+            }
             if (!file_exists($logoPath)) {
                 $logoPath = __DIR__ . '/../assets/img/logo/logobrayan.ico';
             }
@@ -55,18 +57,46 @@ class EmailHelper {
             $mail->CharSet = 'UTF-8'; // Para tildes y ñ
             $mail->Subject = $asunto;
 
-            // Generamos el HTML del correo usando render()
+            // Lógica para manejar contenido que YA es HTML
+            $contenidoFinal = $cuerpo;
+            
+            // Si el cuerpo contiene <html> o <body>, extraemos solo el contenido relevante
+            // para meterlo en nuestra plantilla estándar con logo y estilos
+            if (stripos($cuerpo, '<body') !== false) {
+                // Usamos DOMDocument para extraer el body de forma segura
+                $dom = new DOMDocument();
+                // Suprimimos errores de HTML mal formado
+                libxml_use_internal_errors(true);
+                // Cargamos el HTML (agregamos encoding para acentos)
+                $dom->loadHTML('<?xml encoding="utf-8" ?>' . $cuerpo);
+                libxml_clear_errors();
+                
+                $body = $dom->getElementsByTagName('body')->item(0);
+                if ($body) {
+                    // Importamos los nodos del body al nuevo documento
+                    $contenidoFinal = '';
+                    foreach ($body->childNodes as $child) {
+                        $contenidoFinal .= $dom->saveHTML($child);
+                    }
+                }
+                
+                // Limpiamos estilos inline que puedan chocar con nuestro diseño
+                // (Opcional, pero recomendado para consistencia)
+                $contenidoFinal = preg_replace('/style="[^"]*"/', '', $contenidoFinal);
+                $contenidoFinal = preg_replace("/style='[^']*'/", "", $contenidoFinal);
+            } elseif (stripos($cuerpo, '<html') !== false) {
+                // Si tiene html pero no body (raro, pero posible), quitamos las etiquetas html
+                $contenidoFinal = strip_tags($cuerpo, '<p><div><br><b><strong><i><em><ul><ol><li><a><h1><h2><h3><h4><table><tr><td><th>');
+            }
+
+            // Generamos el HTML final usando SIEMPRE nuestra plantilla render()
+            // Esto asegura que SIEMPRE haya logo y estilos consistentes
             $boton = null;
             if ($botonTexto && $botonLink) {
                 $boton = ['texto' => $botonTexto, 'url' => $botonLink];
             }
             
-            // Si el cuerpo YA es HTML completo (contiene <html>), no lo renderizamos de nuevo
-            if (strpos($cuerpo, '<html') !== false) {
-                $mail->Body = $cuerpo;
-            } else {
-                $mail->Body = self::render($asunto, '', $cuerpo, $detalles, $boton, $tipo);
-            }
+            $mail->Body = self::render($asunto, '', $contenidoFinal, $detalles, $boton, $tipo);
             
             // Versión texto plano para clientes antiguos
             $mail->AltBody = strip_tags($cuerpo);
@@ -84,24 +114,23 @@ class EmailHelper {
     // Método público para generar HTML de correos (usado por otros archivos)
     // Parámetros: título, nombre destinatario, mensaje, detalles (array), botón (array), tipo
     public static function render($titulo, $nombre_destinatario, $mensaje, $detalles = [], $boton = null, $tipo = 'info') {
-        // Colores según el tipo de correo (Actualizados a gris/azul del sitio)
-        $colores = [
-            'aprobado' => '#28a745',   // Verde (mantener para éxito)
-            'rechazado' => '#dc3545',  // Rojo (mantener para error)
-            'info' => '#7390A0'        // Azul Grisáceo (Color principal del sitio)
-        ];
+        // Colores estandarizados (SIEMPRE usamos el azul del sitio como base)
+        $colorPrincipal = '#7390A0'; // Azul Grisáceo (Color principal del sitio)
         
-        $colorPrincipal = $colores[$tipo] ?? $colores['info'];
+        // Colores de acento para bordes o detalles, pero manteniendo la identidad
+        $colorAcento = $colorPrincipal;
+        if ($tipo === 'aprobado') $colorAcento = '#28a745'; // Verde solo para detalles de éxito
+        if ($tipo === 'rechazado') $colorAcento = '#dc3545'; // Rojo solo para detalles de error
         
         // Generar HTML de detalles si existen
         $detallesHtml = '';
         if (!empty($detalles)) {
-            $detallesHtml = '<div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">';
+            $detallesHtml = '<div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ' . $colorAcento . ';">';
             $detallesHtml .= '<table style="width: 100%; border-collapse: collapse;">';
             foreach ($detalles as $clave => $valor) {
                 $detallesHtml .= '<tr>';
-                $detallesHtml .= '<td style="padding: 8px; font-weight: bold; color: #666; width: 40%;">' . htmlspecialchars($clave) . ':</td>';
-                $detallesHtml .= '<td style="padding: 8px; color: #212529;">' . htmlspecialchars($valor) . '</td>';
+                $detallesHtml .= '<td style="padding: 8px; font-weight: bold; color: #5a7080; width: 40%; font-family: \'Arial\', sans-serif;">' . htmlspecialchars($clave) . ':</td>';
+                $detallesHtml .= '<td style="padding: 8px; color: #212529; font-family: \'Arial\', sans-serif;">' . htmlspecialchars($valor) . '</td>';
                 $detallesHtml .= '</tr>';
             }
             $detallesHtml .= '</table>';
@@ -116,11 +145,13 @@ class EmailHelper {
                     <a href='{$boton['url']}' style='
                         background-color: {$colorPrincipal};
                         color: #ffffff;
-                        padding: 12px 25px;
+                        padding: 14px 30px;
                         text-decoration: none;
-                        border-radius: 5px;
+                        border-radius: 50px;
                         font-weight: bold;
                         display: inline-block;
+                        font-family: Arial, sans-serif;
+                        box-shadow: 0 4px 6px rgba(115, 144, 160, 0.3);
                     '>{$boton['texto']}</a>
                 </div>
             ";
@@ -129,73 +160,41 @@ class EmailHelper {
         return self::generarPlantilla($titulo, $mensaje, $detallesHtml, $botonHtml, $colorPrincipal, $nombre_destinatario);
     }
 
-    // Genera el HTML del correo con el diseño bonito
+    // Genera el HTML del correo con diseño optimizado para Gmail
     private static function generarPlantilla($titulo, $contenido, $detallesHtml, $botonHtml, $colorPrincipal = '#7390A0', $nombre_destinatario = '') {
         
-        $colorFondo = '#f8f9fa';
-        $colorTexto = '#212529'; // Color de texto principal del sitio
+        $colorFondo = '#f4f6f8';
+        $colorTexto = '#212529';
         $anio = date('Y');
 
-        // Usamos CID para el logo en lugar de base64 gigante
-        $logoSrc = 'cid:logo_lab';
+        // Logo externo optimizado (PostImg)
+        $logoUrl = 'https://i.postimg.cc/4dHvYPSG/logobrayan-removebg-preview.png';
 
-        // HTML del correo (usamos heredoc para escribir HTML cómodamente)
+        // HTML ultra-compacto para Gmail
         return <<<HTML
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="margin: 0; padding: 0; background-color: {$colorFondo}; font-family: Arial, sans-serif;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-        <tr>
-            <td style="padding: 20px 0; text-align: center; background-color: #ffffff; border-bottom: 3px solid {$colorPrincipal};">
-                <!-- Cabecera con Logo -->
-                <img src="{$logoSrc}" alt="LabExplorer Logo" style="max-width: 150px; height: auto;">
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 40px 20px;">
-                <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" cellspacing="0" cellpadding="0" border="0">
-                    <tr>
-                        <td style="padding: 40px;">
-                            <!-- Título del correo -->
-                            <h1 style="color: {$colorPrincipal}; margin: 0 0 20px 0; font-size: 24px; text-align: center;">
-                                {$titulo}
-                            </h1>
-                            
-                            <!-- Contenido principal -->
-                            <div style="color: {$colorTexto}; line-height: 1.6; font-size: 16px;">
-                                {$contenido}
-                            </div>
-
-                            <!-- Detalles (si existen) -->
-                            {$detallesHtml}
-
-                            <!-- Botón de acción (si existe) -->
-                            {$botonHtml}
-                            
-                            <!-- Despedida -->
-                            <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; font-size: 14px; color: #666;">
-                                <p>Atentamente,<br>El equipo de LabExplorer</p>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 20px; text-align: center; color: #999; font-size: 12px;">
-                <!-- Pie de página -->
-                <p>&copy; {$anio} LabExplorer. Todos los derechos reservados.</p>
-                <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,sans-serif">
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="padding:15px 0;text-align:center;background:#fff">
+<img src="{$logoUrl}" alt="LabExplorer" style="max-width:60px;height:auto">
+<div style="color:{$colorPrincipal};font-size:18px;font-weight:bold;margin-top:8px">LabExplorer</div>
+</td></tr><tr><td style="padding:0 15px 30px">
+<table style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px" cellspacing="0" cellpadding="0">
+<tr><td style="height:3px;background:{$colorPrincipal}"></td></tr>
+<tr><td style="padding:25px">
+<h1 style="color:{$colorPrincipal};margin:0 0 15px;font-size:20px;text-align:center">{$titulo}</h1>
+<div style="color:{$colorTexto};line-height:1.6;font-size:14px">{$contenido}</div>
+{$detallesHtml}
+{$botonHtml}
+<div style="margin-top:25px;border-top:1px solid #eee;padding-top:15px;font-size:12px;color:#6c757d;text-align:center">
+<p style="margin:0">Atentamente,</p>
+<p style="margin:5px 0 0;font-weight:bold;color:{$colorPrincipal}">El equipo de LabExplorer</p>
+</div>
+</td></tr></table>
+</td></tr><tr><td style="padding:0 15px 20px;text-align:center;color:#999;font-size:10px">
+<p>&copy; {$anio} LabExplorer</p>
+</td></tr></table>
+</body></html>
 HTML;
     }
 }
-?>

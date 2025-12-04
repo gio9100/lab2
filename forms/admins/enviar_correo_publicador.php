@@ -1,54 +1,21 @@
 ﻿<?php
-// ============================================================================
-// 📧 ARCHIVO: enviar_correo_publicador.php
-// ============================================================================
-// PROPÓSITO: Gestionar el envío de correos electrónicos a publicadores y admins
-//
-// FUNCIONES PRINCIPALES:
-// 1. enviarCorreoAprobacion() - Notifica al publicador cuando es aprobado
-// 2. enviarCorreoRechazo() - Notifica al publicador cuando es rechazado
-// 3. enviarCorreoNuevoPublicadorAAdmins() - Notifica a admins de nuevo registro
-//
-// TECNOLOGÍA USADA:
-// - PHPMailer: Librería para envío de correos con SMTP
-// - Gmail SMTP: Servidor de correo de Google
-// - HTML: Para correos con formato profesional
-// ============================================================================
+// Enviar Correo Publicador (Admin)
+// Funciones para enviar notificaciones por correo a publicadores y administradores
 
-// Incluimos las clases de PHPMailer que necesitamos
-require_once __DIR__ . '/../PHPMailer/PHPMailer.php';  // Clase principal
-require_once __DIR__ . '/../PHPMailer/SMTP.php';        // Para conexión SMTP
-require_once __DIR__ . '/../PHPMailer/Exception.php';   // Para manejo de errores
+// Incluir clases de PHPMailer
+require_once __DIR__ . '/../PHPMailer/PHPMailer.php';
+require_once __DIR__ . '/../PHPMailer/SMTP.php';
+require_once __DIR__ . '/../PHPMailer/Exception.php';
 
-// Importamos las clases al namespace actual para usarlas fácilmente
+// Usar namespace de PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Incluimos el Helper de Emails
+// Incluir Helper de Emails
 require_once __DIR__ . '/../EmailHelper.php';
 
-/**
- * ============================================================================
- * FUNCIÓN 1: enviarCorreoAprobacion
- * ============================================================================
- * 
- * ¿QUÉ HACE?
- * Envía un correo de felicitación al publicador cuando su cuenta es aprobada
- * 
- * ¿CUÁNDO SE USA?
- * Se llama desde gestionar_publicadores.php cuando un admin aprueba a un
- * publicador pendiente
- * 
- * PARÁMETROS:
- * @param string $email_publicador - Email del publicador aprobado
- * @param string $nombre_publicador - Nombre completo del publicador
- * 
- * RETORNA:
- * @return bool - true si el correo se envió correctamente, false si hubo error
- * 
- * EJEMPLO DE USO:
- * enviarCorreoAprobacion('juan@gmail.com', 'Juan Pérez');
- */
+// Función: Enviar correo de aprobación
+// Notifica al publicador que su cuenta ha sido aprobada
 function enviarCorreoAprobacion($email_publicador, $nombre_publicador) {
     $asunto = "✅ ¡Bienvenido a Lab Explorer! Tu cuenta ha sido aprobada";
     
@@ -73,29 +40,8 @@ function enviarCorreoAprobacion($email_publicador, $nombre_publicador) {
     );
 }
 
-/**
- * ============================================================================
- * FUNCIÓN 2: enviarCorreoRechazo
- * ============================================================================
- * 
- * ¿QUÉ HACE?
- * Envía un correo al publicador informándole que su solicitud fue rechazada
- * 
- * ¿CUÁNDO SE USA?
- * Se llama desde gestionar_publicadores.php cuando un admin rechaza a un
- * publicador pendiente
- * 
- * PARÁMETROS:
- * @param string $email_publicador - Email del publicador rechazado
- * @param string $nombre_publicador - Nombre completo del publicador
- * @param string $motivo - Razón del rechazo (opcional)
- * 
- * RETORNA:
- * @return bool - true si el correo se envió correctamente, false si hubo error
- * 
- * EJEMPLO DE USO:
- * enviarCorreoRechazo('juan@gmail.com', 'Juan Pérez', 'Información incompleta');
- */
+// Función: Enviar correo de rechazo
+// Notifica al publicador que su solicitud ha sido rechazada
 function enviarCorreoRechazo($email_publicador, $nombre_publicador, $motivo = '') {
     $asunto = "❌ Actualización sobre tu solicitud en Lab Explorer";
     
@@ -127,46 +73,18 @@ function enviarCorreoRechazo($email_publicador, $nombre_publicador, $motivo = ''
     );
 }
 
-/**
- * ============================================================================
- * FUNCIÓN 3: enviarCorreoNuevoPublicadorAAdmins
- * ============================================================================
- * 
- * ¿QUÉ HACE?
- * Notifica a TODOS los administradores activos cuando un nuevo publicador
- * se registra en el sistema
- * 
- * ¿CUÁNDO SE USA?
- * Se llama desde registro-publicadores.php cuando un nuevo publicador
- * completa su registro exitosamente
- * 
- * PARÁMETROS:
- * @param string $nombre_publicador - Nombre del nuevo publicador
- * @param string $email_publicador - Email del nuevo publicador
- * @param string $especialidad - Especialidad del publicador
- * @param mysqli $conn - Conexión a la base de datos
- * 
- * RETORNA:
- * @return bool - true si se envió a al menos un admin, false si no hay admins
- * 
- * EJEMPLO DE USO:
- * enviarCorreoNuevoPublicadorAAdmins('Juan Pérez', 'juan@gmail.com', 'Hematología', $conn);
- */
+// Función: Notificar nuevo publicador a administradores
+// Envía un correo a todos los admins activos cuando se registra un nuevo publicador
 function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicador, $especialidad, $conn) {
-    // ====================================================================
-    // PASO 1: OBTENER TODOS LOS ADMINISTRADORES ACTIVOS
-    // ====================================================================
+    // Obtener admins activos
     $query = "SELECT email, nombre FROM admins WHERE estado = 'activo'";
     $result = $conn->query($query);
     
-    // Si no hay admins activos o hubo error, salimos
     if (!$result || $result->num_rows === 0) {
         return false;
     }
     
-    // ====================================================================
-    // PASO 2: PREPARAR EL CONTENIDO DEL CORREO
-    // ====================================================================
+    // Preparar mensaje
     $asunto = "🔔 Nuevo Publicador Pendiente de Aprobación";
     
     $mensaje_html = "
@@ -181,9 +99,7 @@ function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicado
         <p>Por favor, revisa la información del publicador y procede con la aprobación o rechazo desde el panel de administración.</p>
     ";
     
-    // ====================================================================
-    // PASO 3: ENVIAR CORREO A CADA ADMINISTRADOR
-    // ====================================================================
+    // Enviar a cada admin
     $enviados = 0;
     while ($admin = $result->fetch_assoc()) {
         $exito = EmailHelper::enviarCorreo(
@@ -199,7 +115,6 @@ function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicado
         }
     }
     
-    // Retornamos true si se envió al menos a un admin
     return $enviados > 0;
 }
 ?>

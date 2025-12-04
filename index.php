@@ -71,33 +71,8 @@ if ($result_categorias) {
 // Cerramos el while
 }
 // Cerramos el if
-
-// Línea vacía
-// Comentario que explica la siguiente función
-function imagenDefault($categoria) {
-// Definimos una función que se llama imagenDefault y recibe una categoría
-    $imagenes = [
-// Creamos un array con las rutas de las imágenes por defecto
-        "serie roja" => "assets/img/serie roja/serie roja.jfif",
-// Si la categoría es "serie roja", usa esta imagen
-        "hematologia" => "assets/img/hematologia/hematologia.jpeg",
-// Si la categoría es "hematologia", usa esta imagen
-        "bacteriologia" => "assets/img/bacteriologia/bacteriologia-general.jfif",
-// Si la categoría es "bacteriologia", usa esta imagen
-        "parasitologia" => "assets/img/parasitologia/parasitologia.jpeg",
-// Si la categoría es "parasitologia", usa esta imagen
-        "toma de muestra" => "assets/img/toma de muestra/toma de muestra.jfif"
-// Si la categoría es "toma de muestra", usa esta imagen
-    ];
-// Cerramos el array de imágenes
     $cat = strtolower($categoria ?? "");
 // Convertimos el nombre de la categoría a minúsculas para comparar
-    return $imagenes[$cat] ?? "assets/img/blog/blog-post-1.webp";
-// Devolvemos la imagen de esa categoría, o una genérica si no existe
-}
-// Cerramos la función imagenDefault
-
-// Línea vacía
 function acortar($texto, $limite = 150) {
 // Definimos una función para acortar textos largos, por defecto corta a 150 caracteres
     $texto = strip_tags($texto);
@@ -120,8 +95,7 @@ function acortar($texto, $limite = 150) {
 <!-- Hacemos que la página sea responsive (se adapte a celulares) -->
     <title>Lab-Explorer - Publicaciones</title>
 <!-- Título que aparece en la pestaña del navegador -->
-    
-<!-- Línea vacía -->
+
     <!-- Fonts -->
 <!-- Comentario que indica que aquí van las fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -131,861 +105,1090 @@ function acortar($texto, $limite = 150) {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <!-- Cargamos las fuentes Roboto, Poppins y Nunito de Google Fonts -->
     
-<!-- Línea vacía -->
+
     <!-- Bootstrap Icons -->
 <!-- Comentario que indica que aquí van los iconos de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 <!-- Cargamos los iconos de Bootstrap desde un CDN -->
     
-<!-- Línea vacía -->
+
     <!-- Bootstrap CSS -->
 <!-- Comentario que indica que aquí va el CSS de Bootstrap -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <!-- Cargamos el framework Bootstrap para que todo se vea ordenado -->
     
-<!-- Línea vacía -->
+
     <!-- Main CSS -->
-<!-- Comentario que indica que aquí van nuestros archivos CSS -->
     <link href="assets/css/main.css" rel="stylesheet">
-<!-- Cargamos nuestro archivo CSS principal -->
-    <link rel="stylesheet" href="assets/css-admins/admin.css">
-<!-- Cargamos el CSS de administración -->
-    
-<!-- Línea vacía -->
-    <style>
-/* Abrimos una etiqueta style para escribir CSS personalizado */
-        :root {
-/* Definimos variables CSS globales */
-            --primary: #7390A0;
-/* Variable para el color azul principal del sitio */
-            --primary-dark: #5a7080;
-/* Variable para el azul más oscuro (cuando pasas el mouse) */
-            --accent: #f75815;
-/* Variable para el color naranja de acentos */
-            --text: #212529;
-/* Variable para el color del texto normal (casi negro) */
-            --text-light: #6c757d;
-/* Variable para el color del texto secundario (gris) */
-            --background: #f8f9fa;
-/* Variable para el color de fondo de la página (gris muy claro) */
-            --white: #ffffff;
-/* Variable para el color blanco puro */
-            --border: #e9ecef;
-/* Variable para el color de los bordes (gris claro) */
-            --shadow: 0 2px 8px rgba(0,0,0,0.08);
-/* Variable para la sombra normal de las tarjetas */
-            --shadow-hover: 0 8px 20px rgba(0,0,0,0.12);
-/* Variable para la sombra cuando pasas el mouse sobre las tarjetas */
-        }
-/* Cerramos las variables CSS */
-
-/* Línea vacía */
-        * {
-/* Selector universal que afecta a TODOS los elementos */
-            margin: 0;
-/* Quitamos todos los márgenes por defecto */
-            padding: 0;
-/* Quitamos todo el padding por defecto */
-            box-sizing: border-box;
-/* Hacemos que el padding y border no agranden las cajas */
-        }
-/* Cerramos el selector universal */
-
-/* Línea vacía */
-        body {
-/* Estilos para el body (todo el documento) */
-            font-family: 'Inter', sans-serif;
-/* Ponemos el color de fondo usando la variable */
-            color: var(--text);
-/* Ponemos el color del texto usando la variable */
-            line-height: 1.6;
-/* Espaciado entre líneas de texto */
-        }
-/* Cerramos los estilos del body */
-
-/* Línea vacía */
-        /* Main Content */
-/* Comentario CSS para la sección de contenido principal */
-        .main-content {
-/* Clase para el contenedor principal de todo el contenido */
-            max-width: 1400px;
-/* Ancho máximo de 1400px para que no se vea muy estirado en pantallas grandes */
-            margin: 0 auto;
-/* Centramos el contenedor horizontalmente */
-            padding: 40px 20px;
-/* Espaciado interno: 40px arriba/abajo, 20px izquierda/derecha */
-        }
-/* Cerramos la clase main-content */
-
-/* Línea vacía */
-        .page-title {
-/* Clase para el título de la página */
-            text-align: center;
-/* Centramos el texto */
-            margin-bottom: 50px;
-/* Espacio de 50px abajo del título */
-        }
-/* Cerramos la clase page-title */
-
-/* Línea vacía */
-        .page-title h1 {
-/* Estilos para el h1 dentro de page-title */
-            font-family: 'Nunito', sans-serif;
-/* Usamos la fuente Nunito para el título */
-            font-size: 2.5rem;
-/* Tamaño de fuente grande (2.5 veces el tamaño base) */
-            color: var(--text);
-/* Color del texto usando la variable */
-            margin-bottom: 10px;
-/* Espacio de 10px abajo del h1 */
-            font-weight: 600;
-/* Grosor del texto (semi-bold) */
-        }
-/* Cerramos los estilos del h1 */
-
-/* Línea vacía */
-        .page-title p {
-/* Estilos para el párrafo dentro de page-title */
-            color: var(--text-light);
-/* Color gris claro para el texto */
-            font-size: 1.1rem;
-/* Tamaño un poco más grande que el normal */
-        }
-/* Cerramos los estilos del párrafo */
-
-/* Línea vacía */
-        /* Category Section */
-/* Comentario CSS para la sección de categorías */
-        .category-section {
-/* Clase para cada sección de categoría */
-            margin-bottom: 60px;
-/* Espacio de 60px entre cada categoría */
-        }
-/* Cerramos la clase category-section */
-
-/* Línea vacía */
-        .category-header {
-/* Clase para el encabezado de cada categoría */
-            display: flex;
-/* Usamos flexbox para alinear el icono y el texto */
-            align-items: center;
-/* Centramos verticalmente los elementos */
-            gap: 15px;
-/* Espacio de 15px entre el icono y el texto */
-            margin-bottom: 30px;
-/* Espacio de 30px abajo del encabezado */
-            padding-top: 20px;
-/* Espacio de 20px arriba del encabezado */
-            padding-bottom: 15px;
-/* Espacio de 15px abajo del encabezado */
-            border-top: 3px solid var(--primary);
-/* Línea azul de 3px arriba para separar categorías */
-        }
-/* Cerramos la clase category-header */
-
-/* Línea vacía */
-        .category-header i {
-/* Estilos para el icono dentro del encabezado */
-            font-size: 1.8rem;
-/* Tamaño del icono */
-            color: var(--primary);
-/* Color azul del icono */
-        }
-/* Cerramos los estilos del icono */
-
-/* Línea vacía */
-        .category-header h2 {
-/* Estilos para el h2 dentro del encabezado */
-            font-family: 'Nunito', sans-serif;
-/* Usamos la fuente Nunito */
-            font-size: 1.8rem;
-/* Tamaño del título de categoría */
-            color: var(--text);
-/* Color del texto */
-            margin: 0;
-/* Sin margen */
-            font-weight: 600;
-/* Grosor del texto (semi-bold) */
-        }
-/* Cerramos los estilos del h2 */
-
-/* Línea vacía */
-        /* Publication Grid */
-/* Comentario CSS para el grid de publicaciones */
-        .publications-grid {
-/* Clase para el contenedor de las tarjetas */
-            display: grid;
-/* Usamos CSS Grid para organizar las tarjetas */
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-/* Columnas automáticas de mínimo 320px que se ajustan al espacio */
-            gap: 30px;
-/* Espacio de 30px entre cada tarjeta */
-        }
-/* Cerramos la clase publications-grid */
-
-/* Línea vacía */
-        /* Publication Card */
-/* Comentario CSS para las tarjetas de publicación */
-        .publication-card {
-/* Clase para cada tarjeta de publicación */
-            background: var(--white);
-/* Fondo blanco */
-            border-radius: 16px;
-/* Esquinas redondeadas de 16px */
-            overflow: hidden;
-/* Escondemos lo que se salga de la tarjeta */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-/* Sombra más pronunciada */
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-/* Animación suave con curva personalizada */
-            display: flex;
-/* Usamos flexbox */
-            flex-direction: column;
-/* Los elementos van en columna (uno abajo del otro) */
-            height: 100%;
-/* Altura del 100% del contenedor */
-            border: 1px solid rgba(115, 144, 160, 0.1);
-/* Borde sutil con el color principal */
-        }
-/* Cerramos la clase publication-card */
-
-/* Línea vacía */
-        .publication-card:hover {
-/* Estilos cuando pasas el mouse sobre la tarjeta */
-            transform: translateY(-12px);
-/* Movemos la tarjeta 12px hacia arriba (más que antes) */
-            box-shadow: 0 15px 40px rgba(115, 144, 160, 0.2);
-/* Sombra más grande con tinte azul */
-            border-color: rgba(115, 144, 160, 0.3);
-/* Borde más visible */
-        }
-/* Cerramos el hover de la tarjeta */
-
-/* Línea vacía */
-        .card-image {
-/* Clase para el contenedor de la imagen */
-            position: relative;
-/* Posición relativa para poder poner el badge encima */
-            width: 100%;
-/* Ancho del 100% */
-            height: 220px;
-/* Altura fija de 220px */
-            overflow: hidden;
-/* Escondemos lo que se salga */
-        }
-/* Cerramos la clase card-image */
-
-/* Línea vacía */
-        .card-image img {
-/* Estilos para la imagen dentro de card-image */
-            width: 100%;
-/* Ancho del 100% */
-            height: 100%;
-/* Altura del 100% */
-            object-fit: cover;
-/* La imagen cubre todo el espacio sin deformarse */
-            transition: transform 0.3s ease;
-/* Animación suave para el zoom */
-        }
-/* Cerramos los estilos de la imagen */
-
-/* Línea vacía */
-        .publication-card:hover .card-image img {
-/* Estilos para la imagen cuando pasas el mouse sobre la tarjeta */
-            transform: scale(1.1);
-/* Hacemos zoom a la imagen (110% del tamaño original) --> */
-        }
-/* Cerramos el hover de la imagen */
-
-/* Línea vacía */
-        .category-badge {
-/* Clase para el badge de categoría que va sobre la imagen */
-            position: absolute;
-/* Posición absoluta para ponerlo encima de la imagen */
-            top: 15px;
-/* 15px desde arriba */
-            right: 15px;
-/* 15px desde la derecha */
-            background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%);
-/* Fondo con degradado azul */
-            color: var(--white);
-/* Texto blanco */
-            padding: 8px 16px;
-/* Espaciado interno: 8px arriba/abajo, 16px izquierda/derecha */
-            border-radius: 25px;
-/* Esquinas muy redondeadas (forma de píldora) */
-            font-size: 0.85rem;
-/* Tamaño de fuente pequeño */
-            font-weight: 600;
-/* Texto semi-bold */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-/* Sombra más pronunciada para que se vea sobre la imagen */
-            backdrop-filter: blur(10px);
-/* Efecto de desenfoque del fondo */
-        }
-/* Cerramos la clase category-badge */
-
-/* Línea vacía */
-        .card-content {
-/* Clase para el contenido de la tarjeta (todo menos la imagen) */
-            padding: 25px;
-/* Espaciado interno de 25px */
-            flex: 1;
-/* Ocupa todo el espacio disponible */
-            display: flex;
-/* Usamos flexbox */
-            flex-direction: column;
-/* Elementos en columna */
-        }
-/* Cerramos la clase card-content */
-
-/* Línea vacía */
-        .card-title {
-/* Clase para el título de la publicación */
-            font-family: 'Nunito', sans-serif;
-/* Usamos la fuente Nunito */
-            font-size: 1.4rem;
-/* Tamaño del título */
-            font-weight: 700;
-/* Texto bold (grueso) */
-            color: var(--text);
-/* Color del texto */
-            margin-bottom: 12px;
-/* Espacio de 12px abajo */
-            line-height: 1.3;
-/* Espaciado entre líneas */
-        }
-/* Cerramos la clase card-title */
-
-/* Línea vacía */
-        .card-excerpt {
-/* Clase para el resumen/extracto de la publicación */
-            color: var(--text-light);
-/* Color gris claro */
-            font-size: 0.95rem;
-/* Tamaño un poco más pequeño */
-            margin-bottom: 20px;
-/* Espacio de 20px abajo */
-            line-height: 1.6;
-/* Espaciado entre líneas */
-            flex: 1;
-/* Ocupa el espacio disponible */
-        }
-/* Cerramos la clase card-excerpt */
-
-/* Línea vacía */
-        .card-meta {
-/* Clase para el contenedor de metadatos (autor y fecha) */
-            display: flex;
-/* Usamos flexbox */
-            flex-direction: column;
-/* Elementos en columna */
-            gap: 8px;
-/* Espacio de 8px entre elementos */
-            margin-bottom: 20px;
-/* Espacio de 20px abajo */
-            padding-top: 15px;
-/* Espacio de 15px arriba */
-            border-top: 1px solid var(--border);
-/* Línea separadora arriba */
-        }
-/* Cerramos la clase card-meta */
-
-/* Línea vacía */
-        .meta-item {
-/* Clase para cada item de metadatos */
-            display: flex;
-/* Usamos flexbox */
-            align-items: center;
-/* Centramos verticalmente */
-            gap: 8px;
-/* Espacio de 8px entre icono y texto */
-            font-size: 0.9rem;
-/* Tamaño de fuente pequeño */
-            color: var(--text-light);
-/* Color gris claro */
-        }
-/* Cerramos la clase meta-item */
-
-/* Línea vacía */
-        .meta-item i {
-/* Estilos para el icono dentro de meta-item */
-            color: var(--primary);
-/* Color azul */
-            font-size: 1rem;
-/* Tamaño del icono */
-        }
-/* Cerramos los estilos del icono */
-
-/* Línea vacía */
-        .card-footer {
-/* Clase para el footer de la tarjeta (donde va el botón) */
-            padding-top: 15px;
-/* Espacio de 15px arriba */
-        }
-/* Cerramos la clase card-footer */
-
-/* Línea vacía */
-        .btn-read-more {
-/* Clase para el botón de "Leer más" */
-            display: inline-flex;
-/* Usamos inline-flex para que sea un botón flexible en línea */
-            align-items: center;
-/* Centramos verticalmente el contenido del botón */
-            gap: 8px;
-/* Espacio de 8px entre el texto y el icono */
-            padding: 12px 28px;
-/* Espaciado interno: 12px arriba/abajo, 28px izquierda/derecha */
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-/* Fondo con degradado azul del color principal al oscuro */
-            color: var(--white);
-/* Texto blanco */
-            text-decoration: none;
-/* Sin subrayado */
-            border-radius: 25px;
-/* Bordes muy redondeados (forma de píldora) */
-            font-weight: 600;
-/* Texto semi-bold */
-            transition: all 0.3s ease;
-/* Transición suave para todos los cambios */
-            box-shadow: 0 4px 12px rgba(115, 144, 160, 0.3);
-/* Sombra azulada para dar profundidad */
-        }
-/* Cerramos la clase btn-read-more */
-
-/* Línea vacía */
-        .btn-read-more:hover {
-/* Estilos cuando pasas el mouse sobre el botón */
-            transform: translateY(-2px);
-/* Movemos el botón 2px hacia arriba */
-            box-shadow: 0 6px 20px rgba(115, 144, 160, 0.4);
-/* Sombra más grande y pronunciada */
-            color: var(--white);
-/* Mantenemos el texto blanco */
-        }
-/* Cerramos el hover del botón */
-
-/* Línea vacía */
-        .btn-read-more i {
-/* Estilos para el icono dentro del botón */
-            transition: transform 0.3s ease;
-/* Transición suave para el icono */
-        }
-/* Cerramos los estilos del icono */
-
-/* Línea vacía */
-        .btn-read-more:hover i {
-/* Estilos para el icono cuando pasas el mouse sobre el botón */
-            transform: translateX(5px);
-/* Movemos el icono 5px a la derecha (efecto de flecha) */
-        }
-/* Cerramos el hover del icono */
-
-/* Línea vacía */
-        /* Empty State */
-/* Comentario CSS para el estado vacío */
-        .empty-state {
-/* Clase para cuando no hay publicaciones */
-            text-align: center;
-/* Centramos el texto */
-            padding: 60px 20px;
-/* Espaciado interno: 60px arriba/abajo, 20px izquierda/derecha */
-            color: var(--text-light);
-/* Color gris claro */
-        }
-/* Cerramos la clase empty-state */
-
-/* Línea vacía */
-        .empty-state i {
-/* Estilos para el icono del estado vacío */
-            font-size: 4rem;
-/* Tamaño muy grande */
-            color: var(--border);
-/* Color gris muy claro */
-            margin-bottom: 20px;
-/* Espacio de 20px abajo */
-        }
-/* Cerramos los estilos del icono */
-
-/* Línea vacía */
-        /* Search and Filter Section - DISEÑO MEJORADO */
-/* Comentario CSS para la sección de búsqueda y filtros mejorada */
-        .search-filter-section {
-/* Contenedor principal de búsqueda y filtros */
-            max-width: 1200px;
-/* Ancho máximo */
-            margin: 0 auto 50px;
-/* Centrado y más margen abajo */
-            padding: 30px 20px;
-/* Más padding */
-            background: linear-gradient(135deg, rgba(115, 144, 160, 0.05) 0%, rgba(115, 144, 160, 0.12) 100%);
-/* Fondo degradado azul muy sutil */
-            border-radius: 20px;
-/* Bordes redondeados */
-            box-shadow: 0 4px 20px rgba(115, 144, 160, 0.1);
-/* Sombra azulada sutil */
-            border: 1px solid rgba(115, 144, 160, 0.1);
-/* Borde azul muy sutil */
-        }
-/* Cerramos search-filter-section */
-
-/* Línea vacía */
-        .search-box {
-/* Contenedor del buscador */
-            position: relative;
-/* Posición relativa para el icono */
-            max-width: 700px;
-/* Ancho máximo más grande */
-            margin: 0 auto 25px;
-/* Centrado y margen abajo */
-        }
-/* Cerramos search-box */
-
-/* Línea vacía */
-        .search-icon {
-/* Icono de lupa */
-            position: absolute;
-/* Posición absoluta dentro del contenedor */
-            left: 25px;
-/* 25px desde la izquierda */
-            top: 50%;
-/* Centrado verticalmente */
-            transform: translateY(-50%);
-/* Ajuste de centrado */
-            color: var(--primary);
-/* Color azul principal */
-            font-size: 1.3rem;
-/* Tamaño del icono más grande */
-            pointer-events: none;
-/* No interfiere con el input */
-            z-index: 2;
-/* Encima del input */
-            transition: all 0.3s ease;
-/* Transición suave */
-        }
-/* Cerramos search-icon */
-
-/* Línea vacía */
-        .search-input {
-/* Campo de texto del buscador */
-            width: 100%;
-/* Ancho completo */
-            padding: 18px 25px 18px 60px;
-/* Padding con espacio para el icono */
-            border: 2px solid rgba(115, 144, 160, 0.2);
-/* Borde azul sutil */
-            border-radius: 50px;
-/* Bordes muy redondeados (píldora) */
-            font-size: 1.05rem;
-/* Tamaño de fuente */
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-/* Transición suave con curva personalizada */
-            background: white;
-/* Fondo blanco */
-            color: var(--text);
-/* Color de texto */
-            box-shadow: 0 4px 15px rgba(115, 144, 160, 0.15), inset 0 1px 3px rgba(0,0,0,0.05);
-/* Sombra azulada y sombra interna */
-            font-weight: 500;
-/* Peso medio */
-        }
-/* Cerramos search-input */
-
-/* Línea vacía */
-        .search-input::placeholder {
-/* Placeholder del input */
-            color: var(--text-light);
-/* Color gris */
-            font-weight: 400;
-/* Peso normal */
-        }
-/* Cerramos placeholder */
-
-/* Línea vacía */
-        .search-input:focus {
-/* Cuando el input tiene foco (está activo) */
-            outline: none;
-/* Quitamos el outline por defecto */
-            border-color: var(--primary);
-/* Borde azul */
-            box-shadow: 0 8px 30px rgba(115, 144, 160, 0.25), 0 0 0 4px rgba(115, 144, 160, 0.1), inset 0 1px 3px rgba(0,0,0,0.05);
-/* Sombra azul más intensa, anillo de foco y sombra interna */
-            transform: translateY(-2px);
-/* Efecto de levantar */
-        }
-/* Cerramos search-input:focus */
-
-/* Línea vacía */
-        .search-input:focus + .search-icon {
-/* Icono cuando el input tiene foco */
-            color: var(--primary-dark);
-/* Azul más oscuro */
-            transform: translateY(-50%) scale(1.1);
-/* Agrandar ligeramente */
-        }
-/* Cerramos focus del icono */
-
-/* Línea vacía */
-        .category-filters {
-/* Contenedor de los botones de categorías */
-            display: flex;
-/* Flexbox */
-            flex-wrap: wrap;
-/* Permitir que se envuelvan */
-            gap: 15px;
-/* Más espacio entre botones */
-            justify-content: center;
-/* Centrar los botones */
-        }
-/* Cerramos category-filters */
-
-/* Línea vacía */
-        .category-filter-btn {
-/* Botón de filtro de categoría */
-            padding: 12px 24px;
-/* Más padding interno */
-            border: 2px solid rgba(115, 144, 160, 0.25);
-/* Borde azul sutil */
-            border-radius: 30px;
-/* Bordes más redondeados */
-            background: linear-gradient(135deg, white 0%, rgba(115, 144, 160, 0.03) 100%);
-/* Degradado blanco a azul muy sutil */
-            color: var(--text);
-/* Texto oscuro */
-            font-size: 0.95rem;
-/* Tamaño de fuente */
-            font-weight: 600;
-/* Peso más pesado */
-            cursor: pointer;
-/* Cursor de manita */
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-/* Transición suave con curva personalizada */
-            display: flex;
-/* Flexbox para alinear icono y texto */
-            align-items: center;
-/* Centrar verticalmente */
-            gap: 8px;
-/* Espacio entre icono y texto */
-            box-shadow: 0 3px 10px rgba(115, 144, 160, 0.12);
-/* Sombra azulada sutil */
-            position: relative;
-/* Posición relativa para efectos */
-            overflow: hidden;
-/* Ocultar desbordamiento para efecto */
-        }
-/* Cerramos category-filter-btn */
-
-/* Línea vacía */
-        .category-filter-btn::before {
-/* Pseudo-elemento para efecto de fondo */
-            content: '';
-/* Contenido vacío */
-            position: absolute;
-/* Posición absoluta */
-            top: 0;
-/* Arriba */
-            left: -100%;
-/* Fuera de la vista a la izquierda */
-            width: 100%;
-/* Ancho completo */
-            height: 100%;
-/* Alto completo */
-            background: linear-gradient(90deg, transparent, rgba(115, 144, 160, 0.15), transparent);
-/* Degradado de brillo */
-            transition: left 0.5s ease;
-/* Transición del movimiento */
-        }
-/* Cerramos pseudo-elemento */
-
-/* Línea vacía */
-        .category-filter-btn::after {
-/* Segundo pseudo-elemento para brillo adicional */
-            content: '';
-/* Contenido vacío */
-            position: absolute;
-/* Posición absoluta */
-            top: -50%;
-/* Arriba fuera de vista */
-            left: -50%;
-/* Izquierda fuera de vista */
-            width: 200%;
-/* Doble de ancho */
-            height: 200%;
-/* Doble de alto */
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-/* Degradado radial de brillo */
-            opacity: 0;
-/* Invisible por defecto */
-            transition: opacity 0.3s ease;
-/* Transición de opacidad */
-        }
-/* Cerramos segundo pseudo-elemento */
-
-/* Línea vacía */
-        .category-filter-btn:hover {
-/* Hover del botón */
-            border-color: var(--primary);
-/* Borde azul */
-            background: linear-gradient(135deg, rgba(115, 144, 160, 0.08) 0%, rgba(115, 144, 160, 0.15) 100%);
-/* Fondo degradado azul más visible */
-            transform: translateY(-3px);
-/* Efecto de levantar más pronunciado */
-            box-shadow: 0 10px 25px rgba(115, 144, 160, 0.25);
-/* Sombra más grande */
-        }
-/* Cerramos category-filter-btn:hover */
-
-/* Línea vacía */
-        .category-filter-btn:hover::before {
-/* Efecto de brillo al hacer hover */
-            left: 100%;
-/* Se mueve a la derecha */
-        }
-/* Cerramos hover del pseudo-elemento */
-
-/* Línea vacía */
-        .category-filter-btn:hover::after {
-/* Brillo adicional al hover */
-            opacity: 1;
-/* Visible */
-        }
-/* Cerramos hover del segundo pseudo-elemento */
-
-/* Línea vacía */
-        .category-filter-btn.active {
-/* Botón activo */
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-/* Degradado azul */
-            color: white;
-/* Texto blanco */
-            border-color: var(--primary);
-/* Borde azul */
-            box-shadow: 0 8px 25px rgba(115, 144, 160, 0.4), inset 0 1px 2px rgba(255,255,255,0.2);
-/* Sombra azulada más pronunciada y brillo interno */
-            transform: translateY(-2px);
-/* Ligeramente levantado */
-        }
-/* Cerramos category-filter-btn.active */
-
-/* Línea vacía */
-        .category-filter-btn.active::before {
-/* Pseudo-elemento del botón activo */
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-/* Brillo blanco */
-        }
-/* Cerramos pseudo-elemento activo */
-
-/* Línea vacía */
-        .category-filter-btn.active:hover {
-/* Hover del botón activo */
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-/* Degradado azul invertido */
-            transform: translateY(-4px) scale(1.02);
-/* Más levantado y ligeramente más grande */
-            box-shadow: 0 12px 35px rgba(115, 144, 160, 0.5), inset 0 1px 2px rgba(255,255,255,0.3);
-/* Sombra aún más grande y más brillo interno */
-        }
-/* Cerramos category-filter-btn.active:hover */
-
-/* Línea vacía */
-        .category-filter-btn i {
-/* Iconos en los botones */
-            font-size: 1.1rem;
-/* Tamaño del icono */
-            transition: transform 0.3s ease;
-/* Transición para animación */
-        }
-/* Cerramos icono */
-
-/* Línea vacía */
-        .category-filter-btn:hover i {
-/* Icono al hacer hover */
-            transform: scale(1.2) rotate(5deg);
-/* Agrandar y rotar ligeramente */
-        }
-/* Cerramos hover del icono */
-
-/* Línea vacía */
-        .category-filter-btn.active i {
-/* Icono del botón activo */
-            animation: pulse-icon 0.6s ease;
-/* Animación de pulso */
-        }
-/* Cerramos icono activo */
-
-/* Línea vacía */
-        @keyframes pulse-icon {
-/* Animación de pulso para el icono */
-            0%, 100% {
-/* Inicio y fin */
-                transform: scale(1);
-/* Tamaño normal */
-            }
-/* Cerramos 0% y 100% */
-            50% {
-/* Mitad de la animación */
-                transform: scale(1.3);
-/* Más grande */
-            }
-/* Cerramos 50% */
-        }
-/* Cerramos keyframes */
-
-/* Línea vacía */
-        /* Responsive */
-/* Comentario CSS para estilos responsive */
-        @media (max-width: 768px) {
-/* Media query para pantallas de máximo 768px (celulares y tablets) */
-            .page-title h1 {
-/* Estilos para el h1 en pantallas pequeñas */
-                font-size: 2rem;
-/* Hacemos el título más pequeño */
-            }
-/* Cerramos los estilos del h1 */
-
-/* Línea vacía */
-            .category-header h2 {
-/* Estilos para el h2 en pantallas pequeñas */
-                font-size: 1.5rem;
-/* Hacemos el título de categoría más pequeño */
-            }
-/* Cerramos los estilos del h2 */
-
-/* Línea vacía */
-            .publications-grid {
-/* Estilos para el grid en pantallas pequeñas */
-                grid-template-columns: 1fr;
-/* Solo una columna en celulares */
-                gap: 20px;
-/* Menos espacio entre tarjetas */
-            }
-/* Cerramos los estilos del grid */
-
-/* Línea vacía */
-            .top-row {
-/* Estilos para la fila superior en pantallas pequeñas */
-                flex-direction: column;
-/* Elementos en columna en vez de fila */
-                gap: 15px;
-/* Espacio entre elementos */
-            }
-/* Cerramos los estilos de top-row */
-
-/* Línea vacía */
-            .social-links {
-/* Estilos para los links sociales en pantallas pequeñas */
-                flex-wrap: wrap;
-/* Permitimos que se envuelvan a la siguiente línea */
-                justify-content: center;
-/* Centramos los elementos */
-            }
-/* Cerramos los estilos de social-links */
-        }
-/* Cerramos el media query */
-    </style>
-<!-- Cerramos la etiqueta style -->
 </head>
 <!-- Cerramos la etiqueta head -->
+ <style>
+        /* Abrimos una etiqueta style para escribir CSS personalizado */
+
+ :root {
+    /* Definimos variables CSS globales */
+    --primary: #7390A0;
+    /* Variable para el color azul principal del sitio */
+    --primary-dark: #5a7080;
+    /* Variable para el azul más oscuro (cuando pasas el mouse) */
+    --accent: #f75815;
+    /* Variable para el color naranja de acentos */
+    --text: #212529;
+    /* Variable para el color del texto normal (casi negro) */
+    --text-light: #6c757d;
+    /* Variable para el color del texto secundario (gris) */
+    --background: #f8f9fa;
+    /* Variable para el color de fondo de la página (gris muy claro) */
+    --white: #ffffff;
+    /* Variable para el color blanco puro */
+    --border: #e9ecef;
+    /* Variable para el color de los bordes (gris claro) */
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    /* Variable para la sombra normal de las tarjetas */
+    --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+    /* Variable para la sombra cuando pasas el mouse sobre las tarjetas */
+}
+
+
+/* Cerramos las variables CSS */
+
+
+/* Línea vacía */
+
+* {
+    /* Selector universal que afecta a TODOS los elementos */
+    margin: 0;
+    /* Quitamos todos los márgenes por defecto */
+    padding: 0;
+    /* Quitamos todo el padding por defecto */
+    box-sizing: border-box;
+    /* Hacemos que el padding y border no agranden las cajas */
+}
+
+
+/* Cerramos el selector universal */
+
+
+/* Línea vacía */
+
+body {
+    /* Estilos para el body (todo el documento) */
+    font-family: 'Inter', sans-serif;
+    /* Ponemos el color de fondo usando la variable */
+    color: var(--text);
+    /* Ponemos el color del texto usando la variable */
+    line-height: 1.6;
+    /* Espaciado entre líneas de texto */
+}
+
+
+/* Cerramos los estilos del body */
+
+
+/* Línea vacía */
+
+
+/* Main Content */
+
+
+/* Comentario CSS para la sección de contenido principal */
+
+.main-content {
+    /* Clase para el contenedor principal de todo el contenido */
+    max-width: 1400px;
+    /* Ancho máximo de 1400px para que no se vea muy estirado en pantallas grandes */
+    margin: 0 auto;
+    /* Centramos el contenedor horizontalmente */
+    padding: 40px 20px;
+    /* Espaciado interno: 40px arriba/abajo, 20px izquierda/derecha */
+}
+
+
+/* Cerramos la clase main-content */
+
+
+/* Línea vacía */
+
+.page-title {
+    /* Clase para el título de la página */
+    text-align: center;
+    /* Centramos el texto */
+    margin-bottom: 50px;
+    /* Espacio de 50px abajo del título */
+}
+
+
+/* Cerramos la clase page-title */
+
+
+/* Línea vacía */
+
+.page-title h1 {
+    /* Estilos para el h1 dentro de page-title */
+    font-family: 'Nunito', sans-serif;
+    /* Usamos la fuente Nunito para el título */
+    font-size: 2.5rem;
+    /* Tamaño de fuente grande (2.5 veces el tamaño base) */
+    color: var(--text);
+    /* Color del texto usando la variable */
+    margin-bottom: 10px;
+    /* Espacio de 10px abajo del h1 */
+    font-weight: 600;
+    /* Grosor del texto (semi-bold) */
+}
+
+
+/* Cerramos los estilos del h1 */
+
+
+/* Línea vacía */
+
+.page-title p {
+    /* Estilos para el párrafo dentro de page-title */
+    color: var(--text-light);
+    /* Color gris claro para el texto */
+    font-size: 1.1rem;
+    /* Tamaño un poco más grande que el normal */
+}
+
+
+/* Cerramos los estilos del párrafo */
+
+
+/* Línea vacía */
+
+
+/* Category Section */
+
+
+/* Comentario CSS para la sección de categorías */
+
+.category-section {
+    /* Clase para cada sección de categoría */
+    margin-bottom: 60px;
+    /* Espacio de 60px entre cada categoría */
+}
+
+
+/* Cerramos la clase category-section */
+
+
+/* Línea vacía */
+
+.category-header {
+    /* Clase para el encabezado de cada categoría */
+    display: flex;
+    /* Usamos flexbox para alinear el icono y el texto */
+    align-items: center;
+    /* Centramos verticalmente los elementos */
+    gap: 15px;
+    /* Espacio de 15px entre el icono y el texto */
+    margin-bottom: 30px;
+    /* Espacio de 30px abajo del encabezado */
+    padding-top: 20px;
+    /* Espacio de 20px arriba del encabezado */
+    padding-bottom: 15px;
+    /* Espacio de 15px abajo del encabezado */
+    border-top: 3px solid var(--primary);
+    /* Línea azul de 3px arriba para separar categorías */
+}
+
+
+/* Cerramos la clase category-header */
+
+
+/* Línea vacía */
+
+.category-header i {
+    /* Estilos para el icono dentro del encabezado */
+    font-size: 1.8rem;
+    /* Tamaño del icono */
+    color: var(--primary);
+    /* Color azul del icono */
+}
+
+
+/* Cerramos los estilos del icono */
+
+
+/* Línea vacía */
+
+.category-header h2 {
+    /* Estilos para el h2 dentro del encabezado */
+    font-family: 'Nunito', sans-serif;
+    /* Usamos la fuente Nunito */
+    font-size: 1.8rem;
+    /* Tamaño del título de categoría */
+    color: var(--text);
+    /* Color del texto */
+    margin: 0;
+    /* Sin margen */
+    font-weight: 600;
+    /* Grosor del texto (semi-bold) */
+}
+
+
+/* Cerramos los estilos del h2 */
+
+
+/* Línea vacía */
+
+
+/* Publication Grid */
+
+
+/* Comentario CSS para el grid de publicaciones */
+
+.publications-grid {
+    /* Clase para el contenedor de las tarjetas */
+    display: grid;
+    /* Usamos CSS Grid para organizar las tarjetas */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    /* Columnas automáticas de mínimo 320px que se ajustan al espacio */
+    gap: 30px;
+    /* Espacio de 30px entre cada tarjeta */
+}
+
+
+/* Cerramos la clase publications-grid */
+
+
+/* Línea vacía */
+
+
+/* Publication Card */
+
+
+/* Comentario CSS para las tarjetas de publicación */
+
+.publication-card {
+    /* Clase para cada tarjeta de publicación */
+    background: var(--white);
+    /* Fondo blanco */
+    border-radius: 16px;
+    /* Esquinas redondeadas de 16px */
+    overflow: hidden;
+    /* Escondemos lo que se salga de la tarjeta */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    /* Sombra más pronunciada */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Animación suave con curva personalizada */
+    display: flex;
+    /* Usamos flexbox */
+    flex-direction: column;
+    /* Los elementos van en columna (uno abajo del otro) */
+    height: 100%;
+    /* Altura del 100% del contenedor */
+    border: 1px solid rgba(115, 144, 160, 0.1);
+    /* Borde sutil con el color principal */
+}
+
+
+/* Cerramos la clase publication-card */
+
+
+/* Línea vacía */
+
+.publication-card:hover {
+    /* Estilos cuando pasas el mouse sobre la tarjeta */
+    transform: translateY(-12px);
+    /* Movemos la tarjeta 12px hacia arriba (más que antes) */
+    box-shadow: 0 15px 40px rgba(115, 144, 160, 0.2);
+    /* Sombra más grande con tinte azul */
+    border-color: rgba(115, 144, 160, 0.3);
+    /* Borde más visible */
+}
+
+
+/* Cerramos el hover de la tarjeta */
+
+
+/* Línea vacía */
+
+.card-image {
+    /* Clase para el contenedor de la imagen */
+    position: relative;
+    /* Posición relativa para poder poner el badge encima */
+    width: 100%;
+    /* Ancho del 100% */
+    height: 220px;
+    /* Altura fija de 220px */
+    overflow: hidden;
+    /* Escondemos lo que se salga */
+}
+
+
+/* Cerramos la clase card-image */
+
+
+/* Línea vacía */
+
+.card-image img {
+    /* Estilos para la imagen dentro de card-image */
+    width: 100%;
+    /* Ancho del 100% */
+    height: 100%;
+    /* Altura del 100% */
+    object-fit: cover;
+    /* La imagen cubre todo el espacio sin deformarse */
+    transition: transform 0.3s ease;
+    /* Animación suave para el zoom */
+}
+
+
+/* Cerramos los estilos de la imagen */
+
+
+/* Línea vacía */
+
+.publication-card:hover .card-image img {
+    /* Estilos para la imagen cuando pasas el mouse sobre la tarjeta */
+    transform: scale(1.1);
+    /* Hacemos zoom a la imagen (110% del tamaño original) --> */
+}
+
+
+/* Cerramos el hover de la imagen */
+
+
+/* Línea vacía */
+
+.category-badge {
+    /* Clase para el badge de categoría que va sobre la imagen */
+    position: absolute;
+    /* Posición absoluta para ponerlo encima de la imagen */
+    top: 15px;
+    /* 15px desde arriba */
+    right: 15px;
+    /* 15px desde la derecha */
+    background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%);
+    /* Fondo con degradado azul */
+    color: var(--white);
+    /* Texto blanco */
+    padding: 8px 16px;
+    /* Espaciado interno: 8px arriba/abajo, 16px izquierda/derecha */
+    border-radius: 25px;
+    /* Esquinas muy redondeadas (forma de píldora) */
+    font-size: 0.85rem;
+    /* Tamaño de fuente pequeño */
+    font-weight: 600;
+    /* Texto semi-bold */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    /* Sombra más pronunciada para que se vea sobre la imagen */
+    backdrop-filter: blur(10px);
+    /* Efecto de desenfoque del fondo */
+}
+
+
+/* Cerramos la clase category-badge */
+
+
+/* Línea vacía */
+
+.card-content {
+    /* Clase para el contenido de la tarjeta (todo menos la imagen) */
+    padding: 25px;
+    /* Espaciado interno de 25px */
+    flex: 1;
+    /* Ocupa todo el espacio disponible */
+    display: flex;
+    /* Usamos flexbox */
+    flex-direction: column;
+    /* Elementos en columna */
+}
+
+
+/* Cerramos la clase card-content */
+
+
+/* Línea vacía */
+
+.card-title {
+    /* Clase para el título de la publicación */
+    font-family: 'Nunito', sans-serif;
+    /* Usamos la fuente Nunito */
+    font-size: 1.4rem;
+    /* Tamaño del título */
+    font-weight: 700;
+    /* Texto bold (grueso) */
+    color: var(--text);
+    /* Color del texto */
+    margin-bottom: 12px;
+    /* Espacio de 12px abajo */
+    line-height: 1.3;
+    /* Espaciado entre líneas */
+}
+
+
+/* Cerramos la clase card-title */
+
+
+/* Línea vacía */
+
+.card-excerpt {
+    /* Clase para el resumen/extracto de la publicación */
+    color: var(--text-light);
+    /* Color gris claro */
+    font-size: 0.95rem;
+    /* Tamaño un poco más pequeño */
+    margin-bottom: 20px;
+    /* Espacio de 20px abajo */
+    line-height: 1.6;
+    /* Espaciado entre líneas */
+    flex: 1;
+    /* Ocupa el espacio disponible */
+}
+
+
+/* Cerramos la clase card-excerpt */
+
+
+/* Línea vacía */
+
+.card-meta {
+    /* Clase para el contenedor de metadatos (autor y fecha) */
+    display: flex;
+    /* Usamos flexbox */
+    flex-direction: column;
+    /* Elementos en columna */
+    gap: 8px;
+    /* Espacio de 8px entre elementos */
+    margin-bottom: 20px;
+    /* Espacio de 20px abajo */
+    padding-top: 15px;
+    /* Espacio de 15px arriba */
+    border-top: 1px solid var(--border);
+    /* Línea separadora arriba */
+}
+
+
+/* Cerramos la clase card-meta */
+
+
+/* Línea vacía */
+
+.meta-item {
+    /* Clase para cada item de metadatos */
+    display: flex;
+    /* Usamos flexbox */
+    align-items: center;
+    /* Centramos verticalmente */
+    gap: 8px;
+    /* Espacio de 8px entre icono y texto */
+    font-size: 0.9rem;
+    /* Tamaño de fuente pequeño */
+    color: var(--text-light);
+    /* Color gris claro */
+}
+
+
+/* Cerramos la clase meta-item */
+
+
+/* Línea vacía */
+
+.meta-item i {
+    /* Estilos para el icono dentro de meta-item */
+    color: var(--primary);
+    /* Color azul */
+    font-size: 1rem;
+    /* Tamaño del icono */
+}
+
+
+/* Cerramos los estilos del icono */
+
+
+/* Línea vacía */
+
+.card-footer {
+    /* Clase para el footer de la tarjeta (donde va el botón) */
+    padding-top: 15px;
+    /* Espacio de 15px arriba */
+}
+
+
+/* Cerramos la clase card-footer */
+
+
+/* Línea vacía */
+
+.btn-read-more {
+    /* Clase para el botón de "Leer más" */
+    display: inline-flex;
+    /* Usamos inline-flex para que sea un botón flexible en línea */
+    align-items: center;
+    /* Centramos verticalmente el contenido del botón */
+    gap: 8px;
+    /* Espacio de 8px entre el texto y el icono */
+    padding: 12px 28px;
+    /* Espaciado interno: 12px arriba/abajo, 28px izquierda/derecha */
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    /* Fondo con degradado azul del color principal al oscuro */
+    color: var(--white);
+    /* Texto blanco */
+    text-decoration: none;
+    /* Sin subrayado */
+    border-radius: 25px;
+    /* Bordes muy redondeados (forma de píldora) */
+    font-weight: 600;
+    /* Texto semi-bold */
+    transition: all 0.3s ease;
+    /* Transición suave para todos los cambios */
+    box-shadow: 0 4px 12px rgba(115, 144, 160, 0.3);
+    /* Sombra azulada para dar profundidad */
+}
+
+
+/* Cerramos la clase btn-read-more */
+
+
+/* Línea vacía */
+
+.btn-read-more:hover {
+    /* Estilos cuando pasas el mouse sobre el botón */
+    transform: translateY(-2px);
+    /* Movemos el botón 2px hacia arriba */
+    box-shadow: 0 6px 20px rgba(115, 144, 160, 0.4);
+    /* Sombra más grande y pronunciada */
+    color: var(--white);
+    /* Mantenemos el texto blanco */
+}
+
+
+/* Cerramos el hover del botón */
+
+
+/* Línea vacía */
+
+.btn-read-more i {
+    /* Estilos para el icono dentro del botón */
+    transition: transform 0.3s ease;
+    /* Transición suave para el icono */
+}
+
+
+/* Cerramos los estilos del icono */
+
+
+/* Línea vacía */
+
+.btn-read-more:hover i {
+    /* Estilos para el icono cuando pasas el mouse sobre el botón */
+    transform: translateX(5px);
+    /* Movemos el icono 5px a la derecha (efecto de flecha) */
+}
+
+
+/* Cerramos el hover del icono */
+
+
+/* Línea vacía */
+
+
+/* Empty State */
+
+
+/* Comentario CSS para el estado vacío */
+
+.empty-state {
+    /* Clase para cuando no hay publicaciones */
+    text-align: center;
+    /* Centramos el texto */
+    padding: 60px 20px;
+    /* Espaciado interno: 60px arriba/abajo, 20px izquierda/derecha */
+    color: var(--text-light);
+    /* Color gris claro */
+}
+
+
+/* Cerramos la clase empty-state */
+
+
+/* Línea vacía */
+
+.empty-state i {
+    /* Estilos para el icono del estado vacío */
+    font-size: 4rem;
+    /* Tamaño muy grande */
+    color: var(--border);
+    /* Color gris muy claro */
+    margin-bottom: 20px;
+    /* Espacio de 20px abajo */
+}
+
+
+/* Cerramos los estilos del icono */
+
+
+/* Línea vacía */
+
+
+/* Search and Filter Section - DISEÑO MEJORADO */
+
+
+/* Comentario CSS para la sección de búsqueda y filtros mejorada */
+
+.search-filter-section {
+    /* Contenedor principal de búsqueda y filtros */
+    max-width: 1200px;
+    /* Ancho máximo */
+    margin: 0 auto 50px;
+    /* Centrado y más margen abajo */
+    padding: 30px 20px;
+    /* Más padding */
+    background: linear-gradient(135deg, rgba(115, 144, 160, 0.05) 0%, rgba(115, 144, 160, 0.12) 100%);
+    /* Fondo degradado azul muy sutil */
+    border-radius: 20px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 20px rgba(115, 144, 160, 0.1);
+    /* Sombra azulada sutil */
+    border: 1px solid rgba(115, 144, 160, 0.1);
+    /* Borde azul muy sutil */
+}
+
+
+/* Cerramos search-filter-section */
+
+
+/* Línea vacía */
+
+.search-box {
+    /* Contenedor del buscador */
+    position: relative;
+    /* Posición relativa para el icono */
+    max-width: 700px;
+    /* Ancho máximo más grande */
+    margin: 0 auto 25px;
+    /* Centrado y margen abajo */
+}
+
+
+/* Cerramos search-box */
+
+
+/* Línea vacía */
+
+.search-icon {
+    /* Icono de lupa */
+    position: absolute;
+    /* Posición absoluta dentro del contenedor */
+    left: 25px;
+    /* 25px desde la izquierda */
+    top: 50%;
+    /* Centrado verticalmente */
+    transform: translateY(-50%);
+    /* Ajuste de centrado */
+    color: var(--primary);
+    /* Color azul principal */
+    font-size: 1.3rem;
+    /* Tamaño del icono más grande */
+    pointer-events: none;
+    /* No interfiere con el input */
+    z-index: 2;
+    /* Encima del input */
+    transition: all 0.3s ease;
+    /* Transición suave */
+}
+
+
+/* Cerramos search-icon */
+
+
+/* Línea vacía */
+
+.search-input {
+    /* Campo de texto del buscador */
+    width: 100%;
+    /* Ancho completo */
+    padding: 18px 25px 18px 60px;
+    /* Padding con espacio para el icono */
+    border: 2px solid rgba(115, 144, 160, 0.2);
+    /* Borde azul sutil */
+    border-radius: 50px;
+    /* Bordes muy redondeados (píldora) */
+    font-size: 1.05rem;
+    /* Tamaño de fuente */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Transición suave con curva personalizada */
+    background: white;
+    /* Fondo blanco */
+    color: var(--text);
+    /* Color de texto */
+    box-shadow: 0 4px 15px rgba(115, 144, 160, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    /* Sombra azulada y sombra interna */
+    font-weight: 500;
+    /* Peso medio */
+}
+
+
+/* Cerramos search-input */
+
+
+/* Línea vacía */
+
+.search-input::placeholder {
+    /* Placeholder del input */
+    color: var(--text-light);
+    /* Color gris */
+    font-weight: 400;
+    /* Peso normal */
+}
+
+
+/* Cerramos placeholder */
+
+
+/* Línea vacía */
+
+.search-input:focus {
+    /* Cuando el input tiene foco (está activo) */
+    outline: none;
+    /* Quitamos el outline por defecto */
+    border-color: var(--primary);
+    /* Borde azul */
+    box-shadow: 0 8px 30px rgba(115, 144, 160, 0.25), 0 0 0 4px rgba(115, 144, 160, 0.1), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    /* Sombra azul más intensa, anillo de foco y sombra interna */
+    transform: translateY(-2px);
+    /* Efecto de levantar */
+}
+
+
+/* Cerramos search-input:focus */
+
+
+/* Línea vacía */
+
+.search-input:focus+.search-icon {
+    /* Icono cuando el input tiene foco */
+    color: var(--primary-dark);
+    /* Azul más oscuro */
+    transform: translateY(-50%) scale(1.1);
+    /* Agrandar ligeramente */
+}
+
+
+/* Cerramos focus del icono */
+
+
+/* Línea vacía */
+
+.category-filters {
+    /* Contenedor de los botones de categorías */
+    display: flex;
+    /* Flexbox */
+    flex-wrap: wrap;
+    /* Permitir que se envuelvan */
+    gap: 15px;
+    /* Más espacio entre botones */
+    justify-content: center;
+    /* Centrar los botones */
+}
+
+
+/* Cerramos category-filters */
+
+
+/* Línea vacía */
+
+.category-filter-btn {
+    /* Botón de filtro de categoría */
+    padding: 12px 24px;
+    /* Más padding interno */
+    border: 2px solid rgba(115, 144, 160, 0.25);
+    /* Borde azul sutil */
+    border-radius: 30px;
+    /* Bordes más redondeados */
+    background: linear-gradient(135deg, white 0%, rgba(115, 144, 160, 0.03) 100%);
+    /* Degradado blanco a azul muy sutil */
+    color: var(--text);
+    /* Texto oscuro */
+    font-size: 0.95rem;
+    /* Tamaño de fuente */
+    font-weight: 600;
+    /* Peso más pesado */
+    cursor: pointer;
+    /* Cursor de manita */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Transición suave con curva personalizada */
+    display: flex;
+    /* Flexbox para alinear icono y texto */
+    align-items: center;
+    /* Centrar verticalmente */
+    gap: 8px;
+    /* Espacio entre icono y texto */
+    box-shadow: 0 3px 10px rgba(115, 144, 160, 0.12);
+    /* Sombra azulada sutil */
+    position: relative;
+    /* Posición relativa para efectos */
+    overflow: hidden;
+    /* Ocultar desbordamiento para efecto */
+}
+
+
+/* Cerramos category-filter-btn */
+
+
+/* Línea vacía */
+
+.category-filter-btn::before {
+    /* Pseudo-elemento para efecto de fondo */
+    content: '';
+    /* Contenido vacío */
+    position: absolute;
+    /* Posición absoluta */
+    top: 0;
+    /* Arriba */
+    left: -100%;
+    /* Fuera de la vista a la izquierda */
+    width: 100%;
+    /* Ancho completo */
+    height: 100%;
+    /* Alto completo */
+    background: linear-gradient(90deg, transparent, rgba(115, 144, 160, 0.15), transparent);
+    /* Degradado de brillo */
+    transition: left 0.5s ease;
+    /* Transición del movimiento */
+}
+
+
+/* Cerramos pseudo-elemento */
+
+
+/* Línea vacía */
+
+.category-filter-btn::after {
+    /* Segundo pseudo-elemento para brillo adicional */
+    content: '';
+    /* Contenido vacío */
+    position: absolute;
+    /* Posición absoluta */
+    top: -50%;
+    /* Arriba fuera de vista */
+    left: -50%;
+    /* Izquierda fuera de vista */
+    width: 200%;
+    /* Doble de ancho */
+    height: 200%;
+    /* Doble de alto */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    /* Degradado radial de brillo */
+    opacity: 0;
+    /* Invisible por defecto */
+    transition: opacity 0.3s ease;
+    /* Transición de opacidad */
+}
+
+
+/* Cerramos segundo pseudo-elemento */
+
+
+/* Línea vacía */
+
+.category-filter-btn:hover {
+    /* Hover del botón */
+    border-color: var(--primary);
+    /* Borde azul */
+    background: linear-gradient(135deg, rgba(115, 144, 160, 0.08) 0%, rgba(115, 144, 160, 0.15) 100%);
+    /* Fondo degradado azul más visible */
+    transform: translateY(-3px);
+    /* Efecto de levantar más pronunciado */
+    box-shadow: 0 10px 25px rgba(115, 144, 160, 0.25);
+    /* Sombra más grande */
+}
+
+
+/* Cerramos category-filter-btn:hover */
+
+
+/* Línea vacía */
+
+.category-filter-btn:hover::before {
+    /* Efecto de brillo al hacer hover */
+    left: 100%;
+    /* Se mueve a la derecha */
+}
+
+
+/* Cerramos hover del pseudo-elemento */
+
+
+/* Línea vacía */
+
+.category-filter-btn:hover::after {
+    /* Brillo adicional al hover */
+    opacity: 1;
+    /* Visible */
+}
+
+
+/* Cerramos hover del segundo pseudo-elemento */
+
+
+/* Línea vacía */
+
+.category-filter-btn.active {
+    /* Botón activo */
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    /* Degradado azul */
+    color: white;
+    /* Texto blanco */
+    border-color: var(--primary);
+    /* Borde azul */
+    box-shadow: 0 8px 25px rgba(115, 144, 160, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    /* Sombra azulada más pronunciada y brillo interno */
+    transform: translateY(-2px);
+    /* Ligeramente levantado */
+}
+
+
+/* Cerramos category-filter-btn.active */
+
+
+/* Línea vacía */
+
+.category-filter-btn.active::before {
+    /* Pseudo-elemento del botón activo */
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    /* Brillo blanco */
+}
+
+
+/* Cerramos pseudo-elemento activo */
+
+
+/* Línea vacía */
+
+.category-filter-btn.active:hover {
+    /* Hover del botón activo */
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    /* Degradado azul invertido */
+    transform: translateY(-4px) scale(1.02);
+    /* Más levantado y ligeramente más grande */
+    box-shadow: 0 12px 35px rgba(115, 144, 160, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    /* Sombra aún más grande y más brillo interno */
+}
+
+
+/* Cerramos category-filter-btn.active:hover */
+
+
+/* Línea vacía */
+
+.category-filter-btn i {
+    /* Iconos en los botones */
+    font-size: 1.1rem;
+    /* Tamaño del icono */
+    transition: transform 0.3s ease;
+    /* Transición para animación */
+}
+
+
+/* Cerramos icono */
+
+
+/* Línea vacía */
+
+.category-filter-btn:hover i {
+    /* Icono al hacer hover */
+    transform: scale(1.2) rotate(5deg);
+    /* Agrandar y rotar ligeramente */
+}
+
+
+/* Cerramos hover del icono */
+
+
+/* Línea vacía */
+
+.category-filter-btn.active i {
+    /* Icono del botón activo */
+    animation: pulse-icon 0.6s ease;
+    /* Animación de pulso */
+}
+
+
+/* Cerramos icono activo */
+
+
+/* Línea vacía */
+
+@keyframes pulse-icon {
+    /* Animación de pulso para el icono */
+    0%,
+    100% {
+        /* Inicio y fin */
+        transform: scale(1);
+        /* Tamaño normal */
+    }
+    /* Cerramos 0% y 100% */
+    50% {
+        /* Mitad de la animación */
+        transform: scale(1.3);
+        /* Más grande */
+    }
+    /* Cerramos 50% */
+}
+
+
+/* Cerramos keyframes */
+
+
+/* Línea vacía */
+
+
+/* Responsive */
+
+
+/* Comentario CSS para estilos responsive */
+
+@media (max-width: 768px) {
+    /* Media query para pantallas de máximo 768px (celulares y tablets) */
+    .page-title h1 {
+        /* Estilos para el h1 en pantallas pequeñas */
+        font-size: 2rem;
+        /* Hacemos el título más pequeño */
+    }
+    /* Cerramos los estilos del h1 */
+    /* Línea vacía */
+    .category-header h2 {
+        /* Estilos para el h2 en pantallas pequeñas */
+        font-size: 1.5rem;
+        /* Hacemos el título de categoría más pequeño */
+    }
+    /* Cerramos los estilos del h2 */
+    /* Línea vacía */
+    .publications-grid {
+        /* Estilos para el grid en pantallas pequeñas */
+        grid-template-columns: 1fr;
+        /* Solo una columna en celulares */
+        gap: 20px;
+        /* Menos espacio entre tarjetas */
+    }
+    /* Cerramos los estilos del grid */
+    /* Línea vacía */
+    .top-row {
+        /* Estilos para la fila superior en pantallas pequeñas */
+        flex-direction: column;
+        /* Elementos en columna en vez de fila */
+        gap: 15px;
+        /* Espacio entre elementos */
+    }
+    /* Cerramos los estilos de top-row */
+    /* Línea vacía */
+    .social-links {
+        /* Estilos para los links sociales en pantallas pequeñas */
+        flex-wrap: wrap;
+        /* Permitimos que se envuelvan a la siguiente línea */
+        justify-content: center;
+        /* Centramos los elementos */
+    }
+    /* Cerramos los estilos de social-links */
+}
+
+
+/* Cerramos el media query*/
+ </style>
 <body>
 <!-- Abrimos la etiqueta body (el cuerpo visible de la página) -->
     <!-- Header -->
@@ -1168,10 +1371,10 @@ function acortar($texto, $limite = 150) {
                             $img = !empty($pub["imagen_principal"]) 
                                 // Si la publicación tiene imagen propia
                                 ? "uploads/" . htmlspecialchars($pub["imagen_principal"]) 
-                                // Usamos esa imagen (con htmlspecialchars para seguridad)
-                                : imagenDefault($pub["categoria_nombre"]);
-                                // Si no, usamos la imagen por defecto de la categoría
-                            $contenido = !empty($pub["resumen"]) 
+                                // Si no, usamos el logo como fallback
+                                : "assets/img/logo/nuevologo.ico";
+
+                            $contenido = !empty($pub["resumen"])
                                 // Si la publicación tiene resumen
                                 ? acortar($pub["resumen"]) 
                                 // Usamos el resumen acortado

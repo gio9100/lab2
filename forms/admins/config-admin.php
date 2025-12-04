@@ -398,13 +398,13 @@ function procesarReporte($reporte_id, $accion, $admin_id, $conn) {
         }
         
         // Actualizar estado del reporte
-        $update_query = "UPDATE reportes SET estado = 'resuelto', admin_id = ?, fecha_resolucion = NOW() WHERE id = ?";
+        $update_query = "UPDATE reportes SET estado = 'resuelto', admin_id = ? WHERE id = ?";
         $update_stmt = $conn->prepare($update_query);
         $update_stmt->bind_param("ii", $admin_id, $reporte_id);
         return $update_stmt->execute();
     } else {
         // Rechazar el reporte
-        $update_query = "UPDATE reportes SET estado = 'ignorado', admin_id = ?, fecha_resolucion = NOW() WHERE id = ?";
+        $update_query = "UPDATE reportes SET estado = 'ignorado', admin_id = ? WHERE id = ?";
         $update_stmt = $conn->prepare($update_query);
         $update_stmt->bind_param("ii", $admin_id, $reporte_id);
         return $update_stmt->execute();

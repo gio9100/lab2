@@ -1,28 +1,39 @@
 ﻿<?php
-// ============================================================================
-// 💬 GESTIÓN DE COMENTARIOS - GESTIONAR-COMENTARIOS.PHP
-// ============================================================================
+// Gestionar Comentarios (Admin)
+// Permite a los administradores moderar y eliminar comentarios de usuarios
+
+// Iniciar sesión
 session_start();
+
+// Incluir configuración y funciones de admin
 require_once "config-admin.php";
+
+// Verificar permisos de administrador
 requerirAdmin();
 
+// Obtener datos del admin actual
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 
-// PROCESAR ACCIONES
+// Procesar acciones POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    
+    // Eliminar comentario
     if (isset($_POST['eliminar_comentario'])) {
         $id = intval($_POST['comentario_id']);
+        
+        // Llamar a función de eliminación
         if (eliminarComentarioAdmin($id, $conn)) {
-            $mensaje = "Comentario eliminado.";
+            $mensaje = "Comentario eliminado correctamente.";
             $exito = true;
         } else {
-            $mensaje = "Error al eliminar comentario.";
+            $mensaje = "Error al eliminar el comentario.";
             $exito = false;
         }
     }
 }
 
+// Obtener todos los comentarios para listar
 $comentarios = obtenerTodosComentarios($conn);
 ?>
 <!DOCTYPE html>
@@ -31,17 +42,24 @@ $comentarios = obtenerTodosComentarios($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestionar Comentarios - Lab-Explorer</title>
+    
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Vendors -->
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/vendor/aos/aos.css" rel="stylesheet">
+    
+    <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
 </head>
 <body class="admin-page">
 
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
@@ -49,6 +67,7 @@ $comentarios = obtenerTodosComentarios($conn);
                     <img src="../../assets/img/logo/nuevologo.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
                 </a>
+                
                 <div class="d-flex align-items-center">
                     <div class="social-links">
                         <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
@@ -59,10 +78,12 @@ $comentarios = obtenerTodosComentarios($conn);
         </div>
     </header>
 
+    <!-- Contenido Principal -->
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
-                <!-- SIDEBAR -->
+                
+                <!-- Sidebar -->
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
@@ -79,8 +100,10 @@ $comentarios = obtenerTodosComentarios($conn);
                     </div>
                 </div>
 
-                <!-- CONTENIDO -->
+                <!-- Contenido Derecho -->
                 <div class="col-md-9">
+                    
+                    <!-- Mensajes de Alerta -->
                     <?php if(isset($mensaje)): ?>
                     <div class="alert-message <?= $exito ? 'success' : 'error' ?>" data-aos="fade-up">
                         <?= htmlspecialchars($mensaje) ?>
@@ -116,13 +139,13 @@ $comentarios = obtenerTodosComentarios($conn);
                                                 <td><?= htmlspecialchars(substr($com['contenido'], 0, 50)) ?>...</td>
                                                 <td>
                                                     <div class="action-buttons">
-                                                        <a href="../../ver-publicacion.php?id=<?= $com['publicacion_id'] ?>" target="_blank" class="btn btn-info btn-sm">
+                                                        <a href="../../ver-publicacion.php?id=<?= $com['publicacion_id'] ?>" target="_blank" class="btn btn-info btn-sm" title="Ver Publicación">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
                                                         
                                                         <form method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este comentario?');">
                                                             <input type="hidden" name="comentario_id" value="<?= $com['id'] ?>">
-                                                            <button type="submit" name="eliminar_comentario" class="btn btn-danger btn-sm">
+                                                            <button type="submit" name="eliminar_comentario" class="btn btn-danger btn-sm" title="Eliminar Comentario">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
@@ -141,10 +164,14 @@ $comentarios = obtenerTodosComentarios($conn);
         </div>
     </main>
 
+    <!-- Scripts -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
     <script>
+        // Inicializar AOS
         AOS.init();
+        
+        // Cerrar alertas
         document.querySelectorAll('.close-btn').forEach(btn => {
             btn.addEventListener('click', e => e.target.parentElement.style.display = 'none');
         });

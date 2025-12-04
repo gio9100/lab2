@@ -1,9 +1,8 @@
 ﻿<?php
 // Gestión de administradores (solo para superadmins)
 // Permite crear, editar, cambiar contraseñas y eliminar otros admins
-// Usa claves secretas para autorizar la creación de nuevas cuentas
 
-// Iniciamos la sesión para verificar permisos del usuario
+// Iniciar sesión
 session_start();
 
 // Configuración de la base de datos
@@ -12,52 +11,49 @@ $username = "root";
 $password = "";
 $dbname = "lab_exp_db";
 
-// Conectamos a MySQL con los datos de acceso
+// Crear conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Si hay error de conexión, detenemos todo el script
+// Verificar conexión
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Configuramos UTF-8 para que funcionen tildes, ñ y emojis
+// Establecer charset a UTF-8
 $conn->set_charset("utf8mb4");
 
-// Claves secretas para autorizar la creación de administradores
-// Se deben escribir en el formulario para poder crear cuentas
-define('CLAVE_ADMIN', 'labexplorer2025');           // Para admin normal
-define('CLAVE_SUPERADMIN', 'superlabexplorer2025'); // Para superadmin
+// Claves secretas para registro de admins
+define('CLAVE_ADMIN', 'labexplorer2025');
+define('CLAVE_SUPERADMIN', 'superlabexplorer2025');
 
-// Solo superadmins pueden entrar aquí
-// Verificamos que esté logueado Y que sea superadmin
+// Verificar si el usuario es superadmin
 if (!isset($_SESSION['admin_id']) || $_SESSION['admin_nivel'] != 'superadmin') {
     $_SESSION['mensaje'] = "No tienes permisos para acceder a esta sección";
     $_SESSION['tipo_mensaje'] = "danger";
     header("Location: index-admin.php");
-    exit; // Detenemos el script
+    exit;
 }
 
-// Datos del superadmin actual
+// Obtener datos del admin actual
 $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 
-// Procesamos las acciones enviadas por formularios
+// Procesar formulario POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     // Crear nuevo administrador
     if (isset($_POST['crear_admin'])) {
-        // Limpiamos los datos (trim elimina espacios al inicio y final)
+        // Obtener y limpiar datos
         $nombre = trim($_POST['nombre']);
         $email = trim($_POST['email']);
         $password = trim($_POST['password']);
         $nivel = $_POST['nivel'];
         $clave_secreta = trim($_POST['clave_secreta']);
         
-        // Validamos que la clave secreta sea correcta según el nivel
+        // Validar clave secreta
         $clave_valida = false;
         
-        // Operador && (AND): Ambas condiciones deben ser verdaderas
         if ($nivel == 'admin' && $clave_secreta == CLAVE_ADMIN) {
             $clave_valida = true;
         } elseif ($nivel == 'superadmin' && $clave_secreta == CLAVE_SUPERADMIN) {
@@ -65,25 +61,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         
         if ($clave_valida) {
-            // Hasheamos la contraseña (NUNCA guardarla en texto plano)
-            // password_hash() crea un hash seguro usando bcrypt
+            // Hash de contraseña
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             
-            // Preparamos la consulta SQL de forma segura
-            // Los ? son marcadores que evitan inyección SQL
-            $query = "INSERT INTO admins (nombre, email, password, nivel, fecha_registro) 
-                      VALUES (?, ?, ?, ?, NOW())";
-            
+            // Insertar nuevo admin
+            $query = "INSERT INTO admins (nombre, email, password, nivel, fecha_registro) VALUES (?, ?, ?, ?, NOW())";
             $stmt = $conn->prepare($query);
-            // "ssss" indica que son 4 strings: nombre, email, password_hash, nivel
             $stmt->bind_param("ssss", $nombre, $email, $password_hash, $nivel);
             
-            // Ejecutamos la consulta
             if ($stmt->execute()) {
                 $_SESSION['mensaje'] = "Administrador creado correctamente";
                 $_SESSION['tipo_mensaje'] = "success";
             } else {
-                // Si falla (ej. email duplicado), mostramos el error
                 $_SESSION['mensaje'] = "Error al crear administrador: " . $conn->error;
                 $_SESSION['tipo_mensaje'] = "danger";
             }
@@ -96,18 +85,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
     
-    // Editar administrador existente
+    // Editar administrador
     if (isset($_POST['editar_admin'])) {
-        // intval() convierte a entero para seguridad
         $id = intval($_POST['id']);
         $nombre = trim($_POST['nombre']);
         $email = trim($_POST['email']);
         $nivel = $_POST['nivel'];
         
+        // Actualizar datos
         $query = "UPDATE admins SET nombre=?, email=?, nivel=? WHERE id=?";
-        
         $stmt = $conn->prepare($query);
-        // "sssi" = 3 strings (nombre, email, nivel) + 1 integer (id)
         $stmt->bind_param("sssi", $nombre, $email, $nivel, $id);
         
         if ($stmt->execute()) {
@@ -122,18 +109,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
     
-    // Cambiar contraseña de un administrador
+    // Cambiar contraseña
     if (isset($_POST['cambiar_password'])) {
         $id = intval($_POST['id']);
         $nueva_password = trim($_POST['nueva_password']);
         
-        // Hasheamos la nueva contraseña antes de guardarla
+        // Hash de nueva contraseña
         $password_hash = password_hash($nueva_password, PASSWORD_DEFAULT);
         
+        // Actualizar contraseña
         $query = "UPDATE admins SET password=? WHERE id=?";
-        
         $stmt = $conn->prepare($query);
-        // "si" = 1 string (password) + 1 integer (id)
         $stmt->bind_param("si", $password_hash, $id);
         
         if ($stmt->execute()) {
@@ -148,17 +134,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
     
-    // Eliminar un administrador
+    // Eliminar administrador
     if (isset($_POST['eliminar_admin'])) {
         $id = intval($_POST['id']);
         
-        // Validación importante: no permitir que se elimine a sí mismo
+        // Evitar auto-eliminación
         if ($id == $admin_id) {
             $_SESSION['mensaje'] = "No puedes eliminarte a ti mismo";
             $_SESSION['tipo_mensaje'] = "danger";
         } else {
+            // Eliminar registro
             $query = "DELETE FROM admins WHERE id=?";
-            
             $stmt = $conn->prepare($query);
             $stmt->bind_param("i", $id);
             
@@ -176,22 +162,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Obtenemos todos los administradores de la base de datos
-// ORDER BY fecha_registro DESC = los más nuevos primero
+// Obtener lista de administradores
 $query = "SELECT * FROM admins ORDER BY fecha_registro DESC";
 $result = $conn->query($query);
-// fetch_all(MYSQLI_ASSOC) trae todas las filas como array asociativo
 $admins = $result->fetch_all(MYSQLI_ASSOC);
 
-// Estadísticas: contamos cuántos admins hay de cada nivel
-// COUNT(*) cuenta filas, GROUP BY agrupa por nivel
+// Obtener estadísticas por nivel
 $query_stats = "SELECT nivel, COUNT(*) as total FROM admins GROUP BY nivel";
 $result_stats = $conn->query($query_stats);
 
 $total_admins = 0;
 $total_superadmins = 0;
 
-// Recorremos los resultados y separamos por nivel
 while ($row = $result_stats->fetch_assoc()) {
     if ($row['nivel'] == 'admin') {
         $total_admins = $row['total'];
@@ -200,11 +182,9 @@ while ($row = $result_stats->fetch_assoc()) {
     }
 }
 
-// Sumamos ambos para el total general
 $total_general = $total_admins + $total_superadmins;
 
-// Si la URL tiene ?editar=123, cargamos los datos de ese admin
-// para mostrarlos en el formulario de edición
+// Cargar datos para edición si es necesario
 $admin_editar = null;
 if (isset($_GET['editar'])) {
     $id_editar = intval($_GET['editar']);
@@ -214,8 +194,6 @@ if (isset($_GET['editar'])) {
     $stmt->bind_param("i", $id_editar);
     $stmt->execute();
     $result = $stmt->get_result();
-    
-    // fetch_assoc() obtiene una sola fila
     $admin_editar = $result->fetch_assoc();
 }
 ?>
@@ -226,22 +204,21 @@ if (isset($_GET['editar'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Administradores - Lab-Explorer</title>
     
-    <!-- Fuentes de Google -->
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS de Bootstrap y vendors -->
+    <!-- CSS Vendors -->
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/vendor/aos/aos.css" rel="stylesheet">
 
-    <!-- CSS personalizado -->
+    <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
     
     <style>
-        /* Estilos específicos para esta página */
         .action-buttons .btn { 
             margin: 2px; 
         }
@@ -263,15 +240,12 @@ if (isset($_GET['editar'])) {
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <!-- Logo -->
                 <a href="../../index.php" class="logo d-flex align-items-end">
                     <img src="../../assets/img/logo/nuevologo.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
                 </a>
-                <!-- Info del usuario -->
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <!-- htmlspecialchars() evita ataques XSS al mostrar el nombre -->
                         <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
                         <a href="logout-admin.php" class="logout-btn">Cerrar sesión</a>
                     </div>
@@ -283,7 +257,7 @@ if (isset($_GET['editar'])) {
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
-                <!-- Sidebar de navegación -->
+                <!-- Sidebar -->
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
@@ -305,13 +279,12 @@ if (isset($_GET['editar'])) {
                             <a href="./categorias/listar_categorias.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-tags me-2"></i>Categorías
                             </a>
-                            <!-- Clase 'active' marca la página actual -->
                             <a href="admins.php" class="list-group-item list-group-item-action active">
                                 <i class="bi bi-shield-check me-2"></i>Administradores
                             </a>
                         </div>
                         
-                        <!-- Card de resumen rápido -->
+                        <!-- Resumen Rápido -->
                         <div class="quick-stats-card mt-4">
                             <div class="card-header">
                                 <h6 class="card-title mb-0">Resumen</h6>
@@ -333,25 +306,23 @@ if (isset($_GET['editar'])) {
 
                 <!-- Contenido Principal -->
                 <div class="col-md-9">
-                    <!-- Mostrar mensajes de sesión (éxito/error) -->
+                    <!-- Mensajes de Sesión -->
                     <?php if(isset($_SESSION['mensaje'])): ?>
                     <div class="alert alert-<?= $_SESSION['tipo_mensaje'] == 'success' ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
                         <?= htmlspecialchars($_SESSION['mensaje']) ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                     <?php 
-                        // Limpiamos el mensaje para que no aparezca de nuevo al recargar
                         unset($_SESSION['mensaje']);
                         unset($_SESSION['tipo_mensaje']);
                     endif; ?>
 
-                    <!-- Título de sección -->
                     <div class="section-title" data-aos="fade-up">
                         <h2>Gestión de Administradores</h2>
                         <p>Administra los usuarios con acceso al panel de administración</p>
                     </div>
 
-                    <!-- Tarjetas de estadísticas -->
+                    <!-- Estadísticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up">
                         <div class="col-md-4 mb-3">
                             <div class="stat-card primary">
@@ -379,8 +350,7 @@ if (isset($_GET['editar'])) {
                         </div>
                     </div>
 
-                    <!-- Formulario Crear/Editar Admin -->
-                    <!-- Usamos un operador ternario para cambiar el color del header si estamos editando -->
+                    <!-- Formulario Crear/Editar -->
                     <div class="admin-card mb-4" data-aos="fade-up">
                         <div class="card-header <?= $admin_editar ? 'warning-header' : 'primary-header' ?>">
                             <h5 class="card-title mb-0">
@@ -393,11 +363,8 @@ if (isset($_GET['editar'])) {
                         </div>
                         <div class="card-body">
                             <?php if(!$admin_editar): ?>
-                            <!-- ========================================================== -->
-                            <!-- FORMULARIO DE CREACIÓN -->
-                            <!-- ========================================================== -->
+                            <!-- Formulario Creación -->
                             <form method="POST">
-                                <!-- Campo oculto para saber qué acción realizar -->
                                 <input type="hidden" name="crear_admin" value="1">
                                 
                                 <div class="row">
@@ -433,7 +400,6 @@ if (isset($_GET['editar'])) {
                                     </div>
                                 </div>
 
-                                <!-- Clave Secreta (seguridad extra) -->
                                 <div class="mb-3">
                                     <label class="form-label">Clave Secreta *</label>
                                     <input type="password" name="clave_secreta" class="form-control" 
@@ -455,9 +421,7 @@ if (isset($_GET['editar'])) {
                             </form>
                             
                             <?php else: ?>
-                            <!-- ========================================================== -->
-                            <!-- FORMULARIO DE EDICIÓN -->
-                            <!-- ========================================================== -->
+                            <!-- Formulario Edición -->
                             <form method="POST">
                                 <input type="hidden" name="id" value="<?= $admin_editar['id'] ?>">
                                 <input type="hidden" name="editar_admin" value="1">
@@ -482,7 +446,6 @@ if (isset($_GET['editar'])) {
                                 <div class="mb-3">
                                     <label class="form-label">Nivel *</label>
                                     <select name="nivel" class="form-select" required>
-                                        <!-- Pre-seleccionamos el nivel actual -->
                                         <option value="admin" <?= $admin_editar['nivel'] == 'admin' ? 'selected' : '' ?>>Admin</option>
                                         <option value="superadmin" <?= $admin_editar['nivel'] == 'superadmin' ? 'selected' : '' ?>>SuperAdmin</option>
                                     </select>
@@ -521,37 +484,28 @@ if (isset($_GET['editar'])) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- 📌 EXPLICACIÓN DE foreach -->
-                                        <!-- Recorremos el array de administradores -->
-                                        <!-- $admins = array con todos los datos -->
-                                        <!-- $adm = variable temporal para cada fila en el bucle -->
                                         <?php foreach($admins as $adm): ?>
                                         <tr>
                                             <td><?= $adm['id'] ?></td>
                                             <td><strong><?= htmlspecialchars($adm['nombre']) ?></strong></td>
                                             <td><?= htmlspecialchars($adm['email']) ?></td>
                                             
-                                            <!-- Badge de color según nivel -->
                                             <td>
                                                 <span class="badge badge-nivel bg-<?= $adm['nivel'] == 'superadmin' ? 'danger' : 'primary' ?>">
                                                     <?= $adm['nivel'] == 'superadmin' ? 'SuperAdmin' : 'Admin' ?>
                                                 </span>
                                             </td>
                                             
-                                            <!-- Formato de fecha: día/mes/año -->
                                             <td><?= date('d/m/Y', strtotime($adm['fecha_registro'])) ?></td>
                                             
-                                            <!-- Botones de acción -->
                                             <td>
                                                 <div class="action-buttons">
-                                                    <!-- Editar: Recarga la página con ?editar=ID -->
                                                     <a href="?editar=<?= $adm['id'] ?>" 
                                                        class="btn btn-sm btn-outline-primary" 
                                                        title="Editar">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
                                                     
-                                                    <!-- Cambiar Password: Abre modal -->
                                                     <button type="button" 
                                                             class="btn btn-sm btn-outline-warning" 
                                                             data-bs-toggle="modal" 
@@ -560,7 +514,6 @@ if (isset($_GET['editar'])) {
                                                         <i class="bi bi-key"></i>
                                                     </button>
                                                     
-                                                    <!-- Eliminar: Solo si no es él mismo -->
                                                     <?php if($adm['id'] != $admin_id): ?>
                                                     <button type="button" 
                                                             class="btn btn-sm btn-outline-danger" 
@@ -574,8 +527,7 @@ if (isset($_GET['editar'])) {
                                             </td>
                                         </tr>
 
-                                        <!-- MODAL CAMBIAR CONTRASEÑA -->
-                                        <!-- ID dinámico: id="modalPassword1", id="modalPassword2", etc. -->
+                                        <!-- Modal Cambiar Contraseña -->
                                         <div class="modal fade" id="modalPassword<?= $adm['id'] ?>" tabindex="-1">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -601,7 +553,7 @@ if (isset($_GET['editar'])) {
                                             </div>
                                         </div>
 
-                                        <!-- MODAL ELIMINAR -->
+                                        <!-- Modal Eliminar -->
                                         <?php if($adm['id'] != $admin_id): ?>
                                         <div class="modal fade" id="modalEliminar<?= $adm['id'] ?>" tabindex="-1">
                                             <div class="modal-dialog">
@@ -643,7 +595,7 @@ if (isset($_GET['editar'])) {
     <script src="../../assets/js/main.js"></script>
     
     <script>
-        // Inicializamos las animaciones AOS
+        // Inicializar animaciones AOS
         AOS.init({
             duration: 600,
             easing: 'ease-in-out',
@@ -655,6 +607,6 @@ if (isset($_GET['editar'])) {
 </body>
 </html>
 <?php
-// Cerramos la conexión a la base de datos
+// Cerrar conexión
 $conn->close();
 ?>

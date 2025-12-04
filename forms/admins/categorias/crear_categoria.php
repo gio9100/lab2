@@ -1,33 +1,24 @@
 ﻿<?php
-// ============================================================================
-// 📄 CREAR CATEGORÍA - crear_categoria.php
-// ============================================================================
-// Este archivo permite a los administradores crear nuevas categorías
-// para organizar las publicaciones del laboratorio.
-//
-// FLUJO:
-// 1. Verificar que el usuario sea administrador
-// 2. Mostrar formulario con campos: nombre, descripción, color, icono, estado
-// 3. Al enviar (POST), crear la categoría en la BD usando POO
-// 4. Mostrar mensaje de éxito o error
-//
-// SEGURIDAD:
-// - Solo administradores pueden acceder (requerirAdmin)
-// - Datos sanitizados en la clase Categoria
-// - htmlspecialchars para prevenir XSS
-// ============================================================================
+// Crear Categoría (Admin)
+// Permite a los administradores crear nuevas categorías para las publicaciones
 
+// Iniciar sesión
 session_start();
+
+// Incluir configuración y funciones de admin
 require_once '../config-admin.php';
 requerirAdmin();
 
+// Obtener datos del admin actual
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 $stats = obtenerEstadisticasAdmin($conn);
 
+// Incluir clases de categorías
 include_once 'config-categorias.php';
 include_once 'categoria.php';
 
+// Inicializar conexión y objeto categoría
 $database = new Database();
 $db = $database->getConnection();
 $categoria = new Categoria($db);
@@ -35,13 +26,16 @@ $categoria = new Categoria($db);
 $mensaje = "";
 $exito = false;
 
+// Procesar formulario POST
 if ($_POST) {
+    // Asignar valores del formulario al objeto
     $categoria->nombre = $_POST['nombre'];
     $categoria->descripcion = $_POST['descripcion'];
     $categoria->color = $_POST['color'];
     $categoria->icono = $_POST['icono'];
     $categoria->estado = $_POST['estado'];
     
+    // Intentar crear la categoría
     if ($categoria->crear()) {
         $mensaje = 'Categoría creada exitosamente';
         $exito = true;
@@ -59,14 +53,17 @@ if ($_POST) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Categoría - Lab-Explorer</title>
     
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- CSS Vendors -->
     <link href="../../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../../assets/vendor/aos/aos.css" rel="stylesheet">
 
+    <!-- CSS Principal -->
     <link href="../../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../../assets/css-admins/admin.css">
     
@@ -88,6 +85,7 @@ if ($_POST) {
 </head>
 <body class="admin-page">
 
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
@@ -105,9 +103,12 @@ if ($_POST) {
         </div>
     </header>
 
+    <!-- Contenido Principal -->
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
+                
+                <!-- Sidebar -->
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
@@ -133,6 +134,7 @@ if ($_POST) {
                             <?php endif; ?>
                         </div>
                         
+                        <!-- Resumen rápido -->
                         <div class="quick-stats-card mt-4">
                             <div class="card-header">
                                 <h6 class="card-title mb-0">Resumen del Sistema</h6>
@@ -155,7 +157,10 @@ if ($_POST) {
                     </div>
                 </div>
 
+                <!-- Contenido Derecho -->
                 <div class="col-md-9">
+                    
+                    <!-- Mensajes de Alerta -->
                     <?php if($mensaje): ?>
                     <div class="alert-message <?= $exito ? 'success' : 'error' ?>" data-aos="fade-up">
                         <?= htmlspecialchars($mensaje) ?>
@@ -168,6 +173,7 @@ if ($_POST) {
                         <p>Agrega una nueva categoría para organizar las publicaciones del laboratorio</p>
                     </div>
                     
+                    <!-- Formulario de Creación -->
                     <div class="card" data-aos="fade-up" data-aos-delay="100">
                         <div class="card-body">
                             <form method="POST" id="formCategoria">
@@ -225,7 +231,7 @@ if ($_POST) {
                         </div>
                     </div>
 
-                    <!-- Guía de Iconos Extensa -->
+                    <!-- Guía de Iconos -->
                     <div class="card mt-4" data-aos="fade-up" data-aos-delay="200">
                         <div class="card-header bg-primary text-white">
                             <h5 class="card-title mb-0"><i class="bi bi-palette me-2"></i>Iconos Sugeridos para Categorías de Laboratorio</h5>
@@ -387,6 +393,7 @@ if ($_POST) {
         </div>
     </main>
 
+    <!-- Scripts -->
     <script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/vendor/aos/aos.js"></script>
     <script>
@@ -395,10 +402,12 @@ if ($_POST) {
             once: true
         });
 
+        // Previsualización de color
         document.getElementById('color').addEventListener('input', function() {
             document.getElementById('colorPreview').style.backgroundColor = this.value;
         });
 
+        // Previsualización de icono
         document.getElementById('icono').addEventListener('input', function() {
             const iconPreview = document.getElementById('iconPreview');
             iconPreview.className = 'bi ' + this.value + ' icon-preview';

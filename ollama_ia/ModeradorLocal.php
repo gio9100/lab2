@@ -1,21 +1,5 @@
 <?php
-// =============================================================================
-// 📄 ARCHIVO: ModeradorLocal.php
-// =============================================================================
-//
-// 🎯 PROPÓSITO PRINCIPAL:
-// Esta clase contiene toda la lógica de moderación automática basada en reglas.
-// Analiza el contenido de las publicaciones para determinar si cumplen con los
-// estándares de calidad y seguridad de la plataforma.
-//
-// 🧠 FUNCIONAMIENTO:
-// 1. Obtiene la publicación de la base de datos.
-// 2. Realiza múltiples validaciones (palabras prohibidas, longitud, formato).
-// 3. Calcula una puntuación de calidad (0-100).
-// 4. Toma una decisión automática (Aprobar o Rechazar).
-// 5. Notifica a los usuarios involucrados por correo electrónico.
-//
-// =============================================================================
+
 
 // Incluimos el Helper de Emails para el diseño profesional
 require_once __DIR__ . '/../forms/EmailHelper.php';

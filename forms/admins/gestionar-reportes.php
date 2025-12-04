@@ -1,18 +1,30 @@
 ﻿<?php
+// Gestionar Reportes (Admin)
+// Permite a los administradores revisar y procesar reportes de contenido inapropiado
+
+// Iniciar sesión
 session_start();
+
+// Incluir configuración y funciones de admin
 require_once "config-admin.php";
+
+// Verificar permisos de administrador
 requerirAdmin();
 
+// Obtener datos del admin actual
 $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
 
-// Procesar acciones
+// Procesar acciones POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    
+    // Procesar un solo reporte
     if (isset($_POST['procesar_reporte'])) {
         $reporte_id = intval($_POST['reporte_id']);
         $accion = $_POST['accion']; // 'aprobar' o 'rechazar'
         
+        // Llamar a la función de procesamiento
         if (procesarReporte($reporte_id, $accion, $admin_id, $conn)) {
             $mensaje = $accion === 'aprobar' ? 'Reporte aprobado y contenido eliminado' : 'Reporte descartado';
             $exito = true;
@@ -22,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
     
-    // Procesar acción masiva
+    // Procesar acción masiva (todos los pendientes)
     if (isset($_POST['accion_masiva'])) {
         $accion = $_POST['accion_masiva']; // 'aprobar_todos' o 'rechazar_todos'
         
@@ -35,7 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         
         if ($result && $result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
+                // Determinar acción individual
                 $accion_individual = ($accion === 'aprobar_todos') ? 'aprobar' : 'rechazar';
+                
+                // Procesar cada reporte
                 if (procesarReporte($row['id'], $accion_individual, $admin_id, $conn)) {
                     $procesados++;
                 } else {
@@ -43,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
             }
             
+            // Generar mensaje de resultado
             if ($accion === 'aprobar_todos') {
                 $mensaje = "Se aprobaron {$procesados} reportes y se eliminó el contenido reportado.";
             } else {
@@ -61,11 +77,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Obtener filtros
+// Obtener filtros de la URL
 $filtro_tipo = $_GET['tipo'] ?? null;
 $filtro_estado = $_GET['estado'] ?? null;
 
-// Obtener datos
+// Obtener reportes y estadísticas
 $reportes = obtenerTodosReportes($filtro_tipo, $filtro_estado, $conn);
 $stats = obtenerEstadisticasReportes($conn);
 ?>
@@ -76,19 +92,23 @@ $stats = obtenerEstadisticasReportes($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestionar Reportes - Lab-Explorer</title>
     
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- CSS Vendors -->
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/vendor/aos/aos.css" rel="stylesheet">
+    
+    <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
 </head>
 <body class="admin-page">
 
-    <!-- HEADER -->
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
@@ -107,12 +127,12 @@ $stats = obtenerEstadisticasReportes($conn);
         </div>
     </header>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- Contenido Principal -->
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
 
-                <!-- SIDEBAR -->
+                <!-- Sidebar -->
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
@@ -149,7 +169,7 @@ $stats = obtenerEstadisticasReportes($conn);
                     </div>
                 </div>
 
-                <!-- CONTENIDO DERECHO -->
+                <!-- Contenido Derecho -->
                 <div class="col-md-9">
                     
                     <!-- Mensajes de Alerta -->
@@ -409,22 +429,24 @@ $stats = obtenerEstadisticasReportes($conn);
         </div>
     </main>
 
-    <!-- SCROLL TO TOP -->
+    <!-- Scroll to Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
         <i class="bi bi-arrow-up-short"></i>
     </a>
 
-    <!-- SCRIPTS -->
+    <!-- Scripts -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
     <script src="../../assets/js/main.js"></script>
 
     <script>
+        // Inicializar AOS
         AOS.init({
             duration: 1000,
             once: true
         });
 
+        // Cerrar alertas
         document.querySelectorAll('.close-btn').forEach(button => {
             button.addEventListener('click', function() {
                 this.parentElement.style.display = 'none';
