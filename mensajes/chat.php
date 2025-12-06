@@ -31,7 +31,7 @@ checkAuth();
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
                 <a href="../index.php" class="logo d-flex align-items-end">
-                    <img src="../assets/img/logo/nuevologo.ico" alt="logobrayan2">
+                    <img src="../assets/img/logo/logobrayan2.ico" alt="logobrayan2">
                     <h1 class="sitename">LabChat</h1><span></span>
                 </a>
 
