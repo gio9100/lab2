@@ -99,7 +99,7 @@ $categorias = obtenerCategorias($conn);
             <div class="top-row" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px;">
                 <!-- Logo -->
                 <a href="../../index.php" class="logo" style="display: flex; align-items: center; text-decoration: none; gap: 10px;">
-                    <img src="../../assets/img/logo/logo-lab.ico" alt="logo-lab" style="max-height: 40px;">
+                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab" style="max-height: 40px;">
                     <span class="sitename" style="font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 600; color: #7390A0; margin: 0;">Lab-Explorer</span>
                 </a>
 

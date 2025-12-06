@@ -1201,7 +1201,7 @@ body {
 <!-- Fila superior con flexbox de Bootstrap -->
                 <a href="index.php" class="logo d-flex align-items-end">
 <!-- Link al inicio con clases de flexbox -->
-                    <img src="assets/img/logo/nuevologo.ico" alt="logo-lab">
+                    <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
 <!-- Imagen del logo -->
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
 <!-- Nombre del sitio y un span vacío -->

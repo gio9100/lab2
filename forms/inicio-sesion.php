@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- novalidate desactiva la validación automática del navegador -->
         <div class="logo-lab">
         <!-- Contenedor del logo y título -->
-            <img src="../assets/img/logo/logo-lab.ico" alt="Logo Lab">
+            <img src="../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
             <!-- Logo del laboratorio -->
             <h1>Inicio de Sesión Lab-Explorer</h1>
             <!-- Título principal -->

@@ -14,8 +14,8 @@ require_once __DIR__. "/../../forms/usuario.php";
     <meta name="keywords" content="hematología, morfología, células sanguíneas, laboratorio clínico">
 
     <!-- Favicon -->
-    <link href="../img/logo/logo-lab.ico" rel="icon">
-    <link href="../img/logo/logo-lab.ico" rel="apple-touch-icon">
+    <link href="../img/logo/logobrayan2.ico" rel="icon">
+    <link href="../img/logo/logobrayan2.ico" rel="apple-touch-icon">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -42,7 +42,7 @@ require_once __DIR__. "/../../forms/usuario.php";
 
             <div class="top-row d-flex align-items-center justify-content-between">
                 <a href="../../index.php" class="logo d-flex align-items-end">
-                    <img src="../img/logo/logo-lab.ico" alt="logo-lab">
+                    <img src="../img/logo/logobrayan2.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explorer (Hematología)</h1><span></span>
                 </a>
 

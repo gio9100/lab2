@@ -176,7 +176,7 @@ foreach($usuarios_normales as $usuario) {
             <div class="top-row d-flex align-items-center justify-content-between">
                 
                 <a href="../../index.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/nuevologo.ico" alt="logo-lab">
+                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
                 </a>
 

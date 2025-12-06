@@ -764,7 +764,7 @@ require_once __DIR__ . "/forms/usuario.php";
 <!-- Fila superior flex -->
                 <a href="index.php" class="logo d-flex align-items-end">
 <!-- Logo link -->
-                    <img src="assets/img/logo/nuevologo.ico" alt="logo-lab">
+                    <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
 <!-- Imagen del logo -->
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
 <!-- Nombre del sitio -->

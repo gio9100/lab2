@@ -171,7 +171,7 @@ input.success {
 <!-- novalidate desactiva la validación automática del navegador -->
     <div class="logo-Lab">
     <!-- Contenedor del logo y título -->
-        <img src="../assets/img/logo/logo-lab.ico" alt="Logo Lab">
+        <img src="../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
         <!-- Logo del laboratorio -->
         <h1>Registro Lab-Explorer</h1>
         <!-- Título principal -->

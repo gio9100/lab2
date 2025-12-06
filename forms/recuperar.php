@@ -255,7 +255,7 @@ if (!$token_valido && !isset($_POST['token'])):
     <div class="logo-lab">
     <!-- Contenedor del logo -->
        
-      <img src="../assets/img/logo/nuevologo.ico" alt="logo Lab">
+      <img src="../assets/img/logo/logobrayan2.ico" alt="logo Lab">
       <!-- Logo -->
       <h1>Lab Explorer</h1>
       <!-- Título -->
@@ -292,7 +292,7 @@ if (!$token_valido && !isset($_POST['token'])):
     <!-- Formulario que se envía por POST -->
         <div class="logo-lab">
         <!-- Contenedor del logo -->
-            <img src="../assets/img/logo/logo-lab.ico" alt="logo lab">
+            <img src="../assets/img/logo/logobrayan2.ico" alt="logo lab">
             <!-- Logo -->
             <p class="subtitulo">Escribe tu nueva contraseña (minimo 6 caracteres)</p>
             <!-- Instrucciones -->

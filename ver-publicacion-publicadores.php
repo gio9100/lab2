@@ -280,7 +280,7 @@ $estado_info = $estado_colores[$estado_actual] ?? ['bg' => '#6c757d', 'text' => 
     <header class="header">
         <div class="container">
             <a href="forms/publicadores/index-publicadores.php" class="logo">
-                <img src="assets/img/logo/nuevologo.ico" alt="Lab Explorer">
+                <img src="assets/img/logo/logobrayan2.ico" alt="Lab Explorer">
                 <h1 class="sitename">Lab-Explorer</h1>
             </a>
         </div>

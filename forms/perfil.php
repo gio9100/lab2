@@ -87,7 +87,7 @@ if (isset($_GET['error'])) {
             <!-- Fila superior con flexbox, alinea elementos al centro y los separa a los extremos -->
                 <a href="../index.php" class="logo d-flex align-items-end">
                 <!-- Link al inicio que también funciona como logo -->
-                    <img src="../assets/img/logo/logo-lab.ico" alt="logo-lab">
+                    <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                     <!-- Imagen del logo del laboratorio -->
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
                     <!-- Nombre del sitio y un span vacío para estilos -->

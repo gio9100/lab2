@@ -121,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <form method="post" class="formulario" novalidate>
             
             <div class="logo-Lab">
-                <img src="../../assets/img/logo/nuevologo.ico" alt="logo-lab">
+                <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                 <h1>Registro Administrador</h1>
                 <p class="subtitulo">Panel de Administración Lab-Explorer</p>
             </div>
