@@ -110,7 +110,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Publicación - Lab-Explorer</title>
+    <title>Editar Publicación - Lab-Explora</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -151,7 +151,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
             <div class="top-row d-flex align-items-center justify-content-between">
                 <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
                     <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
                 </a>
                 
                 <div class="d-flex align-items-center">
@@ -301,10 +301,10 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
     <!-- Footer -->
     <footer id="footer" class="footer dark-background">
         <div class="container">
-            <h3 class="sitename">Lab-Explorer</h3>
+            <h3 class="sitename">Lab-Explora</h3>
             <p>Panel de Administración</p>
             <div class="copyright">
-                <span>Copyright</span> <strong class="px-1 sitename">Lab-Explorer</strong> <span>Todos los derechos reservados</span>
+                <span>Copyright</span> <strong class="px-1 sitename">Lab-Explora</strong> <span>Todos los derechos reservados</span>
             </div>
         </div>
     </footer>

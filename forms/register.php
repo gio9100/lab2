@@ -111,7 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- Aquí van los metadatos -->
 <meta charset="UTF-8">
 <!-- Para que se vean bien los acentos -->
-<title>Registro Lab-Explorer</title>
+<title>Registro Lab-Explora</title>
 <!-- Título que aparece en la pestaña del navegador -->
 <link rel="stylesheet" href="../assets/css/registro.css">
 <!-- Cargamos el CSS del registro -->
@@ -173,7 +173,7 @@ input.success {
     <!-- Contenedor del logo y título -->
         <img src="../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
         <!-- Logo del laboratorio -->
-        <h1>Registro Lab-Explorer</h1>
+        <h1>Registro Lab-Explora</h1>
         <!-- Título principal -->
         <p class="subtitulo">Lab Explorer (cbtis52)</p>
         <!-- Subtítulo con el nombre de la escuela -->

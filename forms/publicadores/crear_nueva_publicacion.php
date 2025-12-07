@@ -24,7 +24,7 @@ $categorias = obtenerCategorias($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Publicación - Lab-Explorer</title>
+    <title>Nueva Publicación - Lab-Explora</title>
     
     <!-- Fuentes de Google -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -96,6 +96,7 @@ $categorias = obtenerCategorias($conn);
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
+<<<<<<< HEAD
                 <div class="d-flex align-items-center">
                     <!-- Hamburger Button -->
                     <button class="btn btn-outline-primary d-md-none me-2" id="sidebarToggle">
@@ -107,6 +108,13 @@ $categorias = obtenerCategorias($conn);
                         <h1 class="sitename">Lab-Explorer</h1><span></span>
                     </a>
                 </div>
+=======
+                <!-- Logo -->
+                <a href="../../index.php" class="logo d-flex align-items-end">
+                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
+                </a>
+>>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">

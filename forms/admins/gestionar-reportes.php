@@ -90,7 +90,7 @@ $stats = obtenerEstadisticasReportes($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionar Reportes - Lab-Explorer</title>
+    <title>Gestionar Reportes - Lab-Explora</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -114,6 +114,7 @@ $stats = obtenerEstadisticasReportes($conn);
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
+<<<<<<< HEAD
                 <div class="d-flex align-items-center">
                     <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebar-toggle">
                         <i class="bi bi-list"></i>
@@ -123,6 +124,12 @@ $stats = obtenerEstadisticasReportes($conn);
                         <h1 class="sitename">Lab-Explorer</h1><span></span>
                     </a>
                 </div>
+=======
+                <a href="../../index.php" class="logo d-flex align-items-end">
+                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
+                </a>
+>>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">

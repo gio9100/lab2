@@ -1050,6 +1050,7 @@ $publicacion = $result->fetch_assoc();
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
+<<<<<<< HEAD
                 <div class="d-flex align-items-center">
                     <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
                     <a href="pagina-principal.php" class="logo d-flex align-items-end">
@@ -1057,6 +1058,12 @@ $publicacion = $result->fetch_assoc();
                         <h1 class="sitename">Lab-Explorer</h1><span></span>
                     </a>
                 </div>
+=======
+                <a href="index.php" class="logo d-flex align-items-end">
+                    <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
+                </a>
+>>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
 
                 <div class="d-flex align-items-center">
                     <div class="social-links d-none d-lg-block">

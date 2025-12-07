@@ -93,7 +93,7 @@ function acortar($texto, $limite = 150) {
 <!-- Definimos que el charset es UTF-8 para que se vean bien los acentos -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Hacemos que la página sea responsive (se adapte a celulares) -->
-    <title>Lab-Explorer - Publicaciones</title>
+    <title>Lab-Explora - Publicaciones</title>
 <!-- Título que aparece en la pestaña del navegador -->
 
     <!-- Fonts -->
@@ -1209,7 +1209,11 @@ body {
 <!-- Link al inicio con clases de flexbox -->
                         <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
 <!-- Imagen del logo -->
+<<<<<<< HEAD
                         <h1 class="sitename">Lab-Explorer</h1><span></span>
+=======
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
+>>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
 <!-- Nombre del sitio y un span vacío -->
                     </a>
                 </div>

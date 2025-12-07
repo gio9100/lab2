@@ -116,6 +116,7 @@ if (isset($_GET['error'])) {
 
             <div class="top-row d-flex align-items-center justify-content-between">
             <!-- Fila superior con flexbox, alinea elementos al centro y los separa a los extremos -->
+<<<<<<< HEAD
                 <div class="d-flex align-items-center">
                     <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
                     <a href="../pagina-principal.php" class="logo d-flex align-items-end">
@@ -126,6 +127,15 @@ if (isset($_GET['error'])) {
                         <!-- Nombre del sitio y un span vacío para estilos -->
                     </a>
                 </div>
+=======
+                <a href="../index.php" class="logo d-flex align-items-end">
+                <!-- Link al inicio que también funciona como logo -->
+                    <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                    <!-- Imagen del logo del laboratorio -->
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
+                    <!-- Nombre del sitio y un span vacío para estilos -->
+                </a>
+>>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
                 <!-- Cerramos el link del logo -->
 
                 <div class="d-flex align-items-center">
