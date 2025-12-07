@@ -76,7 +76,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mis Publicaciones - Lab-Explorer</title>
+<title>Mis Publicaciones - Lab-Explora</title>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -126,7 +126,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
         <div class="top-row d-flex align-items-center justify-content-between">
             <a href="../../index.php" class="logo d-flex align-items-end">
                 <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                <h1 class="sitename">Lab-Explorer</h1><span></span>
+                <h1 class="sitename">Lab-Explora</h1><span></span>
             </a>
 
             <div class="d-flex align-items-center">

@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Administrador - Lab-Explorer</title>
+    <title>Registro Administrador - Lab-Explora</title>
     <link rel="stylesheet" href="../../assets/css/registro.css">
 </head>
 <body>
@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="logo-Lab">
                 <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                 <h1>Registro Administrador</h1>
-                <p class="subtitulo">Panel de Administración Lab-Explorer</p>
+                <p class="subtitulo">Panel de Administración Lab-Explora</p>
             </div>
 
             <section class="seccion-informacion">

@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $stmt_admin->close();
                 // Cerramos la consulta de admin
                 
-                $mensaje = " 🧪 Bienvenido a Lab-Explorer, " . $usuario["nombre"] . "!";
+                $mensaje = " 🧪 Bienvenido a Lab-Explora, " . $usuario["nombre"] . "!";
                 // Mensaje de bienvenida con el nombre del usuario
                 $exito = true;
                 // Marcamos que el login fue exitoso
@@ -100,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- Para que se vean bien los acentos -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Para que se vea bien en celulares -->
-    <title>Inicio de sesión Lab-Explorer</title>
+    <title>Inicio de sesión Lab-Explora</title>
     <!-- Título que aparece en la pestaña del navegador -->
     <link href="../assets/css/inicio-sesion.css" rel="stylesheet">
     <!-- Cargamos el CSS del login -->
@@ -115,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Contenedor del logo y título -->
             <img src="../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
             <!-- Logo del laboratorio -->
-            <h1>Inicio de Sesión Lab-Explorer</h1>
+            <h1>Inicio de Sesión Lab-Explora</h1>
             <!-- Título principal -->
             <p class="subtitulo">Lab explorer (cbtis52)</p>
             <!-- Subtítulo con el nombre de la escuela -->

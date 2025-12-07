@@ -45,7 +45,7 @@ $categorias = obtenerCategorias($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Publicación - Lab-Explorer</title>
+    <title>Editar Publicación - Lab-Explora</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -100,7 +100,7 @@ $categorias = obtenerCategorias($conn);
                 <!-- Logo -->
                 <a href="../../index.php" class="logo" style="display: flex; align-items: center; text-decoration: none; gap: 10px;">
                     <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab" style="max-height: 40px;">
-                    <span class="sitename" style="font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 600; color: #7390A0; margin: 0;">Lab-Explorer</span>
+                    <span class="sitename" style="font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 600; color: #7390A0; margin: 0;">Lab-Explora</span>
                 </a>
 
                 <!-- Social Links & User Actions -->

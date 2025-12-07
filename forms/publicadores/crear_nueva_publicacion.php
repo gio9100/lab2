@@ -24,7 +24,7 @@ $categorias = obtenerCategorias($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Publicación - Lab-Explorer</title>
+    <title>Nueva Publicación - Lab-Explora</title>
     
     <!-- Fuentes de Google -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -95,7 +95,7 @@ $categorias = obtenerCategorias($conn);
                 <!-- Logo -->
                 <a href="../../index.php" class="logo d-flex align-items-end">
                     <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
                 </a>
 
                 <div class="d-flex align-items-center">

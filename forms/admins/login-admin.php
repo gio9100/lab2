@@ -62,7 +62,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de Sesión Administrador - Lab-Explorer</title>
+    <title>Inicio de Sesión Administrador - Lab-Explora</title>
     <link href="../../assets/css/inicio-sesion.css" rel="stylesheet">
 </head>
 <body>
@@ -72,7 +72,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="logo-lab">
             <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
             <h1>Inicio de Sesión Administrador</h1>
-            <p class="subtitulo">Panel de Administración Lab-Explorer</p>
+            <p class="subtitulo">Panel de Administración Lab-Explora</p>
         </div>
         
         <section class="seccion-informacion">

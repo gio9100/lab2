@@ -51,7 +51,7 @@ if ($_POST) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Categoría - Lab-Explorer</title>
+    <title>Crear Categoría - Lab-Explora</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -91,7 +91,7 @@ if ($_POST) {
             <div class="top-row d-flex align-items-center justify-content-between">
                 <a href="../../../index.php" class="logo d-flex align-items-end">
                     <img src="../../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
                 </a>
                 <div class="d-flex align-items-center">
                     <div class="social-links">

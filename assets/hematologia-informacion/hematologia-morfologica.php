@@ -43,7 +43,7 @@ require_once __DIR__. "/../../forms/usuario.php";
             <div class="top-row d-flex align-items-center justify-content-between">
                 <a href="../../index.php" class="logo d-flex align-items-end">
                     <img src="../img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer (Hematología)</h1><span></span>
+                    <h1 class="sitename">Lab-Explora (Hematología)</h1><span></span>
                 </a>
 
                 <div class="d-flex align-items-center">

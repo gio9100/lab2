@@ -14,7 +14,7 @@ session_start();
 <!-- Definimos que el charset es UTF-8 para que se vean bien los acentos -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Hacemos que la página sea responsive (se adapte a celulares) -->
-    <title>Lab-Explorer - Plataforma de Conocimiento Científico</title>
+    <title>Lab-Explora - Plataforma de Conocimiento Científico</title>
 <!-- Título que aparece en la pestaña del navegador -->
     
 <!-- Línea vacía -->
@@ -396,7 +396,7 @@ session_start();
 <!-- Link al inicio con clases de flexbox -->
                     <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
 <!-- Imagen del logo -->
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
 <!-- Nombre del sitio y un span vacío -->
                 </a>
 <!-- Cerramos el link del logo -->
@@ -482,7 +482,7 @@ session_start();
 <!-- Contenedor de Bootstrap para el ancho -->
             <div class="hero-content" data-aos="fade-up">
 <!-- Contenido del hero con animación de aparecer hacia arriba -->
-                <h1 class="hero-title">🧪 Bienvenido a Lab-Explorer</h1>
+                <h1 class="hero-title">🧪 Bienvenido a Lab-Explora</h1>
 <!-- Título principal con emoji de laboratorio -->
                 <p class="hero-subtitle">Tu Plataforma de Conocimiento Científico en Laboratorio Clínico</p>
 <!-- Subtítulo descriptivo -->
@@ -490,7 +490,7 @@ session_start();
 <!-- Descripción detallada -->
                     Descubre, aprende y comparte conocimiento científico de calidad. 
 <!-- Primera línea de la descripción -->
-                    Lab-Explorer es una plataforma dedicada a profesionales y estudiantes del área de laboratorio clínico, 
+                    Lab-Explora es una plataforma dedicada a profesionales y estudiantes del área de laboratorio clínico, 
 <!-- Segunda línea explicando a quién va dirigido -->
                     donde encontrarás artículos, casos clínicos y recursos educativos verificados por expertos.
 <!-- Tercera línea explicando qué encontrarás -->
@@ -520,7 +520,7 @@ session_start();
 <!-- Contenedor de Bootstrap -->
             <div class="section-title text-center mb-5" data-aos="fade-up">
 <!-- Título de la sección centrado con margen abajo y animación -->
-                <h2>¿Qué Encontrarás en Lab-Explorer?</h2>
+                <h2>¿Qué Encontrarás en Lab-Explora?</h2>
 <!-- Título de la sección -->
                 <p class="text-muted">Una plataforma completa para el aprendizaje y desarrollo profesional</p>
 <!-- Subtítulo en gris claro -->

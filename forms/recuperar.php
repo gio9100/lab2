@@ -186,7 +186,7 @@ if (isset($_POST['nueva_password']) && isset($_POST['token'])) {
     <!-- Aquí van los metadatos -->
     <meta charset="utf-8">
     <!-- Para que se vean bien los acentos -->
-    <title>Recuperar contraseña Lab-Explorer</title>
+    <title>Recuperar contraseña Lab-Explora</title>
     <!-- Título de la pestaña -->
     <link rel="stylesheet" href="../assets/css/registro.css">
     <!-- Cargamos el CSS -->

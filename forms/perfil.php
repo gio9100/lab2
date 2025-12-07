@@ -89,7 +89,7 @@ if (isset($_GET['error'])) {
                 <!-- Link al inicio que también funciona como logo -->
                     <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                     <!-- Imagen del logo del laboratorio -->
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
                     <!-- Nombre del sitio y un span vacío para estilos -->
                 </a>
                 <!-- Cerramos el link del logo -->

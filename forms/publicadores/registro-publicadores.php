@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- Para que se vean bien los acentos -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Para que se vea bien en celulares -->
-    <title>Registro Publicadores - Lab-Explorer</title>
+    <title>Registro Publicadores - Lab-Explora</title>
     <!-- Título de la pestaña -->
     
     <link rel="stylesheet" href="../../assets/css/registro.css">
@@ -145,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="logo-Lab">
                 <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                 <!-- Logo -->
-                <h1>Registro Publicadores Lab-explorer</h1>
+                <h1>Registro Publicadores Lab-Explora</h1>
                 <!-- Título -->
                 <p class="subtitulo">Panel de Publicadores (cbtis52)</p>
                 <!-- Subtítulo -->

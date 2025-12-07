@@ -766,7 +766,7 @@ require_once __DIR__ . "/forms/usuario.php";
 <!-- Logo link -->
                     <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
 <!-- Imagen del logo -->
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    <h1 class="sitename">Lab-Explora</h1><span></span>
 <!-- Nombre del sitio -->
                 </a>
 <!-- Cerramos logo -->
