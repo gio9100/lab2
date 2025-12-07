@@ -40,6 +40,10 @@ $categorias = obtenerCategorias($conn);
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
     
+    <!-- Driver.js para Onboarding -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    
     <!-- Estilos del Editor Quill -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     
@@ -92,16 +96,22 @@ $categorias = obtenerCategorias($conn);
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <!-- Logo -->
-                <a href="../../index.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
-                </a>
+                <div class="d-flex align-items-center">
+                    <!-- Hamburger Button -->
+                    <button class="btn btn-outline-primary d-md-none me-2" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <!-- Logo -->
+                    <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    </a>
+                </div>
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
                         <!-- Saludo al publicador -->
-                        <span class="saludo">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
+                        <span class="saludo d-none d-md-inline">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
                         <a href="logout-publicadores.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
@@ -113,24 +123,13 @@ $categorias = obtenerCategorias($conn);
         <div class="container-fluid mt-4">
             <div class="row">
 
-                <!-- Barra lateral de navegación -->
-                <div class="col-md-3 mb-4">
-                    <div class="sidebar-nav">
-                        <div class="list-group">
-                            <a href="index-publicadores.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>Panel Principal
-                            </a>
-                            <a href="crear_nueva_publicacion.php" class="list-group-item list-group-item-action active">
-                                <i class="bi bi-plus-circle me-2"></i>Nueva Publicación
-                            </a>
-                            <a href="mis-publicaciones.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-file-text me-2"></i>Mis Publicaciones
-                            </a>
-                            <a href="perfil.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-person me-2"></i>Mi Perfil
-                            </a>
-                        </div>
+                <!-- Barra lateral de navegación (Desktop & Mobile Overlay) -->
+                <div class="col-md-3 sidebar-wrapper" id="sidebarWrapper">
+                    <!-- Mobile Close Button -->
+                    <div class="d-flex justify-content-end d-md-none p-2">
+                        <button class="btn-close" id="sidebarClose"></button>
                     </div>
+                    <?php include 'sidebar-publicador.php'; ?>
                 </div>
 
                 <!-- Contenido principal -->
@@ -371,10 +370,108 @@ $categorias = obtenerCategorias($conn);
                     container.classList.remove('d-none');
                 }
                 reader.readAsDataURL(file);
-            } else {
                 container.classList.add('d-none');
             }
         });
+
+        // Sidebar Toggle Logic
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarWrapper = document.getElementById('sidebarWrapper');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        if(sidebarToggle && sidebarWrapper) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+
+            function toggleSidebar() {
+                sidebarWrapper.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.classList.toggle('sidebar-open');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        }
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!localStorage.getItem('tour_crear_publicacion_visto')) {
+            const driver = window.driver.js.driver;
+            
+            const driverObj = driver({
+                showProgress: true,
+                animate: true,
+                doneBtnText: '¡Entendido!',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+                steps: [
+                    { 
+                        element: '#titulo', 
+                        popover: { 
+                            title: '📝 Título Atractivo', 
+                            description: 'Comienza con un título claro y conciso que capture la esencia de tu investigación.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '#imagen_principal', 
+                        popover: { 
+                            title: '🖼️ Imagen de Portada', 
+                            description: 'Sube una imagen de alta calidad. Esta será la primera impresión visual de tu publicación.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '#editor-container', 
+                        popover: { 
+                            title: '✍️ Editor de Contenido Rico', 
+                            description: 'Aquí es donde ocurre la magia. Escribe tu artículo completo con formato profesional.', 
+                            side: "top", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.ql-toolbar', 
+                        popover: { 
+                            title: '🧰 Herramientas de Edición', 
+                            description: 'Usa esta barra para dar formato: negritas, listas, enlaces y más.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.ql-image', 
+                        popover: { 
+                            title: '📷 Imágenes en el Texto', 
+                            description: '¡Importante! Usa este botón para insertar imágenes o gráficos directamente entre tus párrafos.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '#btn-publicar', 
+                        popover: { 
+                            title: '🚀 Enviar a Revisión', 
+                            description: 'Cuando termines, envía tu trabajo. Un administrador lo revisará antes de hacerlo público.', 
+                            side: "top", 
+                            align: 'start' 
+                        } 
+                    }
+                ]
+            });
+
+            // Pequeño retraso para asegurar que Quill renderizó
+            setTimeout(() => {
+                driverObj.drive();
+                localStorage.setItem('tour_crear_publicacion_visto', 'true');
+            }, 1000);
+        }
+    });
     </script>
 </body>
 </html>

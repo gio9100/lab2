@@ -120,20 +120,30 @@ $stmt_recientes->close();
     <!-- Main CSS -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
+    
+    <!-- Driver.js para Onboarding -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 </head>
 <body class="publicador-page">
 
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <a href="../../index.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
-                </a>
+                <div class="d-flex align-items-center">
+                    <!-- Hamburger Button -->
+                    <button class="btn btn-outline-primary d-md-none me-2" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    </a>
+                </div>
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
+                        <span class="saludo d-none d-md-inline">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
                         <a href="logout-publicadores.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
@@ -145,48 +155,13 @@ $stmt_recientes->close();
         <div class="container-fluid mt-4">
             <div class="row">
 
-                <!-- Sidebar -->
-                <div class="col-md-3 mb-4">
-                    <div class="sidebar-nav">
-                       <div class="list-group">
-    <a href="../../index.php" class="list-group-item list-group-item-action">
-        <i class="bi bi-house me-2"></i>Página Principal
-    </a>
-    <!-- ENLACE CORREGIDO: Quitar "active" de Nueva Publicación -->
-    <a href="crear_nueva_publicacion.php" class="list-group-item list-group-item-action">
-        <i class="bi bi-plus-circle me-2"></i>Nueva Publicación
-    </a>
-
-    <a href="mis-publicaciones.php" class="list-group-item list-group-item-action active">
-        <i class="bi bi-file-text me-2"></i>Mis Publicaciones
-    </a>
-    <a href="../../mensajes/chat.php?as=publicador" class="list-group-item list-group-item-action">
-        <i class="bi bi-chat-left-text me-2"></i>Mensajes
-    </a>
-    <a href="estadisticas.php" class="list-group-item list-group-item-action">
-        <i class="bi bi-graph-up me-2"></i>Estadísticas
-    </a>
-    <a href="perfil.php" class="list-group-item list-group-item-action">
-        <i class="bi bi-person me-2"></i>Mi Perfil
-    </a>
-</div>
-                        
-                        <!-- Información del publicador -->
-                        <div class="quick-stats-card mt-4">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">Mi Información</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="stat-item">
-                                    <small class="text-muted"><strong>Especialidad:</strong><br>
-                                    <?= htmlspecialchars($publicador_especialidad) ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted"><strong>Estado:</strong> Activo</small>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Sidebar (Desktop & Mobile Overlay) -->
+                <div class="col-md-3 sidebar-wrapper" id="sidebarWrapper">
+                     <!-- Mobile Close Button -->
+                    <div class="d-flex justify-content-end d-md-none p-2">
+                        <button class="btn-close" id="sidebarClose"></button>
                     </div>
+                    <?php include 'sidebar-publicador.php'; ?>
                 </div>
 
                 <!-- Contenido Principal -->
@@ -331,16 +306,9 @@ $stmt_recientes->close();
     <!-- Vendor JS -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
-
-    <!-- Main JS-->
-    <script src="../../assets/js/main.js"></script>
-
     <script>
         // Inicializar AOS
-        AOS.init({
-            duration: 1000,
-            once: true
-        });
+        AOS.init();
 
         // Cerrar alertas
         document.querySelectorAll('.close-btn').forEach(button => {
@@ -348,6 +316,77 @@ $stmt_recientes->close();
                 this.parentElement.style.display = 'none';
             });
         });
+
+        // Sidebar Toggle Logic
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarWrapper = document.getElementById('sidebarWrapper');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        if(sidebarToggle && sidebarWrapper) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+
+            function toggleSidebar() {
+                sidebarWrapper.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.classList.toggle('sidebar-open');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        }
+    </script>
+
+    <!-- Script del Tour Onboarding -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!localStorage.getItem('tour_publicador_visto')) {
+            const driver = window.driver.js.driver;
+            
+            const driverObj = driver({
+                showProgress: true,
+                animate: true,
+                doneBtnText: '¡Entendido!',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+                steps: [
+                    { 
+                        element: '.saludo', 
+                        popover: { 
+                            title: '👨‍🔬 Panel de Publicador', 
+                            description: 'Bienvenido a tu espacio de trabajo. Aquí podrás gestionar todas tus contribuciones científicas.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.stats-grid', 
+                        popover: { 
+                            title: '📊 Estadísticas Rápidas', 
+                            description: 'Monitorea el impacto de tus publicaciones y el estado de tus borradores en tiempo real.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.quick-actions', 
+                        popover: { 
+                            title: '⚡ Acciones Rápidas', 
+                            description: 'Crea nuevas publicaciones o gestiona tu perfil con un solo clic.', 
+                            side: "left", 
+                            align: 'start' 
+                        } 
+                    }
+                ]
+            });
+
+            driverObj.drive();
+            localStorage.setItem('tour_publicador_visto', 'true');
+        }
+    });
     </script>
 </body>
 </html>

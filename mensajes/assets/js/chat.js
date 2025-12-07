@@ -10,6 +10,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const chatHeader = document.getElementById('chat-header');
     const chatInputArea = document.getElementById('chat-input-area');
     const searchInput = document.getElementById('search-contact');
+    const chatLayout = document.querySelector('.chat-layout');
+    const mobileBackBtn = document.getElementById('mobile-back-btn');
+
+    console.log("Chat JS Loaded. Layout:", chatLayout, "BackBtn:", mobileBackBtn);
+
+    // Listener para el botón de volver en móvil
+    if (mobileBackBtn) {
+        mobileBackBtn.addEventListener('click', () => {
+            chatLayout.classList.remove('chat-active');
+            currentContact = null; // Opcional: limpiar contacto actual
+        });
+    }
 
     // Variables globales del chat
     let currentContact = null;      // Contacto actualmente seleccionado
@@ -192,6 +204,11 @@ document.addEventListener('DOMContentLoaded', function () {
         chatHeader.style.display = 'flex';
         chatInputArea.style.display = 'block';
 
+        // Aplicar clase para vista móvil
+        if (chatLayout) {
+            chatLayout.classList.add('chat-active');
+        }
+
         loadContacts();
         loadMessages();
 
@@ -200,7 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
         pollInterval = setInterval(loadMessages, 3000);
 
         // focus() = pone el cursor en el elemento
-        messageInput.focus();
+        // En móvil a veces es mejor no hacer focus automático para que no salte el teclado
+        if (window.innerWidth > 768) {
+            messageInput.focus();
+        }
     }
 
     // Obtener mensajes de la conversación

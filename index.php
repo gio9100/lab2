@@ -120,6 +120,10 @@ function acortar($texto, $limite = 150) {
 
     <!-- Main CSS -->
     <link href="assets/css/main.css" rel="stylesheet">
+    
+    <!-- Driver.js para Onboarding -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 </head>
 <!-- Cerramos la etiqueta head -->
  <style>
@@ -1199,19 +1203,22 @@ body {
 <!-- Contenedor con clases de Bootstrap para el ancho -->
             <div class="top-row d-flex align-items-center justify-content-between">
 <!-- Fila superior con flexbox de Bootstrap -->
-                <a href="index.php" class="logo d-flex align-items-end">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
+                    <a href="pagina-principal.php" class="logo d-flex align-items-end">
 <!-- Link al inicio con clases de flexbox -->
-                    <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
 <!-- Imagen del logo -->
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
 <!-- Nombre del sitio y un span vacío -->
-                </a>
+                    </a>
+                </div>
 <!-- Cerramos el link del logo -->
 
 <!-- Línea vacía -->
                 <div class="d-flex align-items-center">
 <!-- Contenedor con flexbox para alinear elementos -->
-                    <div class="social-links">
+                    <div class="social-links d-none d-lg-block">
 <!-- Contenedor para los links sociales y opciones de usuario -->
                         <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
 <!-- Link a Facebook con icono -->
@@ -1615,6 +1622,59 @@ body {
 // Cerramos el forEach de botones
     </script>
 <!-- Cerramos el script -->
+    <script>
+        // Configuración del Tour de la Página de Publicaciones
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si venimos de la página principal (opcional, para dar continuidad) o si ya se vio este tour específico
+            if (!localStorage.getItem('tour_explorar_visto')) {
+                const driver = window.driver.js.driver;
+                
+                const driverObj = driver({
+                    showProgress: true,
+                    animate: true,
+                    doneBtnText: '¡Entendido!',
+                    nextBtnText: 'Siguiente',
+                    prevBtnText: 'Anterior',
+                    steps: [
+                        { 
+                            element: '.search-box', 
+                            popover: { 
+                                title: '🔍 Busca lo que necesitas', 
+                                description: 'Utiliza nuestro buscador inteligente para encontrar publicaciones por título o contenido.', 
+                                side: "bottom", 
+                                align: 'start' 
+                            } 
+                        },
+                        { 
+                            element: '.category-filters', 
+                            popover: { 
+                                title: '📂 Filtra por Categoría', 
+                                description: 'Selecciona una categoría específica para ver solo el contenido de tu interés.', 
+                                side: "bottom", 
+                                align: 'start' 
+                            } 
+                        },
+                        { 
+                            element: '.publications-grid', 
+                            popover: { 
+                                title: '📚 Explora el Contenido', 
+                                description: 'Aquí encontrarás todas las publicaciones. Haz clic en "Leer más" para ver el detalle completo.', 
+                                side: "top", 
+                                align: 'start' 
+                            } 
+                        }
+                    ]
+                });
+
+                // Pequeño retraso para asegurar que todo esté cargado
+                setTimeout(() => {
+                    driverObj.drive();
+                    localStorage.setItem('tour_explorar_visto', 'true');
+                }, 1000);
+            }
+        });
+    </script>
+    <?php include "forms/sidebar-usuario.php"; ?>
 </body>
 <!-- Cerramos el body -->
 </html>

@@ -3,6 +3,20 @@
 session_start();
 // Iniciamos la sesión
 
+// Incluir conexión a BD para actualizar estado
+require_once '../../mensajes/db.php';
+// Verificar si hay sesión de publicador
+if (isset($_SESSION['publicador_id'])) {
+    $pub_id = $_SESSION['publicador_id'];
+    // Actualizar ultimo_acceso a NULL para desconectar
+    $stmt = $conn->prepare("UPDATE publicadores SET ultimo_acceso = NULL WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $pub_id);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
 // Destruimos todas las variables de sesión
 $_SESSION = array();
 // array() crea un array vacío, esto borra todas las variables de sesión

@@ -78,6 +78,20 @@ if ($force_role === 'publicador' && isset($_SESSION['publicador_id'])) {
     }
 }
 
+// ACTUALIZAR ÚLTIMO ACCESO
+// Si hay un usuario identificado, actualizamos su fecha de actividad
+if ($current_user_id && $current_user_role) {
+    $table = ($current_user_role === 'admin') ? 'admins' : 'publicadores';
+    // NOW() = hora actual del servidor DB
+    $updateQuery = "UPDATE $table SET ultimo_acceso = NOW() WHERE id = ?";
+    $stmtUpdate = $conn->prepare($updateQuery);
+    if ($stmtUpdate) {
+        $stmtUpdate->bind_param("i", $current_user_id);
+        $stmtUpdate->execute();
+        $stmtUpdate->close();
+    }
+}
+
 // Función de seguridad para bloquear accesos no autorizados
 // function = declara una función
 function checkAuth() {

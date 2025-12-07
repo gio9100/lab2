@@ -490,63 +490,303 @@ input[type="file"]:hover {
     color: #721c24;
     /* Texto rojo oscuro */
     border: 1px solid #f5c6cb;
+}
+
+/* Tarjeta de estadística */
+.stat-card {
+    background: #fff;
+    /* Fondo blanco */
+    border: 1px solid var(--color-borde);
+    /* Borde gris */
+    padding: 25px 20px;
+    /* Padding: 25px arriba/abajo, 20px lados */
+    text-align: center;
+    /* Texto centrado */
+    border-radius: var(--radius);
+    /* Esquinas redondeadas */
+    color: var(--color-primario);
+    /* Color azul grisáceo */
+    transition: var(--trans);
+    /* Transición suave */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    /* Sombra suave */
+}
+
+/* Hover de la tarjeta de estadística */
+.stat-card:hover {
+    transform: translateY(-5px);
+    /* Sube 5px */
+    border-color: var(--color-primario);
+    /* Borde azul grisáceo */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .15);
+    /* Sombra más grande */
+}
+
+/* Número de la estadística */
+.stat-number {
+    font-size: 2.5rem;
+    /* Tamaño bien grande */
+    font-weight: 700;
+    /* Texto bien grueso */
+    margin-bottom: 5px;
+    /* Margen inferior de 5px */
+    font-family: var(--font-2);
+    /* Fuente Poppins */
+}
+
+/* Etiqueta de la estadística */
+.stat-label {
+    font-size: .85rem;
+    /* Tamaño chico */
+    text-transform: uppercase;
+    /* Todo en mayúsculas */
+    letter-spacing: .5px;
+    /* Espaciado entre letras */
+}
+
+/* Formulario de imagen */
+.form-imagen {
+    background: var(--color-fondo);
+    /* Fondo gris claro */
+    padding: 25px;
+    /* Padding de 25px */
+    border-radius: var(--radius);
+    /* Esquinas redondeadas */
+    border-left: 4px solid var(--color-primario);
+    /* Borde izquierdo azul */
+    margin: 25px 0;
+    /* Margen arriba/abajo de 25px */
+}
+
+/* Label del formulario */
+.form-group label {
+    display: block;
+    /* Bloque completo */
+    margin-bottom: 10px;
+    /* Margen inferior de 10px */
+    font-weight: 600;
+    /* Texto semi-grueso */
+    font-family: var(--font-2);
+    /* Fuente Poppins */
+    color: var(--color-texto);
+    /* Color de texto oscuro */
+}
+
+/* Input de archivo */
+input[type="file"] {
+    width: 100%;
+    /* Ancho completo */
+    padding: 12px;
+    /* Padding de 12px */
+    border: 1px solid #dee2e6;
+    /* Borde gris */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    background: #fff;
+    /* Fondo blanco */
+    transition: var(--trans);
+    /* Transición suave */
+}
+
+/* Hover del input de archivo */
+input[type="file"]:hover {
+    border-color: var(--color-primario);
+    /* Borde azul grisáceo */
+}
+
+/* Botones de subir y eliminar foto */
+.btn-subir,
+.btn-eliminar-foto {
+    padding: 12px 30px;
+    /* Padding: 12px arriba/abajo, 30px lados */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    font-family: var(--font-1);
+    /* Fuente Roboto */
+    font-weight: 500;
+    /* Peso medio */
+    cursor: pointer;
+    /* Cursor de manita */
+    border: none;
+    /* Sin borde */
+    transition: var(--trans);
+    /* Transición suave */
+    display: inline-flex;
+    /* Flexbox en línea */
+    gap: 8px;
+    /* Espacio de 8px entre elementos */
+    align-items: center;
+    /* Centra verticalmente */
+}
+
+/* Botón de subir */
+.btn-subir {
+    background: var(--color-primario);
+    /* Fondo azul grisáceo */
+    color: #fff;
+    /* Texto blanco */
+}
+
+/* Hover del botón subir */
+.btn-subir:hover {
+    transform: translateY(-2px);
+    /* Sube 2px */
+    box-shadow: 0 4px 12px rgba(52, 152, 219, .3);
+    /* Sombra azulada */
+}
+
+/* Botón de eliminar foto */
+.btn-eliminar-foto {
+    background: #e74c3c;
+    /* Fondo rojo */
+    color: #fff;
+    /* Texto blanco */
+}
+
+/* Hover del botón eliminar */
+.btn-eliminar-foto:hover {
+    background: #c0392b;
+    /* Rojo más oscuro */
+    transform: translateY(-2px);
+    /* Sube 2px */
+    box-shadow: 0 4px 8px rgba(231, 76, 60, .3);
+    /* Sombra rojiza */
+}
+
+/* Mensajes de éxito y error */
+.mensaje-exito,
+.mensaje-error {
+    padding: 15px;
+    /* Padding de 15px */
+    border-radius: 6px;
+    /* Esquinas redondeadas */
+    font-weight: 500;
+    /* Peso medio */
+    margin: 20px 0;
+    /* Margen arriba/abajo de 20px */
+    font-family: var(--font-3);
+    /* Fuente Nunito */
+}
+
+/* Mensaje de éxito */
+.mensaje-exito {
+    background: #d4edda;
+    /* Fondo verde claro */
+    color: #155724;
+    /* Texto verde oscuro */
+    border: 1px solid #c3e6cb;
+    /* Borde verde */
+}
+
+/* Mensaje de error */
+.mensaje-error {
+    background: #f8d7da;
+    /* Fondo rojo claro */
+    color: #721c24;
+    /* Texto rojo oscuro */
+    border: 1px solid #f5c6cb;
     /* Borde rojo */
 }
 
-/* Responsive pa tablets */
-@media (max-width: 768px) {
-    .top-row {
-        flex-direction: column;
-        /* Cambia a columna */
-        text-align: center;
-        /* Texto centrado */
-        gap: 15px;
-        /* Espacio de 15px */
+/* Responsive pa tablets y móviles */
+@media (max-width: 991px) {
+    .main-container {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    .perfil-card {
+        padding: 20px 15px;
     }
 
     .perfil-header {
         flex-direction: column;
-        /* Cambia a columna */
+        align-items: center;
         text-align: center;
-        /* Texto centrado */
+        gap: 20px;
     }
 
-    .perfil-stats {
-        grid-template-columns: 1fr;
-        /* Una sola columna */
+    .perfil-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
     }
 
     .perfil-imagen img {
         width: 120px;
-        /* Reduce el ancho a 120px */
         height: 120px;
-        /* Reduce el alto a 120px */
+    }
+
+    .perfil-stats {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    /* Fix file input on mobile */
+    .form-imagen {
+        padding: 15px;
+        border-left: none;
+        border-top: 4px solid var(--color-primario);
+    }
+
+    .form-imagen input[type="file"] {
+        font-size: 0.9rem;
+        /* Allow text wrap if needed or truncate */
+        white-space: normal;
+    }
+
+    .btn-submit {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    /* Saved publications on mobile */
+    .saved-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .saved-card {
+        padding: 15px !important;
+    }
+
+    .saved-card h4 {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    .saved-card .badge {
+        font-size: 0.75rem;
     }
 }
 
-/* Responsive pa móviles */
-@media (max-width: 480px) {
-    .sitename {
-        font-size: 1.3rem;
-        /* Reduce el tamaño del nombre */
+@media (max-width: 576px) {
+    .perfil-info h2 {
+        font-size: 1.5rem;
     }
 
-    .btn-subir {
-        width: 100%;
-        /* Ancho completo */
-        justify-content: center;
-        /* Centra el contenido */
+    .perfil-correo {
+        font-size: 1rem;
     }
 
-    .perfil-imagen img {
-        width: 100px;
-        /* Reduce a 100px */
-        height: 100px;
-        /* Reduce a 100px */
+    .perfil-stats {
+        grid-template-columns: 1fr;
     }
 
     .stat-number {
         font-size: 2rem;
-        /* Reduce el tamaño del número */
+    }
+
+    .btn-submit {
+        width: 100%;
+    }
+
+    /* Saved publications on mobile */
+    .saved-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .saved-card {
+        padding: 15px !important;
     }
 }

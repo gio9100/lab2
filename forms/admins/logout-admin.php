@@ -3,6 +3,20 @@
 session_start();
 // Iniciamos la sesión
 
+// Incluir conexión a BD para actualizar estado
+require_once '../../mensajes/db.php';
+// Verificar si hay sesión de admin
+if (isset($_SESSION['admin_id'])) {
+    $admin_id = $_SESSION['admin_id'];
+    // Actualizar ultimo_acceso a NULL para desconectar
+    $stmt = $conn->prepare("UPDATE admins SET ultimo_acceso = NULL WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $admin_id);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
 // Destruimos todas las variables de sesión
 $_SESSION = array();
 // array() crea un array vacío, esto borra todas las variables de sesión

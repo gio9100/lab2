@@ -97,6 +97,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
     overflow:hidden;
     box-shadow:0 2px 15px rgba(0,0,0,.1);
     transition:.3s;
+    background:white;
 }
 .publicacion-card:hover{
     transform:translateY(-3px);
@@ -116,130 +117,148 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
 .status-badge.borrador{background:#e2e3e5;color:#6c757d;}
 .status-badge.revision{background:#fff3cd;color:#997404;}
 .status-badge.rechazada{background:#f8d7da;color:#721c24;}
+
 </style>
 </head>
 <body class="publicador-page">
 
-<!-- Header -->
-<header id="header" class="header position-relative">
-    <div class="container-fluid container-xl position-relative">
-        <div class="top-row d-flex align-items-center justify-content-between">
-            <a href="../../index.php" class="logo d-flex align-items-end">
-                <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                <h1 class="sitename">Lab-Explorer</h1><span></span>
-            </a>
+    <!-- Header -->
+    <header id="header" class="header position-relative">
+        <div class="container-fluid container-xl position-relative">
+            <div class="top-row d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Hamburger Button for Mobile -->
+                    <button class="btn btn-outline-primary d-md-none me-2" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    </a>
+                </div>
 
-            <div class="d-flex align-items-center">
-                <div class="social-links">
-                    <span class="saludo">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
-                    <a href="logout-publicadores.php" class="logout-btn">Cerrar sesión</a>
+                <div class="d-flex align-items-center">
+                    <div class="social-links">
+                        <span class="saludo d-none d-md-inline">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
+                        <a href="logout-publicadores.php" class="logout-btn">Cerrar sesión</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 
-<div class="container mt-4">
-
-    <!-- Mensajes -->
-    <?php if(isset($mensaje_exito)): ?>
-    <div class="alert alert-success"><?= $mensaje_exito ?></div>
-    <?php endif; ?>
-
-    <?php if(isset($mensaje_error)): ?>
-    <div class="alert alert-danger"><?= $mensaje_error ?></div>
-    <?php endif; ?>
-
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2><i class="fas fa-newspaper"></i> Mis Publicaciones</h2>
-            <p class="text-muted">Gestiona todas tus publicaciones.</p>
-        </div>
-        <a href="crear_nueva_publicacion.php" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Nueva Publicación
-        </a>
-        <a href="mis-publicaciones.php?eliminar_todas=1" class="btn btn-danger ms-2" onclick="return confirm('¿Estás SEGURO de que quieres eliminar TODAS tus publicaciones? Esta acción no se puede deshacer.')">
-            <i class="bi bi-trash"></i> Eliminar Todas
-        </a>
-    </div>
-
-
-    <!-- Lista de Publicaciones -->
-    <div class="row">
-        <?php if(empty($publicaciones)): ?>
-            <div class="col-12 text-center text-muted mt-5">
-                <i class="bi bi-file-earmark-x" style="font-size:50px;"></i>
-                <p>No tienes publicaciones aún.</p>
-                <a href="crear_nueva_publicacion.php" class="btn btn-primary mt-3">
-                    <i class="bi bi-plus-circle"></i> Crear mi primera publicación
-                </a>
-            </div>
-        <?php else: ?>
-
-        <?php foreach ($publicaciones as $p): ?>
-        <div class="col-md-6 mb-4">
-            <div class="publicacion-card">
-
-                <!-- Imagen -->
-                <?php if(!empty($p['imagen_principal'])): ?>
-                <img src="../../uploads/<?= htmlspecialchars($p['imagen_principal']) ?>" class="publicacion-imagen">
-                <?php else: ?>
-                <div class="publicacion-imagen bg-light d-flex justify-content-center align-items-center">
-                    <i class="bi bi-image" style="font-size:40px;color:#ccc;"></i>
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar (Desktop & Mobile Overlay) -->
+            <div class="col-md-3 sidebar-wrapper" id="sidebarWrapper">
+                <!-- Mobile Close Button -->
+                <div class="d-flex justify-content-end d-md-none p-2">
+                    <button class="btn-close" id="sidebarClose"></button>
                 </div>
+                <?php include 'sidebar-publicador.php'; ?>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <!-- Mensajes -->
+                <?php if(isset($mensaje_exito)): ?>
+                <div class="alert alert-success"><?= $mensaje_exito ?></div>
                 <?php endif; ?>
 
-                <div class="p-3">
-                    <h5><?= htmlspecialchars($p['titulo']) ?></h5>
-                    <span class="status-badge <?= $p['estado'] ?>">
-                        <?= ucfirst($p['estado']) ?>
-                    </span>
-                    <?php if($p['estado'] === 'rechazada' && !empty($p['mensaje_rechazo'])): ?>
-                    <button class="btn btn-outline-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalRechazo" data-mensaje="<?= htmlspecialchars($p['mensaje_rechazo']) ?>">
-                        <i class="bi bi-exclamation-circle"></i> Ver Motivo
-                    </button>
-                    <?php endif; ?>
-                    
-                    <p class="text-muted mt-2">
-                        <strong>Categoría:</strong> <?= htmlspecialchars($p['categoria'] ?? 'Sin categoría') ?><br>
-                        <strong>Creada:</strong> <?= date("d/m/Y", strtotime($p['fecha_creacion'])) ?>
-                    </p>
+                <?php if(isset($mensaje_error)): ?>
+                <div class="alert alert-danger"><?= $mensaje_error ?></div>
+                <?php endif; ?>
 
-                    <!-- Resumen -->
-                    <?php if(!empty($p['resumen'])): ?>
-                    <p><?= htmlspecialchars(substr($p['resumen'], 0, 100)) ?>...</p>
-                    <?php endif; ?>
-
-                    <!-- Botones -->
-                    <div class="mt-3 d-flex justify-content-between">
-                        <div>
-                            <a href="editar_publicacion.php?id=<?= $p['id'] ?>" class="btn btn-primary btn-sm">
-                                <i class="bi bi-pencil"></i> Editar
-                            </a>
-
-                            <a href="../../ver-publicacion.php?id=<?= $p['id'] ?>" 
-                               class="btn btn-outline-secondary btn-sm" target="_blank">
-                                <i class="bi bi-eye"></i> Ver
-                            </a>
-                        </div>
-
-                        <button class="btn btn-danger btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEliminar"
-                                data-id="<?= $p['id'] ?>"
-                                data-titulo="<?= htmlspecialchars($p['titulo']) ?>">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2><i class="fas fa-newspaper"></i> Mis Publicaciones</h2>
+                        <p class="text-muted text-start p-0">Gestiona todas tus publicaciones.</p>
+                    </div>
+                    <div>
+                        <a href="crear_nueva_publicacion.php" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">Nueva</span>
+                        </a>
+                        <a href="mis-publicaciones.php?eliminar_todas=1" class="btn btn-danger ms-2" onclick="return confirm('¿Estás SEGURO de que quieres eliminar TODAS tus publicaciones? Esta acción no se puede deshacer.')">
+                            <i class="bi bi-trash"></i> <span class="d-none d-sm-inline">Eliminar Todo</span>
+                        </a>
                     </div>
                 </div>
 
+                <!-- Lista de Publicaciones -->
+                <div class="row">
+                    <?php if(empty($publicaciones)): ?>
+                        <div class="col-12 text-center text-muted mt-5">
+                            <i class="bi bi-file-earmark-x" style="font-size:50px;"></i>
+                            <p class="text-center p-3">No tienes publicaciones aún.</p>
+                            <a href="crear_nueva_publicacion.php" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle"></i> Crear mi primera publicación
+                            </a>
+                        </div>
+                    <?php else: ?>
+
+                    <?php foreach ($publicaciones as $p): ?>
+                    <div class="col-md-6 mb-4">
+                        <div class="publicacion-card h-100">
+                            <!-- Imagen -->
+                            <?php if(!empty($p['imagen_principal'])): ?>
+                            <img src="../../uploads/<?= htmlspecialchars($p['imagen_principal']) ?>" class="publicacion-imagen">
+                            <?php else: ?>
+                            <div class="publicacion-imagen bg-light d-flex justify-content-center align-items-center">
+                                <i class="bi bi-image" style="font-size:40px;color:#ccc;"></i>
+                            </div>
+                            <?php endif; ?>
+
+                            <div class="p-3">
+                                <h5><?= htmlspecialchars($p['titulo']) ?></h5>
+                                <span class="status-badge <?= $p['estado'] ?>">
+                                    <?= ucfirst($p['estado']) ?>
+                                </span>
+                                <?php if($p['estado'] === 'rechazada' && !empty($p['mensaje_rechazo'])): ?>
+                                <button class="btn btn-outline-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalRechazo" data-mensaje="<?= htmlspecialchars($p['mensaje_rechazo']) ?>">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                </button>
+                                <?php endif; ?>
+                                
+                                <p class="text-muted mt-2 text-start p-0 small">
+                                    <strong>Cat:</strong> <?= htmlspecialchars($p['categoria'] ?? 'Sin categoría') ?><br>
+                                    <strong>Fecha:</strong> <?= date("d/m/Y", strtotime($p['fecha_creacion'])) ?>
+                                </p>
+
+                                <!-- Resumen -->
+                                <?php if(!empty($p['resumen'])): ?>
+                                <p class="small"><?= htmlspecialchars(substr($p['resumen'], 0, 80)) ?>...</p>
+                                <?php endif; ?>
+
+                                <!-- Botones -->
+                                <div class="mt-3 d-flex justify-content-between">
+                                    <div>
+                                        <a href="editar_publicacion.php?id=<?= $p['id'] ?>" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a href="../../ver-publicacion.php?id=<?= $p['id'] ?>" 
+                                           class="btn btn-outline-secondary btn-sm" target="_blank">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+
+                                    <button class="btn btn-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEliminar"
+                                            data-id="<?= $p['id'] ?>"
+                                            data-titulo="<?= htmlspecialchars($p['titulo']) ?>">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <?php endforeach; endif; ?>
+                </div>
             </div>
         </div>
-        <?php endforeach; endif; ?>
     </div>
-
-</div>
 
 <!-- Modal Eliminar -->
 <div class="modal fade" id="modalEliminar" tabindex="-1">
@@ -300,6 +319,28 @@ modalRechazo.addEventListener('show.bs.modal', event => {
     let mensaje = button.getAttribute('data-mensaje');
     document.getElementById('modalRechazoBody').textContent = mensaje;
 });
+
+// Sidebar Toggle Logic
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarWrapper = document.getElementById('sidebarWrapper');
+const sidebarClose = document.getElementById('sidebarClose');
+
+if(sidebarToggle && sidebarWrapper) {
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+
+    function toggleSidebar() {
+        sidebarWrapper.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = sidebarWrapper.classList.contains('active') ? 'hidden' : '';
+    }
+
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar);
+}
 </script>
 
 </body>

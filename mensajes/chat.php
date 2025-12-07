@@ -23,20 +23,109 @@ checkAuth();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Estilos del Chat -->
-    <link rel="stylesheet" href="assets/css/chat.css">
+    <link rel="stylesheet" href="assets/css/chat.css?v=<?= time() ?>">
+    <style>
+        /* Force mobile styles inline to avoid cache issues */
+        @media (max-width: 991px) {
+            /* #header { display: none !important; }  <-- RESTORED HEADER */
+            
+            /* Ajustamos altura para descontar el header aprox (o usamos flex) */
+            body { 
+                height: 100vh; 
+                overflow: hidden; 
+                margin: 0; 
+                display: flex; 
+                flex-direction: column; 
+            }
+            
+            #header {
+                flex-shrink: 0; /* Header no se encoge */
+                background: white; /* Asegurar fondo blanco */
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            /* Fix header overlap */
+            .header .top-row {
+                flex-direction: column !important;
+                gap: 10px;
+                padding: 10px 0;
+            }
+            
+            .header .social-links {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 5px;
+            }
+
+            .header .saludo {
+                margin-right: 0 !important;
+                margin-bottom: 5px;
+                font-size: 0.9rem;
+            }
+
+            .chat-container { 
+                flex: 1; /* Chat ocupa el resto */
+                height: auto !important;
+                padding: 0; 
+                overflow: hidden;
+            }
+            
+            .chat-layout { width: 100%; height: 100%; position: relative; }
+            
+            /* Sidebar visible by default */
+            .chat-sidebar { 
+                width: 100% !important; 
+                height: 100% !important; 
+                display: flex !important;
+                position: absolute !important;
+                z-index: 10;
+                background: white;
+            }
+            
+            /* Chat main hidden by default */
+            .chat-main { 
+                width: 100% !important; 
+                height: 100% !important; 
+                display: none !important;
+                position: absolute !important;
+                z-index: 20;
+                background: white;
+            }
+
+            /* Active state toggles */
+            .chat-layout.chat-active .chat-sidebar { display: none !important; }
+            .chat-layout.chat-active .chat-main { display: flex !important; }
+            
+            .mobile-only { display: block !important; }
+            
+            /* Make sure back button is visible */
+            .btn-back { 
+                display: flex !important; 
+                margin-top: 10px;
+                background: #f0f0f0;
+                color: #333;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header: Hide on mobile using class d-none d-lg-block if available, or just rely on CSS above -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <a href="../index.php" class="logo d-flex align-items-end">
-                    <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">LabChat</h1><span></span>
-                </a>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="../index.php" class="logo d-flex align-items-end">
+                        <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">LabChat</h1><span></span>
+                    </a>
+                </div>
 
                 <div class="d-flex align-items-center">
-                    <div class="social-links">
+                    <div class="social-links d-none d-lg-block">
                         <?php 
                         $nombre_usuario = $_SESSION['publicador_nombre'] ?? $_SESSION['admin_nombre'] ?? 'Usuario';
                         $rol_label = ($current_user_role === 'publicador') ? 'Publicador' : 'Admin';
@@ -45,13 +134,30 @@ checkAuth();
                         <?php if($current_user_role === 'publicador'): ?>
                             <a href="../forms/publicadores/logout-publicadores.php" class="logout-btn">Cerrar sesión</a>
                         <?php else: ?>
-                            <a href="../forms/admins/logout.php" class="logout-btn">Cerrar sesión</a>
+                            <a href="../forms/admins/logout-admin.php" class="logout-btn">Cerrar sesión</a>
                         <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
     </header>
+
+    <!-- GLOBAL SIDEBAR (Hidden by default, toggled via JS) -->
+    <div class="sidebar-wrapper" id="sidebarWrapper" style="z-index: 9999;">
+        <div class="d-flex justify-content-end d-md-none p-2">
+            <button class="btn-close" id="sidebarClose"></button>
+        </div>
+        <?php 
+        $path_prefix = '../forms/publicadores/';
+        // Adjust for admin if needed, but per request "publicadores"
+        if(isset($current_user_role) && $current_user_role == 'admin') {
+            $path_prefix = '../forms/admins/';
+            include '../forms/admins/sidebar-admin.php'; 
+        } else {
+            include '../forms/publicadores/sidebar-publicador.php';
+        }
+        ?>
+    </div>
 
     <!-- Chat Layout -->
     <div class="chat-container">
@@ -88,6 +194,9 @@ checkAuth();
             <main class="chat-main">
                 <!-- Header del Chat Activo -->
                 <header class="chat-header" id="chat-header" style="display: none;">
+                    <button id="mobile-back-btn" class="btn-icon mobile-only" style="margin-right: 10px; border:none; background:none;">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
                     <div class="contact-profile">
                         <div class="avatar-wrapper">
                             <img src="" alt="" id="header-avatar" class="avatar">
@@ -131,7 +240,30 @@ checkAuth();
         const CURRENT_USER_ID = <?= json_encode($current_user_id) ?>;
         const CURRENT_USER_ROLE = <?= json_encode($current_user_role) ?>;
     </script>
-    <script src="assets/js/chat.js"></script>
+    <script src="assets/js/chat.js?v=<?= time() ?>"></script>
+    <script>
+        // Global Sidebar Toggle Logic
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarWrapper = document.getElementById('sidebarWrapper') || document.getElementById('sidebar-wrapper');
+        const sidebarClose = document.getElementById('sidebarClose') || document.getElementById('sidebar-close');
+
+        if(sidebarToggle && sidebarWrapper) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+
+            function toggleSidebar() {
+                sidebarWrapper.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.classList.toggle('sidebar-open');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        }
+    </script>
 </body>
 </html>
 

@@ -73,7 +73,38 @@ if (isset($_GET['error'])) {
     <!-- Pre-conectamos con el CDN de las fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <!-- Cargamos las fuentes Roboto, Poppins y Nunito con todos sus pesos -->
-</head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- LIBRERÍA para generar PDF (Credencial) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        .credential-container { margin-top: 30px; display: flex; justify-content: center; }
+        .credential-card {
+            background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%); /* Cyan para Usuarios */
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 100%;
+            max-width: 350px;
+            position: relative;
+        }
+        .credential-header { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; margin-bottom: 15px; }
+        .credential-body { display: flex; align-items: center; gap: 15px; }
+        .credential-avatar { width: 70px; height: 70px; background: white; border-radius: 50%; overflow:hidden; display: flex; align-items: center; justify-content: center; color: #0dcaf0; }
+        .credential-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .credential-info h4 { font-size: 1.2rem; margin: 0; font-weight: 700; }
+        .credential-info p { margin: 0; font-size: 0.9rem; opacity: 0.9; }
+        .credential-footer { font-size: 0.8rem; text-align: center; margin-top: 15px; opacity: 0.8; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .btn-download-cred {
+            display: block; width: fit-content; margin: 10px auto 0; 
+            background: transparent; border: 1px solid #0dcaf0; color: #0dcaf0;
+            padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-download-cred:hover { background: #0dcaf0; color: white; }
+    </style>
 <!-- Cerramos el head -->
 <body>
 <!-- Abrimos el body, aquí va todo lo que se ve en la página -->
@@ -85,18 +116,21 @@ if (isset($_GET['error'])) {
 
             <div class="top-row d-flex align-items-center justify-content-between">
             <!-- Fila superior con flexbox, alinea elementos al centro y los separa a los extremos -->
-                <a href="../index.php" class="logo d-flex align-items-end">
-                <!-- Link al inicio que también funciona como logo -->
-                    <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <!-- Imagen del logo del laboratorio -->
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
-                    <!-- Nombre del sitio y un span vacío para estilos -->
-                </a>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
+                    <a href="../pagina-principal.php" class="logo d-flex align-items-end">
+                    <!-- Link al inicio que también funciona como logo -->
+                        <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <!-- Imagen del logo del laboratorio -->
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                        <!-- Nombre del sitio y un span vacío para estilos -->
+                    </a>
+                </div>
                 <!-- Cerramos el link del logo -->
 
                 <div class="d-flex align-items-center">
                 <!-- Contenedor con flexbox para alinear los elementos -->
-                    <div class="social-links">
+                    <div class="social-links d-none d-lg-block">
                     <!-- Contenedor de los links sociales y opciones de usuario -->
                         <a href="https://www.facebook.com/laboratorioabcdejacona?locale=es_LA" target="_blank" class="facebook"><i class="bi bi-facebook" ></i></a>
                         <!-- Link a Facebook que se abre en nueva pestaña -->
@@ -216,7 +250,237 @@ if (isset($_GET['error'])) {
                 </div>
                 <!-- Cerramos stat-card -->
             </div>
+            </div>
             <!-- Cerramos perfil-stats -->
+
+            <!-- SECCIÓN CREDENCIAL DIGITAL -->
+            <div class="credential-container">
+                <div style="text-align: center;">
+                    
+                    <div id="credencial-content" class="credential-card">
+                        <div class="credential-header">
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                                <img src="../assets/img/logo/logobrayan2.ico" alt="Logo" style="width: 30px; margin-right: 8px; filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.2));"> <strong>Lab-Explorer</strong>
+                            </div>
+                            <small style="letter-spacing: 1px;">MIEMBRO OFICIAL</small>
+                        </div>
+                        <div class="credential-body">
+                            <div class="credential-avatar">
+                                <?php if (!empty($usuario["imagen"]) && $usuario["imagen"] != "default.png"): ?>
+                                    <img src="../assets/img/uploads/<?= htmlspecialchars($usuario['imagen']) ?>">
+                                <?php else: ?>
+                                    <i class="bi bi-person-fill" style="font-size: 2.5rem;"></i>
+                                <?php endif; ?>
+                            </div>
+                            <div class="credential-info">
+                                <h4><?= htmlspecialchars($usuario['nombre']) ?></h4>
+                                <p><?= htmlspecialchars($usuario['correo']) ?></p>
+                                <span class="badge bg-light text-info mt-1" style="color: #0aa2c0 !important;">Estudiante / Lector</span>
+                            </div>
+                        </div>
+                        <div class="credential-footer">
+                            ID: #<?= str_pad($usuario['id'], 4, '0', STR_PAD_LEFT) ?> <br>
+                            Válido: 2024 - 2025
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Credencial -->
+
+            <!-- Formulario para subir nueva foto de perfil -->
+            <form action="procesar_imagen.php" method="POST" enctype="multipart/form-data" class="form-imagen" style="margin-top: 30px;">
+                <div class="form-group">
+                    <label>Actualizar imagen de perfil:</label>
+                    <input type="file" name="imagen" accept="image/jpeg,image/png,image/gif" required>
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-upload"></i> Subir imagen
+                    </button>
+                </div>
+            </form>
+
+            <!-- Sección de Publicaciones Guardadas -->
+            <div class="saved-publications" style="margin-top: 40px; width: 100%;">
+                <h3 style="color: #7390A0; margin-bottom: 20px; font-size: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <i class="bi bi-bookmark-heart-fill"></i> Guardado para leer más tarde
+                </h3>
+                
+                <?php 
+                // Obtenemos las publicaciones guardadas
+                $guardados = obtenerLeerMasTarde($usuario['id'], $conexion);
+                ?>
+
+                <?php if (empty($guardados)): ?>
+                    <div class="no-saved" style="text-align: center; padding: 30px; background: #f8f9fa; border-radius: 15px; color: #6c757d;">
+                        <i class="bi bi-bookmark" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                        <p style="margin-top: 10px;">No has guardado ninguna publicación aún.</p>
+                        <a href="../index.php" style="color: #7390A0; text-decoration: none; font-weight: 600;">Explorar publicaciones</a>
+                    </div>
+                <?php else: ?>
+                    <div class="saved-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                        <?php foreach ($guardados as $pub): ?>
+                        <div class="saved-card" style="background: white; border: 1px solid #eee; border-radius: 12px; padding: 20px; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                            <div style="margin-bottom: 10px;">
+                                <span class="badge" style="background: #e9ecef; color: #495057; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                                    <?= htmlspecialchars($pub['tipo'] ?? 'Artículo') ?>
+                                </span>
+                                <small style="float: right; color: #adb5bd;">
+                                    <i class="bi bi-calendar"></i> <?= date('d/m/Y', strtotime($pub['fecha_agregado'])) ?>
+                                </small>
+                            </div>
+                            
+                            <h4 style="margin: 0 0 10px 0; font-size: 1.1rem;">
+                                <a href="../ver-publicacion.php?id=<?= $pub['id'] ?>" style="color: #212529; text-decoration: none;">
+                                    <?= htmlspecialchars($pub['titulo']) ?>
+                                </a>
+                            </h4>
+                            
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f3f5;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 30px; height: 30px; background: #7390A0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem;">
+                                        <?= strtoupper(substr($pub['publicador_nombre'], 0, 1)) ?>
+                                    </div>
+                                    <span style="font-size: 0.9rem; color: #6c757d;"><?= htmlspecialchars($pub['publicador_nombre']) ?></span>
+                                </div>
+                                <button onclick="eliminarGuardado(<?= $pub['id'] ?>)" 
+                                        style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#c82333'" 
+                                        onmouseout="this.style.background='#dc3545'">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <script>
+            function eliminarGuardado(publicacionId) {
+                if (!confirm('¿Estás seguro de eliminar esta publicación de tus guardados?')) {
+                    return;
+                }
+                
+                fetch('procesar-interacciones.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `accion=guardar_leer_mas_tarde&publicacion_id=${publicacionId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al eliminar');
+                });
+            }
+            </script>
+        </div>
+        <!-- Cerramos perfil-card -->
+                            <!-- Botón que al hacer click pregunta si estás seguro -->
+                                 Eliminar foto
+                                 <!-- Texto del botón -->
+                            </button>
+                            <!-- Cerramos el botón -->
+                        </form>
+                        <!-- Cerramos el formulario -->
+                    <?php else: ?>
+                    <!-- Si NO tiene foto propia, mostramos la imagen por defecto -->
+                        <img src="../assets/img/uploads/default.png" 
+                             alt="Foto de perfil por defecto">
+                        <!-- Imagen genérica que se muestra cuando no hay foto -->
+                    <?php endif; ?>
+                    <!-- Cerramos el if/else de la imagen -->
+                </div>
+                <!-- Cerramos perfil-imagen -->
+                
+                <div class="perfil-info">
+                <!-- Contenedor de la información del usuario -->
+                    <h2><?= htmlspecialchars($usuario['nombre']) ?></h2>
+                    <!-- Mostramos el nombre del usuario en un h2 -->
+                    <div class="perfil-correo">
+                    <!-- Contenedor del correo -->
+                         <?= htmlspecialchars($usuario['correo']) ?>
+                         <!-- Mostramos el correo del usuario -->
+                    </div>
+                    <!-- Cerramos perfil-correo -->
+                    <span class="perfil-id">ID: <?= htmlspecialchars($usuario['id']) ?></span>
+                    <!-- Mostramos el ID del usuario -->
+                </div>
+                <!-- Cerramos perfil-info -->
+            </div>
+            <!-- Cerramos perfil-header -->
+
+            <!-- Estadísticas del usuario -->
+            <div class="perfil-stats">
+            <!-- Contenedor de las estadísticas -->
+                <div class="stat-card">
+                <!-- Tarjeta individual de estadística -->
+                    <span class="stat-number">12</span>
+                    <!-- Número de artículos leídos (por ahora hardcodeado) -->
+                    <span class="stat-label">Artículos Leídos</span>
+                    <!-- Etiqueta que dice qué significa el número -->
+                </div>
+                <!-- Cerramos stat-card -->
+                <div class="stat-card">
+                <!-- Segunda tarjeta de estadística -->
+                    <span class="stat-number">5</span>
+                    <!-- Número de casos revisados -->
+                    <span class="stat-label">Casos Revisados</span>
+                    <!-- Etiqueta descriptiva -->
+                </div>
+                <!-- Cerramos stat-card -->
+                <div class="stat-card">
+                <!-- Tercera tarjeta de estadística -->
+                    <span class="stat-number">3</span>
+                    <!-- Número de protocolos guardados -->
+                    <span class="stat-label">Protocolos Guardados</span>
+                    <!-- Etiqueta descriptiva -->
+                </div>
+                <!-- Cerramos stat-card -->
+            </div>
+            </div>
+            <!-- Cerramos perfil-stats -->
+
+            <!-- SECCIÓN CREDENCIAL DIGITAL -->
+            <div class="credential-container">
+                <div style="text-align: center;">
+                    
+                    <div id="credencial-content" class="credential-card">
+                        <div class="credential-header">
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                                <img src="../assets/img/logo/logobrayan2.ico" alt="Logo" style="width: 30px; margin-right: 8px; filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.2));"> <strong>Lab-Explorer</strong>
+                            </div>
+                            <small style="letter-spacing: 1px;">MIEMBRO OFICIAL</small>
+                        </div>
+                        <div class="credential-body">
+                            <div class="credential-avatar">
+                                <?php if (!empty($usuario["imagen"]) && $usuario["imagen"] != "default.png"): ?>
+                                    <img src="../assets/img/uploads/<?= htmlspecialchars($usuario['imagen']) ?>">
+                                <?php else: ?>
+                                    <i class="bi bi-person-fill" style="font-size: 2.5rem;"></i>
+                                <?php endif; ?>
+                            </div>
+                            <div class="credential-info">
+                                <h4><?= htmlspecialchars($usuario['nombre']) ?></h4>
+                                <p><?= htmlspecialchars($usuario['correo']) ?></p>
+                                <span class="badge bg-light text-info mt-1" style="color: #0aa2c0 !important;">Estudiante / Lector</span>
+                            </div>
+                        </div>
+                        <div class="credential-footer">
+                            ID: #<?= str_pad($usuario['id'], 4, '0', STR_PAD_LEFT) ?> <br>
+                            Válido: 2024 - 2025
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Credencial -->
 
             <!-- Formulario para subir nueva foto de perfil -->
             <form action="procesar_imagen.php" method="POST" enctype="multipart/form-data" class="form-imagen" style="margin-top: 30px;">
@@ -316,6 +580,12 @@ if (isset($_GET['error'])) {
         <!-- Cerramos perfil-card -->
     </div>
     <!-- Cerramos main-container -->
+    <?php include "sidebar-usuario.php"; ?>
+    
+    <script>
+        // Inicializar AOS si lo estuvieras usando
+        // AOS.init();
+    </script>
 </body>
 <!-- Cerramos el body -->
 </html>

@@ -36,6 +36,7 @@ if ($current_user_role === 'publicador') {
         // array_merge() = une dos arrays
         $contacts = array_merge($contacts, $admins);
     }
+    $stmt->close(); // Cerrar statement de admins antes de la siguiente consulta
 
     // Obtener todos los publicadores activos
     $queryPubs = "SELECT id, nombre, email, 'publicador' as rol_detalle, ultimo_acceso, 'publicador' as tipo 
@@ -63,6 +64,7 @@ foreach ($contacts as &$contact) {
     $stmtUnread->execute();
     $resUnread = $stmtUnread->get_result();
     $contact['mensajes_no_leidos'] = $resUnread->fetch_assoc()['total'];
+    $stmtUnread->close(); // Cerrar statement para liberar recursos
 
     // Obtener último mensaje de la conversación
     $queryLast = "SELECT mensaje, fecha_envio FROM mensajes 
@@ -84,6 +86,7 @@ foreach ($contacts as &$contact) {
         $contact['ultimo_mensaje'] = "";
         $contact['fecha_ultimo_mensaje'] = null;
     }
+    $stmtLast->close(); // Cerrar statement
 
     // Calcular estado online (última actividad < 5 minutos)
     if ($contact['ultimo_acceso']) {

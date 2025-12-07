@@ -3,6 +3,7 @@ CREATE TABLE `publicadores` (
   `nombre` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `foto_perfil` varchar(255) DEFAULT NULL,
   `reset_token` varchar(64) DEFAULT NULL,
   `token_expira` datetime DEFAULT NULL,
   `especialidad` varchar(100) NOT NULL,

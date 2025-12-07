@@ -75,11 +75,26 @@ body {
 /* Logo del lab */
 .logo-lab img {
     width: 250px;
-    /* Ancho de 250px */
+    max-width: 100%;
+    /* Responsive */
     height: auto;
     /* Altura automática pa mantener proporción */
     margin-bottom: 10px;
     /* Espacio de 10px abajo */
+}
+
+@media (max-width: 768px) {
+    .logo-lab img {
+        width: 60%;
+        /* Más pequeña en celular */
+        max-width: 150px;
+        /* Límite más pequeño */
+    }
+
+    .formulario {
+        width: 95%;
+        padding: 30px 20px;
+    }
 }
 
 /* Título del formulario */

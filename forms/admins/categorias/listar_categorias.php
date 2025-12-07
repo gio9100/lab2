@@ -54,13 +54,18 @@ $stmt = $categoria->leer();
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <a href="../../../index.php" class="logo d-flex align-items-end">
-                    <img src="../../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
-                </a>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="../../../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    </a>
+                </div>
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="../perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
                         <a href="../logout-admin.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
@@ -74,52 +79,12 @@ $stmt = $categoria->leer();
             <div class="row">
                 
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4">
-                    <div class="sidebar-nav">
-                        <div class="list-group">
-                            <a href="../index-admin.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>Panel Principal
-                            </a>
-                            <a href="../gestionar_publicadores.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-people me-2"></i>Gestionar Publicadores
-                            </a>
-                            <a href="../gestionar-publicaciones.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
-                            </a>
-                            <a href="listar_categorias.php" class="list-group-item list-group-item-action active">
-                                <i class="bi bi-tags me-2"></i>Ver Categorías
-                            </a>
-                            <a href="crear_categoria.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-plus-circle me-2"></i>Crear Categoría
-                            </a>
-                            <?php if($admin_nivel == 'superadmin'): ?>
-                            <a href="../admins.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-shield-check me-2"></i>Administradores
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <!-- Resumen rápido -->
-                        <div class="quick-stats-card mt-4">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">Resumen del Sistema</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="stat-item">
-                                    <small class="text-muted">Usuarios: <?= $stats['total_usuarios'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Publicadores: <?= $stats['total_publicadores'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Publicaciones: <?= $stats['total_publicaciones'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Pendientes: <?= $stats['publicadores_pendientes'] ?></small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Sidebar -->
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                    <?php 
+                    $path_prefix = '../'; 
+                    include '../sidebar-admin.php'; 
+                    ?>
                 </div>
 
                 <!-- Contenido Derecho -->

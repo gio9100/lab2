@@ -90,6 +90,10 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
     <!-- Main CSS -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
+    
+    <!-- Driver.js para Onboarding -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 </head>
 <body class="admin-page">
 
@@ -98,14 +102,19 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
                 
-                <a href="../../index.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
-                </a>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    </a>
+                </div>
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
                         <a href="logout-admin.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
@@ -118,65 +127,9 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
             <div class="row">
 
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4">
-                    <div class="sidebar-nav">
-                        <div class="list-group">
-                            <a href="../../index.php" class="list-group-item list-group-item-action active">
-                                <i class="bi bi-speedometer2 me-2"></i>Página principal
-                            </a>
-                            <a href="../../ollama_ia/panel-moderacion.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-robot me-2"></i>Moderación Automática
-                            </a>
-                            <a href="gestionar-reportes.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-flag me-2"></i>Gestionar Reportes
-                                <?php if($stats_reportes['pendientes'] > 0): ?>
-                                <span class="badge bg-danger float-end"><?= $stats_reportes['pendientes'] ?></span>
-                                <?php endif; ?>
-                            </a>
-                            <a href="gestionar_publicadores.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-people me-2"></i>Gestionar Publicadores
-                            </a>
-                            <a href="usuarios.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-person-badge me-2"></i>Usuarios Registrados
-                            </a>
-                            <a href="gestionar-publicaciones.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
-                            </a>
-                            <a href="categorias/listar_categorias.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-tags me-2"></i>Categorías
-                            </a>
-                            <a href="../../mensajes/chat.php?as=admin" class="list-group-item list-group-item-action">
-                                <i class="bi bi-chat-left-text me-2"></i>
-                                <span>Mensajes</span>
-                            </a>
-                            <?php if($admin_nivel == 'superadmin'): ?>
-                            <a href="admins.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-shield-check me-2"></i>Administradores
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <!-- Resumen rápido -->
-                        <div class="quick-stats-card mt-4">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">Resumen del Sistema</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="stat-item">
-                                    <small class="text-muted">Usuarios: <?= $stats['total_usuarios'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Publicadores: <?= $stats['total_publicadores'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Publicaciones: <?= $stats['total_publicaciones'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Pendientes: <?= $stats['publicadores_pendientes'] ?></small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Sidebar -->
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                    <?php include 'sidebar-admin.php'; ?>
                 </div>
 
                 <!-- Contenido Derecho -->
@@ -493,24 +446,78 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
         <i class="bi bi-arrow-up-short"></i>
     </a>
 
-    <!-- Scripts -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
-    <script src="../../assets/js/main.js"></script>
-
     <script>
-        // Inicializar animaciones AOS
-        AOS.init({
-            duration: 1000,
-            once: true
-        });
-
+        // Inicializar Animations
+        AOS.init();
+        
         // Cerrar alertas
         document.querySelectorAll('.close-btn').forEach(button => {
             button.addEventListener('click', function() {
                 this.parentElement.style.display = 'none';
             });
         });
+    </script>
+    
+    <!-- Script del Tour Onboarding -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!localStorage.getItem('tour_admin_visto')) {
+            const driver = window.driver.js.driver;
+            
+            const driverObj = driver({
+                showProgress: true,
+                animate: true,
+                doneBtnText: '¡Entendido!',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+                steps: [
+                    { 
+                        element: '.saludo', 
+                        popover: { 
+                            title: '👋 Bienvenido Administrador', 
+                            description: 'Este es tu panel de control principal. Aquí tienes una visión global de todo el sistema.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.stats-grid', 
+                        popover: { 
+                            title: '📈 Estadísticas Vitales', 
+                            description: 'Revisa rápidamente el número de usuarios, publicaciones y reportes pendientes de atención.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    /* { 
+                         element: '.sidebar-wrapper', 
+                         popover: { 
+                             title: '🧭 Navegación', 
+                             description: 'Usa este menú para acceder a la gestión detallada de usuarios, categorías y reportes.', 
+                             side: "right", 
+                             align: 'start' 
+                         } 
+                     },
+                     Nota: Sidebar puede estar oculto en móvil, driver.js lo maneja pero mejor evitar pasos que pueden no estar visibles
+                     */
+                    {
+                         element: '.warning-header',
+                         popover: {
+                             title: '⚠️ Atención Requerida',
+                             description: 'Esta tabla muestra los publicadores que esperan tu aprobación para empezar a publicar.',
+                             side: "top",
+                             align: 'start'
+                         }
+                    }
+                ]
+            });
+
+            driverObj.drive();
+            localStorage.setItem('tour_admin_visto', 'true');
+        }
+    });
     </script>
 </body>
 </html>

@@ -166,7 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <section class="seccion-botones">
                 <button type="submit">Registrar Administrador</button>
                 <p>¿Ya tienes cuenta? <a href="login-admin.php">Inicia sesión como administrador</a></p>
-                <p><a href="../index.php">← Volver al sitio principal</a></p>
+                <p><a href="../../pagina-principal.php">← Volver al sitio principal</a></p>
             </section>
         </form>
     </div>

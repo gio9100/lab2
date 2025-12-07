@@ -98,7 +98,7 @@ if ($categoria->leerUna()) {
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <a href="../../../index.php" class="logo d-flex align-items-end">
+                <a href="../../../pagina-principal.php" class="logo d-flex align-items-end">
                     <img src="../../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explorer</h1><span></span>
                 </a>
@@ -121,6 +121,9 @@ if ($categoria->leerUna()) {
                 <div class="col-md-3 mb-4">
                     <div class="sidebar-nav">
                         <div class="list-group">
+                            <a href="../../../pagina-principal.php" class="list-group-item list-group-item-action">
+                                <i class="bi bi-house-door me-2"></i>Página Principal
+                            </a>
                             <a href="../index-admin.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-speedometer2 me-2"></i>Panel Principal
                             </a>

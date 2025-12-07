@@ -97,11 +97,17 @@ $categorias = obtenerCategorias($conn);
     <header class="header" style="background: #ffffff; padding: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border-bottom: 1px solid #e9ecef;">
         <div class="container-fluid" style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
             <div class="top-row" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px;">
-                <!-- Logo -->
-                <a href="../../index.php" class="logo" style="display: flex; align-items: center; text-decoration: none; gap: 10px;">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab" style="max-height: 40px;">
-                    <span class="sitename" style="font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 600; color: #7390A0; margin: 0;">Lab-Explorer</span>
-                </a>
+                <div class="d-flex align-items-center">
+                    <!-- Hamburger Button -->
+                    <button class="btn btn-outline-primary d-md-none me-2" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <!-- Logo -->
+                    <a href="../../pagina-principal.php" class="logo" style="display: flex; align-items: center; text-decoration: none; gap: 10px;">
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab" style="max-height: 40px;">
+                        <span class="sitename" style="font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 600; color: #7390A0; margin: 0;">Lab-Explorer</span>
+                    </a>
+                </div>
 
                 <!-- Social Links & User Actions -->
                 <div class="social-links" style="display: flex; align-items: center; gap: 15px;">
@@ -110,14 +116,14 @@ $categorias = obtenerCategorias($conn);
                     <a href="#" title="Instagram" style="color: #6c757d; font-size: 16px; transition: all 0.3s ease; text-decoration: none;"><i class="bi bi-instagram"></i></a>
                     
                     <?php if (isset($_SESSION['publicador_id'])): ?>
-                        <span class="saludo" style="font-weight: 500; color: #212529;">Hola, <?= htmlspecialchars($_SESSION['publicador_nombre'] ?? 'Publicador') ?></span>
+                        <span class="saludo d-none d-md-inline" style="font-weight: 500; color: #212529;">Hola, <?= htmlspecialchars($_SESSION['publicador_nombre'] ?? 'Publicador') ?></span>
                         <a href="index-publicadores.php" style="color: #6c757d; text-decoration: none; transition: all 0.3s ease;">
                             <i class="bi bi-house-door"></i>
-                            Panel
+                            <span class="d-none d-md-inline">Panel</span>
                         </a>
                         <a href="../logout.php" style="color: #6c757d; text-decoration: none; transition: all 0.3s ease;">
                             <i class="bi bi-box-arrow-right"></i>
-                            Cerrar Sesión
+                            <span class="d-none d-md-inline">Cerrar Sesión</span>
                         </a>
                     <?php else: ?>
                         <a href="inicio-sesion-publicadores.php" style="color: #6c757d; text-decoration: none; transition: all 0.3s ease;">
@@ -130,9 +136,19 @@ $categorias = obtenerCategorias($conn);
         </div>
     </header>
 
-    <div class="container mt-4">
+    <div class="container-fluid mt-4">
         <div class="row">
-            <div class="col-12">
+
+            <!-- Sidebar (Desktop & Mobile Overlay) -->
+            <div class="col-md-3 sidebar-wrapper" id="sidebarWrapper">
+                <!-- Mobile Close Button -->
+                <div class="d-flex justify-content-end d-md-none p-2">
+                    <button class="btn-close" id="sidebarClose"></button>
+                </div>
+                <?php include 'sidebar-publicador.php'; ?>
+            </div>
+
+            <div class="col-md-9">
                 <h2 class="mb-4">
                     <i class="fas fa-edit"></i> Editar Publicación
                 </h2>
@@ -402,6 +418,28 @@ $categorias = obtenerCategorias($conn);
             document.getElementById('resumen').value.length;
         document.getElementById('meta-count').textContent = 
             document.getElementById('meta_descripcion').value.length;
+
+        // Sidebar Toggle Logic
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarWrapper = document.getElementById('sidebarWrapper');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        if(sidebarToggle && sidebarWrapper) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+
+            function toggleSidebar() {
+                sidebarWrapper.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.classList.toggle('sidebar-open');
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -604,3 +604,108 @@ body {
         /* ancho completo */
     }
 }
+
+/* ESTILOS PARA SIDEBAR GLOBAL (Drawer) */
+.sidebar-wrapper {
+    position: fixed !important;
+    top: 0;
+    left: -300px;
+    /* Oculto por defecto */
+    width: 280px;
+    height: 100vh;
+    background: white;
+    z-index: 9999 !important;
+    /* Por encima de todo */
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    padding-top: 1rem;
+    display: block !important;
+    /* Asegurar que no sea hidden por otras reglas */
+}
+
+.sidebar-wrapper.active {
+    left: 0;
+    /* Mostrar */
+}
+
+.sidebar-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998 !important;
+    /* Debajo del sidebar */
+    display: none;
+}
+
+.sidebar-overlay.active {
+    display: block !important;
+}
+
+/* Ajustes para el contenido del sidebar importado dentro del wrapper */
+.sidebar-wrapper .sidebar-nav {
+    box-shadow: none !important;
+    padding: 10px !important;
+    height: auto !important;
+    position: static !important;
+    top: auto !important;
+}
+
+/* ESTILOS PORTADOS DE ADMIN.CSS (Solo visuales, sin layout conflictivo) */
+.sidebar-nav {
+    background: transparent;
+    /* En chat ya tenemos fondo blanco en wrapper */
+    /* border-radius: 10px; */
+    padding: 10px;
+    height: auto;
+}
+
+.sidebar-nav .list-group-item {
+    border: none;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+    color: #7390A0;
+    font-weight: 500;
+}
+
+.sidebar-nav .list-group-item:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+}
+
+.sidebar-nav .list-group-item.active {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border: none;
+    color: white;
+}
+
+/* Quick Stats (Si se usa en publicadores) */
+.quick-stats-card {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.quick-stats-card .card-header {
+    background: #2c3e50;
+    color: white;
+    padding: 0.8rem;
+    border-bottom: none;
+}
+
+.quick-stats-card .card-body {
+    padding: 1rem;
+}
+
+.quick-stats-card .stat-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.85rem;
+}

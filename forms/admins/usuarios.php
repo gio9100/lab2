@@ -166,7 +166,10 @@ foreach($usuarios_normales as $usuario) {
     <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- LIBRERÍA para generar PDF (Reportes) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="admin-page">
 
@@ -175,14 +178,19 @@ foreach($usuarios_normales as $usuario) {
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
                 
-                <a href="../../index.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
-                </a>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    </a>
+                </div>
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
                         <a href="logout-admin.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
@@ -195,59 +203,9 @@ foreach($usuarios_normales as $usuario) {
             <div class="row">
 
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4">
-                    <div class="sidebar-nav">
-                        <div class="list-group">
-                            <a href="../../index.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-house-door me-2"></i>Página Principal
-                            </a>
-                            <a href="index-admin.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>Panel Principal
-                            </a>
-                            <a href="../../ollama_ia/panel-moderacion.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-robot me-2"></i>Moderación Automática
-                            </a>
-                            <a href="gestionar_publicadores.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-people me-2"></i>Gestionar Publicadores
-                            </a>
-                            <a href="usuarios.php" class="list-group-item list-group-item-action active">
-                                <i class="bi bi-person-badge me-2"></i>Usuarios Registrados
-                            </a>
-                            <a href="gestionar-publicaciones.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
-                            </a>
-                            <a href="./categorias/listar_categorias.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-tags me-2"></i>Categorías
-                            </a>
-                            
-                            <?php if($admin_nivel == 'superadmin'): ?>
-                            <a href="admins.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-shield-check me-2"></i>Administradores
-                            </a>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <!-- Resumen Rápido -->
-                        <div class="quick-stats-card mt-4">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">Resumen del Sistema</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="stat-item">
-                                    <small class="text-muted">Usuarios: <?= $stats['total_usuarios'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Publicadores: <?= $stats['total_publicadores'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Publicaciones: <?= $stats['total_publicaciones'] ?></small>
-                                </div>
-                                <div class="stat-item">
-                                    <small class="text-muted">Pendientes: <?= $stats['publicadores_pendientes'] ?></small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Sidebar -->
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                    <?php include 'sidebar-admin.php'; ?>
                 </div>
 
                 <!-- Contenido Principal -->
@@ -309,11 +267,212 @@ foreach($usuarios_normales as $usuario) {
                                 <i class="bi bi-person-badge me-2"></i>
                                 Listado Completo de Usuarios
                             </h5>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearUsuario">
-                                <i class="bi bi-plus-circle me-1"></i> Crear Nuevo Usuario
-                            </button>
+                            
+                            <div>
+                                <button onclick="exportarPDF()" class="btn btn-outline-danger me-2">
+                                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Exportar PDF
+                                </button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearUsuario">
+                                    <i class="bi bi-plus-circle me-1"></i> Crear Nuevo Usuario
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" id="areaReporte">
+                            <?php if(empty($usuarios_normales)): ?>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    No hay usuarios registrados en el sistema todavía.
+                                </div>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="admin-table" id="tablaUsuarios">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nombre</th>
+                                                <th>Email</th>
+                                                <th>Fecha Registro</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach($usuarios_normales as $usuario): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($usuario['id']) ?></td>
+                                                <td><?= htmlspecialchars($usuario['nombre']) ?></td>
+                                                <td><?= htmlspecialchars($usuario['correo']) ?></td>
+                                                <td><?= date('d/m/Y', strtotime($usuario['fecha_registro'])) ?></td>
+                                                <td>
+                                                    <span class="status-badge active">Activo</span>
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button type="button" class="btn btn-warning btn-sm" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#modalEditar<?= $usuario['id'] ?>">
+                                                            <i class="bi bi-pencil"></i> Editar
+                                                        </button>
+                                                        
+                                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#modalEliminar<?= $usuario['id'] ?>">
+                                                            <i class="bi bi-trash"></i> Eliminar
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <!-- Modal Editar -->
+                                            <div class="modal fade" id="modalEditar<?= $usuario['id'] ?>" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Editar Usuario</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form method="POST">
+                                                            <input type="hidden" name="usuario_id" value="<?= $usuario['id'] ?>">
+                                                            
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label for="nombre" class="form-label">Nombre Completo</label>
+                                                                    <input type="text" class="form-control" name="nombre" 
+                                                                           value="<?= htmlspecialchars($usuario['nombre']) ?>" required>
+                                                                </div>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <label for="correo" class="form-label">Correo Electrónico</label>
+                                                                    <input type="email" class="form-control" name="correo" 
+                                                                           value="<?= htmlspecialchars($usuario['correo']) ?>" required>
+                                                                </div>
+                                                                
+                                                                <div class="mb-3">
+                                                                    <label for="password" class="form-label">Nueva Contraseña (dejar en blanco para no cambiar)</label>
+                                                                    <input type="password" class="form-control" name="password" 
+                                                                           placeholder="Dejar vacío para mantener la actual">
+                                                                    <small class="text-muted">Solo completa este campo si deseas cambiar la contraseña</small>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                <button type="submit" name="editar_usuario" class="btn btn-primary">Guardar Cambios</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Modal Eliminar -->
+                                            <div class="modal fade" id="modalEliminar<?= $usuario['id'] ?>" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-danger text-white">
+                                                            <h5 class="modal-title">Confirmar Eliminación</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form method="POST">
+                                                            <input type="hidden" name="usuario_id" value="<?= $usuario['id'] ?>">
+                                                            
+                                                            <div class="modal-body">
+                                                                <div class="alert alert-warning">
+                                                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                                                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                                                                </div>
+                                                                <p>¿Estás seguro de que deseas eliminar al usuario <strong><?= htmlspecialchars($usuario['nombre']) ?></strong>?</p>
+                                                                <p class="text-muted">Email: <?= htmlspecialchars($usuario['correo']) ?></p>
+                                                            </div>
+                                                            
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                                <button type="submit" name="eliminar_usuario" class="btn btn-danger">Sí, Eliminar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Crear Usuario -->
+    <div class="modal fade" id="modalCrearUsuario" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Crear Nuevo Usuario
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <form method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">
+                                Nombre Completo <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="correo" class="form-label">
+                                Correo Electrónico <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" class="form-control" name="correo" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">
+                                Contraseña <span class="text-danger">*</span>
+                            </label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="crear_usuario" class="btn btn-primary">Crear Usuario</button>
+                    </div>
+```
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stat-card warning">
+                                <div class="stat-content text-center">
+                                    <h4><?= $total_usuarios ?></h4>
+                                    <small>Usuarios Activos</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Usuarios -->
+                    <div class="admin-card" id="contenedor-usuarios" data-aos="fade-up">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Listado Completo de Usuarios
+                            </h5>
+                            
+                            <div>
+                                <!-- Botón PDF eliminado -->
+                            </div>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearUsuario">
+                                    <i class="bi bi-plus-circle me-1"></i> Crear Nuevo Usuario
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body" id="areaReporte">
                             <?php if(empty($usuarios_normales)): ?>
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
@@ -485,21 +644,19 @@ foreach($usuarios_normales as $usuario) {
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Botón volver arriba -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Scripts Vendor -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="../../assets/js/main.js"></script>
+    <!-- LIBRERÍA PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <script>
-        // Inicializar AOS
-        AOS.init({
-            duration: 800,
-            once: true
-        });
-        
+        // Inicializar animaciones
+        AOS.init();
+
         // Inicializar DataTables
         $(document).ready(function() {
             $('#tablaUsuarios').DataTable({
@@ -509,7 +666,7 @@ foreach($usuarios_normales as $usuario) {
                 responsive: true
             });
         });
-        
+
         // Cerrar alertas
         document.querySelectorAll('.close-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -520,3 +677,4 @@ foreach($usuarios_normales as $usuario) {
 
 </body>
 </html>
+```

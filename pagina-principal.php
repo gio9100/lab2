@@ -45,6 +45,10 @@ session_start();
     <link href="assets/css/main.css" rel="stylesheet">
 <!-- Cargamos nuestro archivo CSS principal -->
     <link rel="stylesheet" href="assets/css-admins/admin.css">
+    
+    <!-- Driver.js para Onboarding -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 <!-- Cargamos el CSS de administración -->
     
 <!-- Línea vacía -->
@@ -378,102 +382,60 @@ session_start();
 /* Cerramos los estilos de la descripción */
         }
 /* Cerramos el media query */
-    </style>
+</style>
 <!-- Cerramos la etiqueta style -->
 </head>
 <!-- Cerramos la etiqueta head -->
 <body>
 <!-- Abrimos la etiqueta body (el cuerpo visible de la página) -->
     <!-- Header -->
-<!-- Comentario HTML para el header -->
     <header id="header" class="header position-relative">
-<!-- Abrimos el header con id y clases de Bootstrap -->
         <div class="container-fluid container-xl position-relative">
-<!-- Contenedor con clases de Bootstrap para el ancho -->
             <div class="top-row d-flex align-items-center justify-content-between">
-<!-- Fila superior con flexbox de Bootstrap -->
-                <a href="pagina-principal.php" class="logo d-flex align-items-end">
-<!-- Link al inicio con clases de flexbox -->
-                    <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
-<!-- Imagen del logo -->
-                    <h1 class="sitename">Lab-Explorer</h1><span></span>
-<!-- Nombre del sitio y un span vacío -->
-                </a>
-<!-- Cerramos el link del logo -->
-
-<!-- Línea vacía -->
                 <div class="d-flex align-items-center">
-<!-- Contenedor con flexbox para alinear elementos -->
-                    <div class="social-links">
-<!-- Contenedor para los links sociales y opciones de usuario -->
-                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
-<!-- Link a Facebook con icono -->
-                        <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
-<!-- Link a Twitter con icono -->
-                        <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
-<!-- Link a Instagram con icono -->
-                        
-<!-- Línea vacía -->
-                        <?php if (isset($_SESSION['usuario_id'])): ?>
-<!-- Si hay un usuario logueado (si existe la variable de sesión) -->
-                            <span class="saludo">Hola, <?= htmlspecialchars($_SESSION['usuario_nombre']) ?></span>
-<!-- Mostramos un saludo con el nombre del usuario (htmlspecialchars previene ataques XSS) -->
-                            <a href="./forms/perfil.php">Perfil</a>
-<!-- Link al perfil del usuario -->
-                            <a href="forms/logout.php" class="btn-publicador">
-<!-- Link para cerrar sesión -->
-                                <i class="bi bi-box-arrow-right"></i>
-<!-- Icono de salida -->
-                                Cerrar Sesión
-<!-- Texto del botón -->
-                            </a>
-<!-- Cerramos el link de cerrar sesión -->
-                        <?php else: ?>
-<!-- Si NO hay usuario logueado -->
-                            <a href="forms/inicio-sesion.php" class="btn-publicador">
-<!-- Link para iniciar sesión -->
-                                <i class="bi bi-box-arrow-in-right"></i>
-<!-- Icono de entrada -->
-                                Inicia sesión
-<!-- Texto del botón -->
-                            </a>
-<!-- Cerramos el link de iniciar sesión -->
-                            <a href="forms/register.php" class="btn-publicador">
-<!-- Link para crear cuenta -->
-                                <i class="bi bi-person-plus"></i>
-<!-- Icono de persona con plus -->
-                                Crear Cuenta
-<!-- Texto del botón -->
-                            </a>
-<!-- Cerramos el link de crear cuenta -->
-                        <?php endif; ?>
-<!-- Cerramos el if/else de usuario logueado -->
-                        
-<!-- Línea vacía -->
-                        <span style="color: var(--border); margin: 0 5px;">|</span>
-<!-- Separador visual (una línea vertical) -->
-                        
-<!-- Línea vacía -->
-                        <a href="forms/publicadores/inicio-sesion-publicadores.php" class="btn-publicador">
-<!-- Link para publicadores -->
-                            <i class="bi bi-pencil-square"></i>
-<!-- Icono de lápiz -->
-                            ¿Eres publicador?
-<!-- Texto del link -->
-                        </a>
-<!-- Cerramos el link de publicadores -->
-                    </div>
-<!-- Cerramos el contenedor de social-links -->
+                    <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
+                    <a href="pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                    </a>
                 </div>
-<!-- Cerramos el contenedor de flexbox -->
-            </div>
-<!-- Cerramos la fila superior -->
-        </div>
-<!-- Cerramos el contenedor del header -->
-    </header>
-<!-- Cerramos el header -->
 
-<!-- Línea vacía -->
+                <div class="d-flex align-items-center">
+                    <div class="social-links d-none d-lg-block">
+                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        
+                        <?php if (isset($_SESSION['usuario_id'])): ?>
+                            <span class="saludo">Hola, <?= htmlspecialchars($_SESSION['usuario_nombre']) ?></span>
+                            <a href="./forms/perfil.php">Perfil</a>
+                            <a href="forms/logout.php" class="btn-publicador">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Cerrar Sesión
+                            </a>
+                        <?php else: ?>
+                            <a href="forms/inicio-sesion.php" class="btn-publicador">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                Inicia sesión
+                            </a>
+                            <a href="forms/register.php" class="btn-publicador">
+                                <i class="bi bi-person-plus"></i>
+                                Crear Cuenta
+                            </a>
+                        <?php endif; ?>
+                        
+                        <span style="color: var(--border); margin: 0 5px;">|</span>
+                        
+                        <a href="forms/publicadores/inicio-sesion-publicadores.php" class="btn-publicador">
+                            <i class="bi bi-pencil-square"></i>
+                            ¿Eres publicador?
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <!-- Hero Section -->
 <!-- Comentario HTML para la sección principal de bienvenida -->
     <section class="hero-section">
@@ -794,6 +756,271 @@ session_start();
 <!-- Cerramos el contenedor -->
     </section>
 <!-- Cerramos la sección CTA -->
+    <!-- Sidebar Usuario (Importante para funcionamiento del menú si se usa sidebar) -->
+    <?php include "forms/sidebar-usuario.php"; ?>
+    
+    <!-- Vendor JS Files -->
+<!-- Cerramos la tarjeta -->
+                </div>
+<!-- Cerramos la columna -->
+
+<!-- Línea vacía -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+<!-- Cuarta columna con retraso de 400ms -->
+                    <div class="feature-card">
+<!-- Tarjeta de característica -->
+                        <div class="feature-icon">
+<!-- Contenedor del icono -->
+                            <i class="bi bi-folder2-open"></i>
+<!-- Icono de carpeta abierta -->
+                        </div>
+<!-- Cerramos el contenedor del icono -->
+                        <h3 class="feature-title">Categorías Especializadas</h3>
+<!-- Título de la característica -->
+                        <p class="feature-description">
+<!-- Descripción -->
+                            Contenido organizado por áreas: Hematología, Bacteriología, Parasitología, 
+<!-- Primera línea -->
+                            Serie Roja, Toma de Muestras y más.
+<!-- Segunda línea -->
+                        </p>
+<!-- Cerramos la descripción -->
+                    </div>
+<!-- Cerramos la tarjeta -->
+                </div>
+<!-- Cerramos la columna -->
+
+<!-- Línea vacía -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+<!-- Quinta columna con retraso de 500ms -->
+                    <div class="feature-card">
+<!-- Tarjeta de característica -->
+                        <div class="feature-icon">
+<!-- Contenedor del icono -->
+                            <i class="bi bi-shield-check"></i>
+<!-- Icono de escudo con check -->
+                        </div>
+<!-- Cerramos el contenedor del icono -->
+                        <h3 class="feature-title">Contenido Verificado</h3>
+<!-- Título de la característica -->
+                        <p class="feature-description">
+<!-- Descripción -->
+                            Todas las publicaciones pasan por un proceso de revisión por parte de administradores 
+<!-- Primera línea -->
+                            para garantizar la calidad y veracidad de la información.
+<!-- Segunda línea -->
+                        </p>
+<!-- Cerramos la descripción -->
+                    </div>
+<!-- Cerramos la tarjeta -->
+                </div>
+<!-- Cerramos la columna -->
+
+<!-- Línea vacía -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+<!-- Sexta columna con retraso de 600ms -->
+                    <div class="feature-card">
+<!-- Tarjeta de característica -->
+                        <div class="feature-icon">
+<!-- Contenedor del icono -->
+                            <i class="bi bi-pencil-square"></i>
+<!-- Icono de lápiz cuadrado -->
+                        </div>
+<!-- Cerramos el contenedor del icono -->
+                        <h3 class="feature-title">Publica tu Conocimiento</h3>
+<!-- Título de la característica -->
+                        <p class="feature-description">
+<!-- Descripción -->
+                            ¿Eres profesional del área? Regístrate como publicador y comparte tu experiencia 
+<!-- Primera línea -->
+                            y conocimientos con la comunidad científica.
+<!-- Segunda línea -->
+                        </p>
+<!-- Cerramos la descripción -->
+                    </div>
+<!-- Cerramos la tarjeta -->
+                </div>
+<!-- Cerramos la columna -->
+            </div>
+<!-- Cerramos la fila -->
+        </div>
+<!-- Cerramos el contenedor -->
+    </section>
+<!-- Cerramos la sección de características -->
+
+<!-- Línea vacía -->
+    <!-- Stats Section -->
+<!-- Comentario HTML para la sección de estadísticas -->
+    <section class="stats-section">
+<!-- Abrimos la sección de estadísticas -->
+        <div class="container">
+<!-- Contenedor de Bootstrap -->
+            <div class="row">
+<!-- Fila de Bootstrap -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+<!-- Columna: 4 de 12 en pantallas medianas, con animación retrasada 100ms -->
+                    <div class="stat-item">
+<!-- Item de estadística -->
+                        <div class="stat-number">
+<!-- Número de la estadística -->
+                            <i class="bi bi-file-earmark-text"></i>
+<!-- Icono de archivo de texto -->
+                        </div>
+<!-- Cerramos el número -->
+                        <div class="stat-label">Publicaciones Científicas</div>
+<!-- Etiqueta de la estadística -->
+                    </div>
+<!-- Cerramos el item -->
+                </div>
+<!-- Cerramos la columna -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+<!-- Segunda columna con retraso de 200ms -->
+                    <div class="stat-item">
+<!-- Item de estadística -->
+                        <div class="stat-number">
+<!-- Número de la estadística -->
+                            <i class="bi bi-people"></i>
+<!-- Icono de personas -->
+                        </div>
+<!-- Cerramos el número -->
+                        <div class="stat-label">Comunidad de Profesionales</div>
+<!-- Etiqueta de la estadística -->
+                    </div>
+<!-- Cerramos el item -->
+                </div>
+<!-- Cerramos la columna -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+<!-- Tercera columna con retraso de 300ms -->
+                    <div class="stat-item">
+<!-- Item de estadística -->
+                        <div class="stat-number">
+<!-- Número de la estadística -->
+                            <i class="bi bi-bookmark-check"></i>
+<!-- Icono de marcador con check -->
+                        </div>
+<!-- Cerramos el número -->
+                        <div class="stat-label">Contenido Verificado</div>
+<!-- Etiqueta de la estadística -->
+                    </div>
+<!-- Cerramos el item -->
+                </div>
+<!-- Cerramos la columna -->
+            </div>
+<!-- Cerramos la fila -->
+        </div>
+<!-- Cerramos el contenedor -->
+    </section>
+<!-- Cerramos la sección de estadísticas -->
+
+<!-- Línea vacía -->
+    <!-- CTA Section -->
+<!-- Comentario HTML para la sección de llamada a la acción -->
+    <section class="py-5 bg-white">
+<!-- Sección con padding vertical de 5 y fondo blanco -->
+        <div class="container text-center" data-aos="fade-up">
+<!-- Contenedor centrado con animación -->
+            <h2 class="mb-4">¿Listo para Comenzar?</h2>
+<!-- Título con margen abajo de 4 -->
+            <p class="lead mb-4 text-muted">
+<!-- Párrafo grande con margen abajo y color gris -->
+                Únete a nuestra comunidad y accede a contenido científico de calidad
+<!-- Texto de la llamada a la acción -->
+            </p>
+<!-- Cerramos el párrafo -->
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+<!-- Contenedor flexbox con gap de 3, centrado y que se envuelve en pantallas pequeñas -->
+                <a href="index.php" class="btn btn-primary btn-lg">
+<!-- Botón primario grande que lleva a las publicaciones -->
+                    <i class="bi bi-book me-2"></i>
+<!-- Icono de libro con margen a la derecha -->
+                    Ver Publicaciones
+<!-- Texto del botón -->
+                </a>
+<!-- Cerramos el botón -->
+                <a href="forms/register.php" class="btn btn-outline-primary btn-lg">
+<!-- Botón outline (solo borde) primario grande -->
+                    <i class="bi bi-person-plus me-2"></i>
+<!-- Icono de persona con plus -->
+                    Registrarse
+<!-- Texto del botón -->
+                </a>
+<!-- Cerramos el botón -->
+            </div>
+<!-- Cerramos el contenedor de botones -->
+        </div>
+<!-- Cerramos el contenedor -->
+    </section>
+<!-- Cerramos la sección CTA -->
+    <!-- Sidebar Usuario (Importante para funcionamiento del menú si se usa sidebar) -->
+    <?php include "forms/sidebar-usuario.php"; ?>
+    
+    <!-- Vendor JS Files -->
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        AOS.init();
+
+        // Configuración del Tour de Bienvenida (Usuario General)
+        document.addEventListener('DOMContentLoaded', function() {
+            const driver = window.driver.js.driver;
+            
+            const driverObj = driver({
+                showProgress: true,
+                animate: true,
+                doneBtnText: '¡Empezar!',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Anterior',
+                steps: [
+                    { 
+                        element: '.hero-title', 
+                        popover: { 
+                            title: '👋 ¡Bienvenido a Lab-Explorer!', 
+                            description: 'Tu plataforma definitiva para el conocimiento en laboratorio clínico.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.features-section', 
+                        popover: { 
+                            title: '🚀 Descubre Nuestros Recursos', 
+                            description: 'Encuentra artículos, casos clínicos y una comunidad verificada de expertos.', 
+                            side: "top", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.stats-section', 
+                        popover: { 
+                            title: '✅ Confianza y Calidad', 
+                            description: 'Contenido validado y una comunidad creciente de profesionales.', 
+                            side: "top", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.btn-hero', 
+                        popover: { 
+                            title: '🎯 Comienza Tu Viaje', 
+                            description: 'Haz clic aquí para explorar todas las publicaciones disponibles.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    }
+                ]
+            });
+
+            // Verificar si ya vio el tour
+            if (!localStorage.getItem('tour_general_visto')) {
+                setTimeout(() => {
+                    driverObj.drive();
+                    localStorage.setItem('tour_general_visto', 'true');
+                }, 1000);
+            }
+        });
+    </script>
 </body>
 <!-- Cerramos el body -->
 </html>

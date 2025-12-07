@@ -338,20 +338,25 @@
         position: static;
         margin-bottom: 2rem;
     }
+
     .stats-grid .col-md-2 {
         flex: 0 0 50%;
         max-width: 50%;
     }
+
     .admin-table {
         font-size: 0.85rem;
     }
+
     .admin-table th,
     .admin-table td {
         padding: 0.5rem;
     }
+
     .action-buttons {
         flex-direction: column;
     }
+
     .action-buttons .btn {
         width: 100%;
         margin-bottom: 0.25rem;
@@ -363,9 +368,11 @@
         flex: 0 0 100%;
         max-width: 100%;
     }
+
     .admin-card .card-body {
         padding: 1rem;
     }
+
     .admin-table {
         display: block;
         overflow-x: auto;
@@ -400,4 +407,78 @@
 
 .list-group-item:hover i {
     transform: scale(1.1);
+}
+
+/* ===== RESPONSIVE SIDEBAR (MOBILE) ===== */
+@media (max-width: 767.98px) {
+
+    .sidebar-wrapper {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 250px;
+        height: 100vh;
+        background: white;
+        z-index: 1050;
+        transition: 0.3s ease-in-out;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+    }
+
+    .sidebar-wrapper.active {
+        left: 0;
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 1040;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    body.sidebar-open {
+        overflow: hidden;
+    }
+}
+
+/* ===== DESKTOP SIDEBAR RESET ===== */
+/* Override main.css global .sidebar-wrapper styles for Publisher/Admin/Statistics pages */
+@media (min-width: 768px) {
+
+    #sidebarWrapper,
+    .sidebar-wrapper {
+        position: static !important;
+        transform: none !important;
+        left: auto !important;
+        /* Force grid column width (col-md-3 is 25%) */
+        width: 25% !important;
+        flex: 0 0 25% !important;
+        max-width: 25% !important;
+        height: auto !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        z-index: 1 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    .sidebar-overlay {
+        display: none !important;
+    }
 }
