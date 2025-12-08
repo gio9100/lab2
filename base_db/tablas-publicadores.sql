@@ -3,7 +3,6 @@ CREATE TABLE `publicadores` (
   `nombre` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `foto_perfil` varchar(255) DEFAULT NULL,
   `reset_token` varchar(64) DEFAULT NULL,
   `token_expira` datetime DEFAULT NULL,
   `especialidad` varchar(100) NOT NULL,
@@ -21,7 +20,10 @@ CREATE TABLE `publicadores` (
   `estado` enum('activo','pendiente','suspendido','inactivo') DEFAULT 'pendiente',
   `motivo_suspension` text DEFAULT NULL,
   `notificaciones_email` tinyint(1) DEFAULT 1,
-  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `foto_perfil` varchar(255) DEFAULT NULL,
+  `two_factor_enabled` tinyint(1) DEFAULT 0 COMMENT 'Si el publicador tiene 2FA activado',
+  `blocked_until` datetime DEFAULT NULL COMMENT 'Bloqueado hasta esta fecha'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 

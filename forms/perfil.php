@@ -41,16 +41,16 @@ function obtenerLeerMasTarde($usuario_id, $conexion) {
 }
 
 // Procesar subida de foto
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto_perfil'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
     $target_dir = "../assets/img/uploads/";
-    $imageFileType = strtolower(pathinfo($_FILES["foto_perfil"]["name"], PATHINFO_EXTENSION));
+    $imageFileType = strtolower(pathinfo($_FILES["imagen"]["name"], PATHINFO_EXTENSION));
     $new_filename = "usuario_" . $usuario_id . "_" . time() . "." . $imageFileType;
     $target_file = $target_dir . $new_filename;
     
-    $check = getimagesize($_FILES["foto_perfil"]["tmp_name"]);
-    if($check !== false && $_FILES["foto_perfil"]["size"] <= 2000000) {
-        if (move_uploaded_file($_FILES["foto_perfil"]["tmp_name"], $target_file)) {
-            $stmt = $conexion->prepare("UPDATE usuarios SET foto_perfil = ? WHERE id = ?");
+    $check = getimagesize($_FILES["imagen"]["tmp_name"]);
+    if($check !== false && $_FILES["imagen"]["size"] <= 2000000) {
+        if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
+            $stmt = $conexion->prepare("UPDATE usuarios SET imagen = ? WHERE id = ?");
             $foto_path = "assets/img/uploads/" . $new_filename;
             $stmt->bind_param("si", $foto_path, $usuario_id);
             $stmt->execute();
