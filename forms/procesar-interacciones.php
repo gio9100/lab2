@@ -63,7 +63,8 @@ switch ($accion) {
         }
         
         // Intentar agregar el comentario a la base de datos
-        if (agregarComentario($publicacion_id, $usuario_id, $contenido, $conexion)) {
+        $nuevo_id = agregarComentario($publicacion_id, $usuario_id, $contenido, $conexion);
+        if ($nuevo_id) {
             // Obtener datos del usuario para mostrar en el comentario
             // prepare() = prepara consulta SQL (previene inyección SQL)
             $stmt = $conexion->prepare("SELECT nombre, imagen FROM usuarios WHERE id = ?");
@@ -86,7 +87,8 @@ switch ($accion) {
                     'usuario_imagen' => $usuario_data['imagen'],
                     'contenido' => filtrarMalasPalabras($contenido),
                     // date() = obtiene fecha/hora actual en formato especificado
-                    'fecha_creacion' => date('Y-m-d H:i:s')
+                    'fecha_creacion' => date('Y-m-d H:i:s'),
+                    'id' => $nuevo_id
                 ]
             ], JSON_UNESCAPED_UNICODE);
         } else {
@@ -199,6 +201,8 @@ switch ($accion) {
         }
         break;
         
+
+
     default:
         // default = se ejecuta si ningún case coincide
         echo json_encode(['success' => false, 'message' => 'Acción no válida'], JSON_UNESCAPED_UNICODE);

@@ -101,7 +101,10 @@ function agregarComentario($publicacion_id, $usuario_id, $contenido, $conexion) 
     $stmt = $conexion->prepare($query);
     if (!$stmt) return false;
     $stmt->bind_param("iis", $publicacion_id, $usuario_id, $contenido);
-    return $stmt->execute();
+    if ($stmt->execute()) {
+        return $stmt->insert_id;
+    }
+    return false;
 }
 
 /**

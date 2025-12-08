@@ -415,10 +415,20 @@ body {
     /* Posición relativa para poder poner el badge encima */
     width: 100%;
     /* Ancho del 100% */
-    height: 220px;
-    /* Altura fija de 220px */
+    min-height: 200px;
+    /* Altura mínima de 200px */
+    max-height: 280px;
+    /* Altura máxima de 280px */
     overflow: hidden;
     /* Escondemos lo que se salga */
+    display: flex;
+    /* Flexbox para centrar */
+    align-items: center;
+    /* Centrado vertical */
+    justify-content: center;
+    /* Centrado horizontal */
+    background: #f8f9fa;
+    /* Fondo gris claro */
 }
 
 
@@ -430,11 +440,13 @@ body {
 .card-image img {
     /* Estilos para la imagen dentro de card-image */
     width: 100%;
-    /* Ancho del 100% */
+    /* Ancho del 100% para llenar horizontal */
     height: 100%;
     /* Altura del 100% */
     object-fit: cover;
-    /* La imagen cubre todo el espacio sin deformarse */
+    /* Cubre el espacio manteniendo proporción */
+    object-position: center;
+    /* Centrada */
     transition: transform 0.3s ease;
     /* Animación suave para el zoom */
 }
@@ -1195,100 +1207,56 @@ body {
  </style>
 <body>
 <!-- Abrimos la etiqueta body (el cuerpo visible de la página) -->
-    <!-- Header -->
-<!-- Comentario HTML para el header -->
     <header id="header" class="header position-relative">
-<!-- Abrimos el header con id y clases de Bootstrap -->
         <div class="container-fluid container-xl position-relative">
-<!-- Contenedor con clases de Bootstrap para el ancho -->
             <div class="top-row d-flex align-items-center justify-content-between">
-<!-- Fila superior con flexbox de Bootstrap -->
                 <div class="d-flex align-items-center">
                     <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
                     <a href="pagina-principal.php" class="logo d-flex align-items-end">
-<!-- Link al inicio con clases de flexbox -->
                         <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
-<!-- Imagen del logo -->
-<<<<<<< HEAD
-                        <h1 class="sitename">Lab-Explorer</h1><span></span>
-=======
-                    <h1 class="sitename">Lab-Explora</h1><span></span>
->>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
-<!-- Nombre del sitio y un span vacío -->
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
-<!-- Cerramos el link del logo -->
 
-<!-- Línea vacía -->
                 <div class="d-flex align-items-center">
-<!-- Contenedor con flexbox para alinear elementos -->
                     <div class="social-links d-none d-lg-block">
-<!-- Contenedor para los links sociales y opciones de usuario -->
-                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
-<!-- Link a Facebook con icono -->
-                        <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
-<!-- Link a Twitter con icono -->
-                        <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
-<!-- Link a Instagram con icono -->
+                        <a href="https://www.facebook.com/laboratorioabcdejacona?locale=es_LA" target="_blank"><i class="bi bi-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="bi bi-twitter"></i></a>
+                        <a href="https://www.instagram.com/lab_explorer_cbtis_52/" target="_blank"><i class="bi bi-instagram"></i></a>
+
+                        <span style="color: var(--border); margin: 0 5px;">|</span>
+                        <a href="terminos.php" style="font-size: 14px; font-weight: 500; margin-right: 15px;">Términos</a>
+                        <a href="privacidad.php" style="font-size: 14px; font-weight: 500; margin-right: 15px;">Privacidad</a>
                         
-<!-- Línea vacía -->
                         <?php if (isset($_SESSION['usuario_id'])): ?>
-<!-- Si hay un usuario logueado (si existe la variable de sesión) -->
                             <span class="saludo">Hola, <?= htmlspecialchars($_SESSION['usuario_nombre']) ?></span>
-<!-- Mostramos un saludo con el nombre del usuario (htmlspecialchars previene ataques XSS) -->
                             <a href="./forms/perfil.php">Perfil</a>
                             <a href="forms/logout.php" class="btn-publicador">
-<!-- Link para cerrar sesión -->
                                 <i class="bi bi-box-arrow-right"></i>
-<!-- Icono de salida -->
                                 Cerrar Sesión
-<!-- Texto del botón -->
                             </a>
-<!-- Cerramos el link de cerrar sesión -->
                         <?php else: ?>
-<!-- Si NO hay usuario logueado -->
                             <a href="forms/inicio-sesion.php" class="btn-publicador">
-<!-- Link para iniciar sesión -->
                                 <i class="bi bi-box-arrow-in-right"></i>
-<!-- Icono de entrada -->
                                 Inicia sesión
-<!-- Texto del botón -->
                             </a>
-<!-- Cerramos el link de iniciar sesión -->
                             <a href="forms/register.php" class="btn-publicador">
-<!-- Link para crear cuenta -->
                                 <i class="bi bi-person-plus"></i>
-<!-- Icono de persona con plus -->
                                 Crear Cuenta
-<!-- Texto del botón -->
                             </a>
-<!-- Cerramos el link de crear cuenta -->
                         <?php endif; ?>
-<!-- Cerramos el if/else de usuario logueado -->
                         
-<!-- Línea vacía -->
                         <span style="color: var(--border); margin: 0 5px;">|</span>
-<!-- Separador visual (una línea vertical) -->
                         
-<!-- Línea vacía -->
                         <a href="forms/publicadores/inicio-sesion-publicadores.php" class="btn-publicador">
-<!-- Link para publicadores -->
                             <i class="bi bi-pencil-square"></i>
-<!-- Icono de lápiz -->
                             ¿Eres publicador?
-<!-- Texto del link -->
                         </a>
-<!-- Cerramos el link de publicadores -->
                     </div>
-<!-- Cerramos el contenedor de social-links -->
                 </div>
-<!-- Cerramos el contenedor de flexbox -->
             </div>
-<!-- Cerramos la fila superior -->
         </div>
-<!-- Cerramos el contenedor del header -->
     </header>
-<!-- Cerramos el header -->
 
 <!-- Línea vacía -->
     <!-- Main Content -->

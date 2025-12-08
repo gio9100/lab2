@@ -9,16 +9,13 @@ $mensaje = "";
 $exito= false;
 // Variable que dice si el registro fue exitoso
 
-// Lista de dominios de correo que aceptamos en el sitio
-$dominios_validos = [
-    'gmail.com',
-    // Aceptamos Gmail
-    'outlook.com',
-    // Aceptamos Outlook.com
-    'outlook.es',
-    // Aceptamos Outlook.es
-];
-// Cerramos el array de dominios válidos
+// Incluimos el archivo de validaciones compartidas (Lógica centralizada)
+require_once "validaciones.php";
+// Obtenemos los dominios extra desde la base de datos para pasarlos a JS (UX)
+// Esto ayuda a que el usuario vea "verde" si usa un dominio corporativo permitido
+$dominios_extra_db = obtenerDominiosExtra($conexion);
+
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Si el formulario se envió (alguien le dio click a "Crear Cuenta")
@@ -43,27 +40,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
        $mensaje = "El correo no tiene un formato valido";
        // Mensaje de error
    }
-     elseif(preg_match('/[0-9]/', $nombre)) {
+   elseif(preg_match('/[0-9]/', $nombre)) {
        $mensaje = "El nombre no puede contener números";
    }
    elseif(!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\'-]+$/', $nombre)) {
        $mensaje = "El nombre solo puede contener letras, espacios, tildes y guiones";
    }
    else {
-       // Verificamos que el dominio del correo esté en la lista de permitidos
-       $partes_correo = explode('@', $correo);
-       // Separamos el correo en dos partes: antes y después del @
-       // Ejemplo: "juan@gmail.com" se convierte en ["juan", "gmail.com"]
-       $dominio = $partes_correo[1] ?? '';
-       // Obtenemos la segunda parte (el dominio)
-
-       if(!in_array($dominio, $dominios_validos)) {
-           // Si el dominio NO está en nuestra lista de permitidos
-           $dominios_lista = implode(',', array_slice($dominios_validos, 0, 5));
-           // Convertimos el array de dominios en un texto separado por comas
-           // array_slice toma solo los primeros 5 (por si hay muchos)
-           $mensaje = "Solo se permiten correos de dominio verificados como:" . $dominios_lista . ", etc.";
-           // Mensaje de error mostrando los dominios permitidos
+       // Llamamos a nuestra función personalizada de validación
+       // Verificamos si el correo está autorizado en la BD o es un dominio público
+       if (!esCorreoPermitido($correo, 'usuario', $conexion)) {
+           // Si la función devuelve false, mostramos el error
+           $mensaje = "Este correo o dominio no está autorizado para el registro.";
        }
        elseif (strlen($contrasena) < 6) {
            // Si la contraseña tiene menos de 6 caracteres
@@ -263,18 +251,51 @@ setTimeout(function() {
 </script>
 <!-- Cerramos el script -->
 <?php endif; ?>
+
+<?php if($mensaje && !$exito): ?>
+<!-- MODAL DE ERROR NUEVO -->
+<div class="modal-mensaje error" style="display:flex;">
+    <div class="modal-contenido">
+        <h2 style="color: #dc3545;">⚠️ Error en el Registro</h2>
+        <p><?= htmlspecialchars($mensaje) ?></p>
+        <button onclick="this.closest('.modal-mensaje').style.display='none'" 
+                style="margin-top: 15px; padding: 8px 16px; border: none; background: #dc3545; color: white; border-radius: 4px; cursor: pointer;">
+            Entendido
+        </button>
+    </div>
+</div>
+<?php endif; ?>
 <!-- Cerramos el if de PHP -->
 
 <script>
 // Abrimos JavaScript para validaciones en tiempo real
 
-// Lista de dominios válidos en JavaScript (igual que en PHP)
+// Lista de dominios válidos en JavaScript
+// Combinamos los default + los que vienen de la Base de Datos
 const dominiosValidos = [
     'gmail.com',
     'outlook.com',
     'outlook.es',
+    <?php 
+    // Inyectamos los dominios extra de la BD en el array de JS
+    // json_encode convierte el array PHP a formato JS (seguro)
+    foreach($dominios_extra_db as $d) {
+        echo "'$d',";
+    }
+    ?>
 ];
-// Cerramos el array
+// Array listo con todos los dominios permitidos
+
+// Lista de correos específicos válidos (Excepciones)
+const correosValidos = [
+    <?php 
+    // Inyectamos los correos específicos extra de la BD
+    $correos_extra_db = obtenerCorreosExtra($conexion);
+    foreach($correos_extra_db as $c) {
+        echo "'$c',";
+    }
+    ?>
+];
 
 // Validación del correo en tiempo real
 const correoInput = document.getElementById('correo');
@@ -312,6 +333,16 @@ correoInput.addEventListener('input', function() {
         // Agregamos clase de error (texto rojo)
         return;
         // Salimos de la función
+    }
+
+    // AQUI ESTA EL CAMBIO: Verificamos si es un correo EXACTO permitido ANTES de revisar el dominio
+    if (correosValidos.includes(val)) {
+        // Si el correo completo está en la lista blanca
+        correoInput.classList.remove('error');
+        correoInput.classList.add('success');
+        mensajeCorreo.textContent = '✓ Correo autorizado';
+        mensajeCorreo.className = 'mensaje-validacion success';
+        return; // Es válido, salimos
     }
 
     // Extraer el dominio del correo

@@ -382,6 +382,16 @@ session_start();
 /* Cerramos los estilos de la descripción */
         }
 /* Cerramos el media query */
+
+        /* Fix para evitar que el sidebar se muestre al final de la página en desktop */
+        @media (min-width: 768px) {
+            .sidebar-wrapper {
+                display: none !important;
+            }
+            .sidebar-toggle {
+                display: none !important;
+            }
+        }
 </style>
 <!-- Cerramos la etiqueta style -->
 </head>
@@ -392,25 +402,11 @@ session_start();
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-<<<<<<< HEAD
-=======
-<!-- Fila superior con flexbox de Bootstrap -->
-                <a href="pagina-principal.php" class="logo d-flex align-items-end">
-<!-- Link al inicio con clases de flexbox -->
-                    <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
-<!-- Imagen del logo -->
-                    <h1 class="sitename">Lab-Explora</h1><span></span>
-<!-- Nombre del sitio y un span vacío -->
-                </a>
-<!-- Cerramos el link del logo -->
-
-<!-- Línea vacía -->
->>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
                 <div class="d-flex align-items-center">
                     <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
                     <a href="pagina-principal.php" class="logo d-flex align-items-end">
                         <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
 
@@ -419,6 +415,10 @@ session_start();
                         <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
                         <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
                         <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        
+                        <span style="color: var(--border); margin: 0 5px;">|</span>
+                        <a href="terminos.php" style="font-size: 14px; font-weight: 500; margin-right: 15px;">Términos</a>
+                        <a href="privacidad.php" style="font-size: 14px; font-weight: 500; margin-right: 15px;">Privacidad</a>
                         
                         <?php if (isset($_SESSION['usuario_id'])): ?>
                             <span class="saludo">Hola, <?= htmlspecialchars($_SESSION['usuario_nombre']) ?></span>
@@ -773,201 +773,7 @@ session_start();
     <!-- Sidebar Usuario (Importante para funcionamiento del menú si se usa sidebar) -->
     <?php include "forms/sidebar-usuario.php"; ?>
     
-    <!-- Vendor JS Files -->
-<!-- Cerramos la tarjeta -->
-                </div>
-<!-- Cerramos la columna -->
 
-<!-- Línea vacía -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-<!-- Cuarta columna con retraso de 400ms -->
-                    <div class="feature-card">
-<!-- Tarjeta de característica -->
-                        <div class="feature-icon">
-<!-- Contenedor del icono -->
-                            <i class="bi bi-folder2-open"></i>
-<!-- Icono de carpeta abierta -->
-                        </div>
-<!-- Cerramos el contenedor del icono -->
-                        <h3 class="feature-title">Categorías Especializadas</h3>
-<!-- Título de la característica -->
-                        <p class="feature-description">
-<!-- Descripción -->
-                            Contenido organizado por áreas: Hematología, Bacteriología, Parasitología, 
-<!-- Primera línea -->
-                            Serie Roja, Toma de Muestras y más.
-<!-- Segunda línea -->
-                        </p>
-<!-- Cerramos la descripción -->
-                    </div>
-<!-- Cerramos la tarjeta -->
-                </div>
-<!-- Cerramos la columna -->
-
-<!-- Línea vacía -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-<!-- Quinta columna con retraso de 500ms -->
-                    <div class="feature-card">
-<!-- Tarjeta de característica -->
-                        <div class="feature-icon">
-<!-- Contenedor del icono -->
-                            <i class="bi bi-shield-check"></i>
-<!-- Icono de escudo con check -->
-                        </div>
-<!-- Cerramos el contenedor del icono -->
-                        <h3 class="feature-title">Contenido Verificado</h3>
-<!-- Título de la característica -->
-                        <p class="feature-description">
-<!-- Descripción -->
-                            Todas las publicaciones pasan por un proceso de revisión por parte de administradores 
-<!-- Primera línea -->
-                            para garantizar la calidad y veracidad de la información.
-<!-- Segunda línea -->
-                        </p>
-<!-- Cerramos la descripción -->
-                    </div>
-<!-- Cerramos la tarjeta -->
-                </div>
-<!-- Cerramos la columna -->
-
-<!-- Línea vacía -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-<!-- Sexta columna con retraso de 600ms -->
-                    <div class="feature-card">
-<!-- Tarjeta de característica -->
-                        <div class="feature-icon">
-<!-- Contenedor del icono -->
-                            <i class="bi bi-pencil-square"></i>
-<!-- Icono de lápiz cuadrado -->
-                        </div>
-<!-- Cerramos el contenedor del icono -->
-                        <h3 class="feature-title">Publica tu Conocimiento</h3>
-<!-- Título de la característica -->
-                        <p class="feature-description">
-<!-- Descripción -->
-                            ¿Eres profesional del área? Regístrate como publicador y comparte tu experiencia 
-<!-- Primera línea -->
-                            y conocimientos con la comunidad científica.
-<!-- Segunda línea -->
-                        </p>
-<!-- Cerramos la descripción -->
-                    </div>
-<!-- Cerramos la tarjeta -->
-                </div>
-<!-- Cerramos la columna -->
-            </div>
-<!-- Cerramos la fila -->
-        </div>
-<!-- Cerramos el contenedor -->
-    </section>
-<!-- Cerramos la sección de características -->
-
-<!-- Línea vacía -->
-    <!-- Stats Section -->
-<!-- Comentario HTML para la sección de estadísticas -->
-    <section class="stats-section">
-<!-- Abrimos la sección de estadísticas -->
-        <div class="container">
-<!-- Contenedor de Bootstrap -->
-            <div class="row">
-<!-- Fila de Bootstrap -->
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-<!-- Columna: 4 de 12 en pantallas medianas, con animación retrasada 100ms -->
-                    <div class="stat-item">
-<!-- Item de estadística -->
-                        <div class="stat-number">
-<!-- Número de la estadística -->
-                            <i class="bi bi-file-earmark-text"></i>
-<!-- Icono de archivo de texto -->
-                        </div>
-<!-- Cerramos el número -->
-                        <div class="stat-label">Publicaciones Científicas</div>
-<!-- Etiqueta de la estadística -->
-                    </div>
-<!-- Cerramos el item -->
-                </div>
-<!-- Cerramos la columna -->
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-<!-- Segunda columna con retraso de 200ms -->
-                    <div class="stat-item">
-<!-- Item de estadística -->
-                        <div class="stat-number">
-<!-- Número de la estadística -->
-                            <i class="bi bi-people"></i>
-<!-- Icono de personas -->
-                        </div>
-<!-- Cerramos el número -->
-                        <div class="stat-label">Comunidad de Profesionales</div>
-<!-- Etiqueta de la estadística -->
-                    </div>
-<!-- Cerramos el item -->
-                </div>
-<!-- Cerramos la columna -->
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-<!-- Tercera columna con retraso de 300ms -->
-                    <div class="stat-item">
-<!-- Item de estadística -->
-                        <div class="stat-number">
-<!-- Número de la estadística -->
-                            <i class="bi bi-bookmark-check"></i>
-<!-- Icono de marcador con check -->
-                        </div>
-<!-- Cerramos el número -->
-                        <div class="stat-label">Contenido Verificado</div>
-<!-- Etiqueta de la estadística -->
-                    </div>
-<!-- Cerramos el item -->
-                </div>
-<!-- Cerramos la columna -->
-            </div>
-<!-- Cerramos la fila -->
-        </div>
-<!-- Cerramos el contenedor -->
-    </section>
-<!-- Cerramos la sección de estadísticas -->
-
-<!-- Línea vacía -->
-    <!-- CTA Section -->
-<!-- Comentario HTML para la sección de llamada a la acción -->
-    <section class="py-5 bg-white">
-<!-- Sección con padding vertical de 5 y fondo blanco -->
-        <div class="container text-center" data-aos="fade-up">
-<!-- Contenedor centrado con animación -->
-            <h2 class="mb-4">¿Listo para Comenzar?</h2>
-<!-- Título con margen abajo de 4 -->
-            <p class="lead mb-4 text-muted">
-<!-- Párrafo grande con margen abajo y color gris -->
-                Únete a nuestra comunidad y accede a contenido científico de calidad
-<!-- Texto de la llamada a la acción -->
-            </p>
-<!-- Cerramos el párrafo -->
-            <div class="d-flex gap-3 justify-content-center flex-wrap">
-<!-- Contenedor flexbox con gap de 3, centrado y que se envuelve en pantallas pequeñas -->
-                <a href="index.php" class="btn btn-primary btn-lg">
-<!-- Botón primario grande que lleva a las publicaciones -->
-                    <i class="bi bi-book me-2"></i>
-<!-- Icono de libro con margen a la derecha -->
-                    Ver Publicaciones
-<!-- Texto del botón -->
-                </a>
-<!-- Cerramos el botón -->
-                <a href="forms/register.php" class="btn btn-outline-primary btn-lg">
-<!-- Botón outline (solo borde) primario grande -->
-                    <i class="bi bi-person-plus me-2"></i>
-<!-- Icono de persona con plus -->
-                    Registrarse
-<!-- Texto del botón -->
-                </a>
-<!-- Cerramos el botón -->
-            </div>
-<!-- Cerramos el contenedor de botones -->
-        </div>
-<!-- Cerramos el contenedor -->
-    </section>
-<!-- Cerramos la sección CTA -->
-    <!-- Sidebar Usuario (Importante para funcionamiento del menú si se usa sidebar) -->
-    <?php include "forms/sidebar-usuario.php"; ?>
-    
     <!-- Vendor JS Files -->
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

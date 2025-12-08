@@ -113,6 +113,8 @@ $publicacion = $result->fetch_assoc();
     <!-- Main CSS -->
 <!-- Comentario: Nuestros estilos -->
     <link href="assets/css/main.css" rel="stylesheet">
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #7390A0;
@@ -165,14 +167,22 @@ $publicacion = $result->fetch_assoc();
 /* Fondo degradado azul más atractivo */
             color: var(--white);
 /* Texto blanco para mejor contraste */
-            padding: 80px 0 60px;
-/* Más padding arriba para destacar */
+            padding: 60px 0;
+/* Padding uniforme */
+            min-height: 600px;
+/* Altura mínima para mostrar la imagen */
             text-align: center;
 /* Texto centrado */
             position: relative;
 /* Posición relativa para efectos */
-            overflow: hidden;
-/* Esconder desbordes */
+            overflow: visible;
+/* Mostrar todo el contenido */
+            display: flex;
+/* Flexbox para centrar contenido */
+            align-items: center;
+/* Centrado vertical */
+            justify-content: center;
+/* Centrado horizontal */
         }
 /* Cerramos hero-section */
         
@@ -1050,20 +1060,13 @@ $publicacion = $result->fetch_assoc();
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-<<<<<<< HEAD
                 <div class="d-flex align-items-center">
                     <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
                     <a href="pagina-principal.php" class="logo d-flex align-items-end">
                         <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
-=======
-                <a href="index.php" class="logo d-flex align-items-end">
-                    <img src="assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explora</h1><span></span>
-                </a>
->>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
 
                 <div class="d-flex align-items-center">
                     <div class="social-links d-none d-lg-block">
@@ -1101,11 +1104,11 @@ $publicacion = $result->fetch_assoc();
         </div>
     </header>
 
-    <!-- Hero Section Restaurada -->
-    <section class="hero-section">
+    <!-- Hero Section Restaurada con Imagen -->
+    <section class="hero-section" style="<?php if (!empty($publicacion['imagen_principal'])): ?>background-image: linear-gradient(rgba(115, 144, 160, 0.75), rgba(90, 112, 128, 0.8)), url('uploads/<?= htmlspecialchars($publicacion['imagen_principal']) ?>'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: scroll;<?php endif; ?>">
         <div class="hero-content">
-            <h1 class="hero-title"><?= htmlspecialchars($publicacion['titulo']) ?></h1>
-            <p class="hero-description"><?= htmlspecialchars($publicacion['resumen'] ?? 'Sin descripción disponible') ?></p>
+            <h1 class="hero-title" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.3);"><?= htmlspecialchars($publicacion['titulo']) ?></h1>
+            <p class="hero-description" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.3);"><?= htmlspecialchars($publicacion['resumen'] ?? 'Sin descripción disponible') ?></p>
             <span class="category-badge">
                 <i class="bi bi-folder2-open"></i> <?= htmlspecialchars($publicacion['categoria_nombre'] ?? 'General') ?>
             </span>
@@ -1122,6 +1125,12 @@ $publicacion = $result->fetch_assoc();
                 <button id="btn-tts" onclick="toggleLeerContenido()" style="color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 30px; backdrop-filter: blur(5px); transition: all 0.3s; margin-left: 10px; cursor: pointer;">
                     <i class="bi bi-volume-up-fill" id="tts-icon"></i>
                     <span id="tts-text">Escuchar Artículo</span>
+                </button>
+                
+                <!-- Botón PDF -->
+                <button onclick="descargarPDF()" style="color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; background: rgba(220, 53, 69, 0.4); border: 1px solid rgba(255,255,255,0.3); border-radius: 30px; backdrop-filter: blur(5px); transition: all 0.3s; margin-left: 10px; cursor: pointer;">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                    Descargar PDF
                 </button>
             </div>
         </div>
@@ -1330,6 +1339,11 @@ $comentarios = obtenerComentarios($publicacion_id, $conexion);
 </section>
 </main>
 
+<!-- Botón flotante para subir al inicio -->
+<button id="scroll-to-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Subir al inicio">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
 <!-- Modal para Reportar -->
 <div id="modalReporte" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center;">
     <div style="background: white; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%;">
@@ -1387,6 +1401,38 @@ $comentarios = obtenerComentarios($publicacion_id, $conexion);
     color: white !important;
 }
 
+/* Botón flotante de scroll to top */
+#scroll-to-top-btn {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    opacity: 1;
+}
+
+#scroll-to-top-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(115, 144, 160, 0.5);
+    background: linear-gradient(135deg, #5a7080 0%, #7390A0 100%);
+}
+
+#scroll-to-top-btn:active {
+    transform: translateY(-2px);
+}
+
 /* Animación para nuevos comentarios */
 @keyframes slideIn {
     from {
@@ -1441,7 +1487,7 @@ function agregarComentario() {
         
         // Validamos que no esté vacío
         if (texto === '') {
-            alert('Por favor escribe un comentario');
+            showToast('Por favor escribe un comentario', 'error');
             return;
         }
         
@@ -1476,18 +1522,18 @@ function agregarComentario() {
                 agregarComentarioALista(data.comentario);
                 
                 // Mostramos mensaje de éxito
-                alert('Comentario publicado correctamente');
+                showToast('Comentario publicado correctamente');
             } else {
-                alert('Error del servidor: ' + data.message);
+                showToast('Error del servidor: ' + data.message, 'error');
             }
         })
         .catch(error => {
             console.error('Error AJAX:', error);
-            alert('Error de conexión al publicar el comentario. Revisa la consola para más detalles.');
+            showToast('Error de conexión al publicar el comentario.', 'error');
         });
     } catch (e) {
         console.error('Error en agregarComentario:', e);
-        alert('Ocurrió un error inesperado. Revisa la consola.');
+        showToast('Ocurrió un error inesperado.', 'error');
     }
 }
 
@@ -1496,32 +1542,30 @@ function agregarComentario() {
  * PROPÓSITO: Elimina un comentario propio
  */
 function eliminarComentario(id) {
-    if (!confirm('¿Estás seguro de que quieres eliminar este comentario?')) {
-        return;
-    }
-    
-    fetch('forms/procesar-interacciones.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            accion: 'eliminar_comentario',
-            comentario_id: id
+    showConfirm('¿Estás seguro de que quieres eliminar este comentario?', function() {
+        fetch('forms/procesar-interacciones.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                accion: 'eliminar_comentario',
+                comentario_id: id
+            })
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Comentario eliminado');
-            location.reload(); // Recargamos para actualizar la lista
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al eliminar el comentario');
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Comentario eliminado');
+                setTimeout(() => location.reload(), 1000); // Recargamos para actualizar la lista
+            } else {
+                showToast('Error: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Error al eliminar el comentario', 'error');
+        });
     });
 }
 
@@ -1554,12 +1598,18 @@ function agregarComentarioALista(comentario) {
                 ${avatarHTML}
             </div>
             <div style="flex: 1;">
-                <div style="margin-bottom: 10px;">
-                    <strong style="color: #212529; font-size: 1.05rem;">${comentario.usuario_nombre}</strong>
-                    <br>
-                    <small style="color: #6c757d;">
-                        <i class="bi bi-clock"></i> Justo ahora
-                    </small>
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                    <div>
+                        <strong style="color: #212529; font-size: 1.05rem;">${comentario.usuario_nombre}</strong>
+                        <br>
+                        <small style="color: #6c757d;">
+                            <i class="bi bi-clock"></i> Justo ahora
+                        </small>
+                    </div>
+                     <!-- Botón de eliminar (asumimos que somos el dueño porque lo acabamos de crear) -->
+                     <button onclick="eliminarComentario(${comentario.id})" style="padding: 5px 12px; background: transparent; border: 1px solid #dc3545; color: #dc3545; border-radius: 15px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s;">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
                 </div>
                 <p style="color: #495057; line-height: 1.6; margin: 0;">
                     ${comentario.contenido.replace(/\n/g, '<br>')}
@@ -1589,8 +1639,8 @@ function agregarComentarioALista(comentario) {
 function darLike(tipo) {
     try {
         <?php if (!isset($_SESSION['usuario_id'])): ?>
-        alert('Debes iniciar sesión para dar like');
-        window.location.href = 'forms/inicio-sesion.php';
+        showToast('Debes iniciar sesión para dar like', 'error');
+        setTimeout(() => window.location.href = 'forms/inicio-sesion.php', 2000);
         return;
         <?php endif; ?>
         
@@ -1657,16 +1707,16 @@ function darLike(tipo) {
                  // Lo ideal es que el backend devuelva "voto_usuario: 'like'|'dislike'|null".
                  // Pero por ahora, al menos que funcione el click.
             } else {
-                alert('Error: ' + data.message);
+                showToast('Error: ' + data.message, 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al procesar el voto. Revisa la consola.');
+            showToast('Error al procesar el voto', 'error');
         });
     } catch (e) {
         console.error('Error en darLike:', e);
-        alert('Error inesperado al dar like.');
+        showToast('Error inesperado al dar like', 'error');
     }
 }
 
@@ -1705,14 +1755,14 @@ function guardarPublicacion() {
                 texto.textContent = 'Guardar para leer más tarde';
             }
             
-            alert(data.message);
+            showToast(data.message);
         } else {
-            alert('Error: ' + data.message);
+            showToast('Error: ' + data.message, 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error al guardar la publicación');
+        showToast('Error al guardar la publicación', 'error');
     });
 }
 
@@ -1752,7 +1802,7 @@ function enviarReporte() {
     const btn = document.getElementById('btn-enviar-reporte');
     
     if (motivo === '') {
-        alert('Por favor selecciona un motivo');
+        showToast('Por favor selecciona un motivo', 'error');
         return;
     }
 
@@ -1777,15 +1827,15 @@ function enviarReporte() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
+            showToast(data.message);
             cerrarModalReporte();
         } else {
-            alert('Error: ' + data.message);
+            showToast('Error: ' + data.message, 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error al enviar el reporte');
+        showToast('Error al enviar el reporte', 'error');
     })
     .finally(() => {
         // Restaurar botón
@@ -1794,205 +1844,97 @@ function enviarReporte() {
             btn.innerHTML = originalText;
         }
     });
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                accion: 'dar_like',
-                publicacion_id: '<?= $publicacion_id ?>',
-                tipo: tipo
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Respuesta like:', data);
-            if (data.success) {
-                // Actualizamos los contadores
-                document.getElementById('count-likes').textContent = data.likes;
-                document.getElementById('count-dislikes').textContent = data.dislikes;
-                
-                // Actualizamos los estilos de los botones
-                const btnLike = document.getElementById('btn-like');
-                const btnDislike = document.getElementById('btn-dislike');
-                
-                // Quitamos las clases active
-                btnLike.classList.remove('active-like');
-                btnDislike.classList.remove('active-dislike');
-                
-                // Reseteamos estilos
-                btnLike.style.background = 'white';
-                btnLike.style.color = '#28a745';
-                btnDislike.style.background = 'white';
-                btnDislike.style.color = '#dc3545';
-                
-                // Si el conteo aumentó, agregamos la clase active correspondiente
-                if (tipo === 'like' && data.likes > 0) { // Lógica simplificada, idealmente el server dice si es activo
-                     // Nota: La lógica original asumía que si sube es active, pero mejor sería que el server retorne el estado del usuario.
-                     // Por ahora mantenemos la lógica visual básica o asumimos que si success es true y era toggle, cambiamos estado.
-                     // Pero data.likes es el total. 
-                     // Vamos a forzar el cambio visual basándonos en la clase actual para toggle inmediato o recargar.
-                     // Mejor aún, recargamos la página para ver el estado real si la lógica es compleja, 
-                     // pero para UX mejor cambiar clases.
-                     // Asumiremos que si dio like, ahora tiene like.
-                     if (tipo === 'like') {
-                        btnLike.classList.add('active-like');
-                        btnLike.style.background = '#28a745';
-                        btnLike.style.color = 'white';
-                     } else {
-                        btnDislike.classList.add('active-dislike');
-                        btnDislike.style.background = '#dc3545';
-                        btnDislike.style.color = 'white';
-                     }
-                }
-                 // Corrección: La lógica de arriba es imperfecta para toggle. 
-                 // Lo ideal es que el backend devuelva "voto_usuario: 'like'|'dislike'|null".
-                 // Pero por ahora, al menos que funcione el click.
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error al procesar el voto. Revisa la consola.');
-        });
-    } catch (e) {
-        console.error('Error en darLike:', e);
-        alert('Error inesperado al dar like.');
-    }
 }
 
 /**
- * FUNCIÃ“N: guardarPublicacion
- * PROPÃ“SITO: Guarda o quita la publicación de "leer más tarde"
+ * FUNCIÓN: descargarPDF
+ * PROPÓSITO: Genera y descarga el PDF con imagen, metadatos y contenido completo
  */
-function guardarPublicacion() {
-    fetch('forms/procesar-interacciones.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            accion: 'guardar_leer_mas_tarde',
-            publicacion_id: '<?= $publicacion_id ?>'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const btn = document.getElementById('btn-guardar');
-            const texto = document.getElementById('texto-guardar');
-            
-            if (data.guardada) {
-                // Está guardada
-                btn.classList.add('active-save');
-                btn.style.background = '#7390A0';
-                btn.style.color = 'white';
-                texto.textContent = 'Guardado';
-            } else {
-                // No está guardada
-                btn.classList.remove('active-save');
-                btn.style.background = 'white';
-                btn.style.color = '#7390A0';
-                texto.textContent = 'Guardar para leer más tarde';
-            }
-            
-            alert(data.message);
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al guardar la publicación');
-    });
-}
-
-/**
- * FUNCIÃ“N: mostrarModalReporte
- * PROPÃ“SITO: Muestra el modal para reportar
- */
-function mostrarModalReporte(tipo, id) {
-    reporteTipo = tipo;
-    reporteId = id;
-    document.getElementById('modalReporte').style.display = 'flex';
-}
-
-/**
- * FUNCIÃ“N: cerrarModalReporte
- * PROPÃ“SITO: Cierra el modal de reporte
- */
-function cerrarModalReporte() {
-    document.getElementById('modalReporte').style.display = 'none';
-    document.getElementById('motivo-reporte').value = '';
-    document.getElementById('descripcion-reporte').value = '';
-}
-
-// Inicialización para asegurar que los eventos se carguen
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM cargado, interacciones listas');
-});
-
-
-/**
- * FUNCIÃ“N: enviarReporte
- * PROPÃ“SITO: Envía el reporte vía AJAX
- */
-function enviarReporte() {
-    const motivo = document.getElementById('motivo-reporte').value;
-    const descripcion = document.getElementById('descripcion-reporte').value;
-    const btn = document.getElementById('btn-enviar-reporte');
-    
-    if (motivo === '') {
-        alert('Por favor selecciona un motivo');
+function descargarPDF() {
+    // Verificar si el usuario está logueado
+    <?php if (!isset($_SESSION['usuario_id'])): ?>
+        showToast('Para descargar el PDF debes iniciar sesión.', 'error');
+        setTimeout(() => window.location.href = 'forms/inicio-sesion.php', 2000);
         return;
+    <?php endif; ?>
+
+    // 1. Crear contenedor temporal
+    const element = document.createElement('div');
+    element.style.width = '100%';
+    element.style.background = '#fff';
+    element.style.fontFamily = "'Nunito', sans-serif";
+
+    // 2. Clonar Hero Section (Imagen y Título)
+    const heroOriginal = document.querySelector('.hero-section');
+    if (heroOriginal) {
+        const heroClone = heroOriginal.cloneNode(true);
+        
+        // Ajustar estilos del Hero para PDF
+        heroClone.style.margin = '0';
+        heroClone.style.padding = '40px 20px';
+        heroClone.style.minHeight = 'auto';
+        // Asegurar que el fondo se imprima (si es imagen)
+        // Nota: html2canvas a veces tiene problemas con cross-origin images, pero uploads/ suele ser local
+        
+        // Remover botones del Hero clone
+        const botonesDiv = heroClone.querySelector('div[style*="margin-top: 20px"]');
+        if (botonesDiv) {
+            botonesDiv.remove();
+        }
+
+        element.appendChild(heroClone);
     }
 
-    // Estado de carga
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enviando...';
+    // 3. Clonar Meta Info (Autor, Fecha, etc.)
+    const metaOriginal = document.querySelector('.meta-info');
+    if (metaOriginal) {
+        const metaClone = metaOriginal.cloneNode(true);
+        metaClone.style.margin = '20px';
+        metaClone.style.boxShadow = 'none';
+        metaClone.style.border = '1px solid #ddd';
+        element.appendChild(metaClone);
+    }
+
+    // 4. Clonar Contenido Principal
+    const contentOriginal = document.querySelector('.publication-content');
+    if (contentOriginal) {
+        // Crear un contenedor para el contenido con estilos similares a content-section
+        const contentContainer = document.createElement('div');
+        contentContainer.style.padding = '20px 40px';
+        
+        const contentClone = contentOriginal.cloneNode(true);
+        contentContainer.appendChild(contentClone);
+        
+        element.appendChild(contentContainer);
+    }
     
-    fetch('forms/procesar-interacciones.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            accion: 'crear_reporte',
-            tipo: reporteTipo,
-            referencia_id: reporteId,
-            motivo: motivo,
-            descripcion: descripcion
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            cerrarModalReporte();
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al enviar el reporte');
-    })
-    .finally(() => {
-        // Restaurar botón
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
+    // Configuración del PDF
+    const opt = {
+        margin:       [10, 10, 10, 10], 
+        filename:     'Lab-Explora - ' + document.title + '.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Agregar footer con derechos de autor
+    const footer = document.createElement('div');
+    footer.style.cssText = 'margin-top: 50px; padding: 20px 40px; border-top: 2px solid #7390A0; font-size: 10px; color: #555; text-align: center; font-family: sans-serif; page-break-inside: avoid;';
+    footer.innerHTML = `
+        <p style="margin: 5px 0; font-weight: bold; font-size: 12px;">© ${new Date().getFullYear()} Lab-Explora. Todos los derechos reservados.</p>
+        <p style="margin: 5px 0;">Este documento fue descargado legalmente de la plataforma Lab-Explora.</p>
+        <p style="margin: 5px 0;">Autor: <?= htmlspecialchars($publicacion['publicador_nombre']) ?> | Especialidad: <?= htmlspecialchars($publicacion['especialidad'] ?? 'General') ?></p>
+        <p style="margin: 5px 0; font-style: italic;">Uso exclusivo para fines educativos y personales. Prohibida su venta o redistribución.</p>
+    `;
+    element.appendChild(footer);
+
+    // Generar PDF
+    html2pdf().set(opt).from(element).save().then(() => {
+        showToast('PDF generado correctamente.');
     });
 }
-
-
 </script>
+
 
 <!-- Script para Text-to-Speech (Modo Lectura) -->
 <script>
@@ -2023,7 +1965,7 @@ function enviarReporte() {
         if (!isSpeaking) {
             // Iniciar lectura
             if (!originalText) {
-                alert("No se pudo obtener el contenido para leer.");
+                showToast("No se pudo obtener el contenido para leer.", "error");
                 return;
             }
 
@@ -2085,7 +2027,360 @@ function enviarReporte() {
 </script>
 
     <?php include 'forms/sidebar-usuario.php'; ?>
+
+
+
+    <!-- 1. Estilos CSS para las nuevas herramientas -->
+    <style>
+        /* Importar fuente OpenDyslexic desde CDN alternativo (más fiable) */
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('https://cdn.jsdelivr.net/npm/opendyslexic@2.1.0/open-dyslexic-regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* Clase para activar la fuente de dislexia */
+        body.dyslexia-mode, body.dyslexia-mode * {
+            font-family: 'OpenDyslexic', 'Comic Sans MS', 'Chalkboard SE', sans-serif !important;
+            line-height: 1.6 !important;
+            letter-spacing: 0.05em !important;
+        }
+
+        /* Menú Flotante de Accesibilidad */
+        .accessibility-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 15px;
+            z-index: 9999; /* Z-Index alto para asegurar visibilidad */
+            border: 1px solid rgba(0,0,0,0.1);
+            align-items: center;
+        }
+        
+        .access-btn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .access-btn:hover {
+            transform: translateY(-2px);
+            color: var(--accent-color);
+            background: rgba(0,0,0,0.05);
+        }
+
+        .access-btn.active {
+            color: white;
+            background: #e73741; /* Rojo activo */
+        }
+        
+        /* Ajuste para iconos dentro del boton */
+        .access-btn i {
+            pointer-events: none;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: #ddd;
+        }
+
+        /* Modal Confirmación Custom */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001; /* Encima de todo */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .confirm-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .modal-overlay.show .confirm-box {
+            transform: scale(1);
+        }
+        .confirm-icon {
+            font-size: 3rem;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        .confirm-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .confirm-text {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .btn-confirm {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-yes {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-yes:hover { background: #bb2d3b; }
+        .btn-no {
+            background: #e9ecef;
+            color: #495057;
+        }
+        .btn-no:hover { background: #dee2e6; }
+        
+        /* Toast */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 10000;
+            transform: translateY(-100px);
+            transition: transform 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast-notification.show {
+            transform: translateY(0);
+        }
+        
+        /* Ocultar barra si imprime */
+        @media print {
+            .accessibility-bar { display: none; }
+        }
+    </style>
+
+    <!-- 2. Menú de Accesibilidad (HTML) -->
+    <div class="accessibility-bar" id="accessibilityBar">
+        <!-- Fuente Dislexia -->
+        <button class="access-btn" id="btn-dyslexia" title="Modo Dislexia (Fuente de Lectura Fácil)">
+            <i class="bi bi-type"></i>
+        </button>
+        
+        <div class="toolbar-divider"></div>
+
+        <!-- Tamaño de Letra -->
+        <button class="access-btn" id="btn-decrease-font" title="Disminuir Letra">
+            <i class="bi bi-dash-lg"></i>
+        </button>
+        <span style="font-size: 1rem; font-weight: bold; color:#555; padding: 0 5px;">Tt</span>
+        <button class="access-btn" id="btn-increase-font" title="Aumentar Letra">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+    </div>
+
+    <!-- Notificación Toast -->
+    <div id="toast" class="toast-notification">
+        <i class="bi bi-info-circle-fill" style="color: #4ade80;"></i>
+        <span id="toast-message">Acción completada</span>
+    </div>
+
+    <!-- Modal de Confirmación Custom -->
+    <div id="modalConfirmOverlay" class="modal-overlay">
+        <div class="confirm-box">
+            <div class="confirm-icon">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+            <div class="confirm-title">¿Estás seguro?</div>
+            <div id="confirmMessage" class="confirm-text">Esta acción no se puede deshacer.</div>
+            <div class="confirm-buttons">
+                <button class="btn-confirm btn-no" onclick="closeConfirm()">Cancelar</button>
+                <button id="btnConfirmYes" class="btn-confirm btn-yes">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Lógica JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Iniciando herramientas de accesibilidad..."); // Debug
+
+        // --- B. FUENTE DE DISLEXIA ---
+        const btnDyslexia = document.getElementById('btn-dyslexia');
+        let isDyslexiaMode = false;
+
+        if(btnDyslexia) {
+            btnDyslexia.addEventListener('click', () => {
+                isDyslexiaMode = !isDyslexiaMode;
+                document.body.classList.toggle('dyslexia-mode');
+                btnDyslexia.classList.toggle('active');
+                
+                const status = isDyslexiaMode ? "ACTIVADA" : "DESACTIVADA";
+                showToast(`Fuente Dislexia: ${status}`);
+            });
+        }
+
+        // --- C. TAMAÑO DE LETRA DINÁMICO ---
+        const btnIncrease = document.getElementById('btn-increase-font');
+        const btnDecrease = document.getElementById('btn-decrease-font');
+        let currentFontSize = 100; // Porcentaje base
+
+        function updateFontSize() {
+            // Aplicamos al HTML para que afecte em/rem
+            document.documentElement.style.fontSize = currentFontSize + "%";
+            // Backup para body
+            document.body.style.fontSize = (currentFontSize/100) + "rem";
+        }
+
+        if(btnIncrease) {
+            btnIncrease.addEventListener('click', () => {
+                if (currentFontSize < 150) {
+                    currentFontSize += 10;
+                    updateFontSize();
+                    showToast(`Tamaño letra: ${currentFontSize}%`);
+                } else {
+                    showToast("Tamaño máximo alcanzado");
+                }
+            });
+        }
+
+        if(btnDecrease) {
+            btnDecrease.addEventListener('click', () => {
+                if (currentFontSize > 70) {
+                    currentFontSize -= 10;
+                    updateFontSize();
+                    showToast(`Tamaño letra: ${currentFontSize}%`);
+                } else {
+                    showToast("Tamaño mínimo alcanzado", "error");
+                }
+            });
+        }
+    });
+
+    /**
+     * FUNCIÓN HELPER: showToast
+     * Muestra notificaciones flotantes elegantes
+     * @param {string} msg - El mensaje
+     * @param {string} type - 'success' | 'error'
+     */
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        const msgSpan = document.getElementById('toast-message');
+        const toastIcon = toast ? toast.querySelector('i') : null;
+
+        if(toast && msgSpan) {
+            msgSpan.textContent = msg;
+            
+            // Estilos según tipo
+            if(type === 'error') {
+                toast.style.background = '#dc3545';
+                if(toastIcon) {
+                    toastIcon.className = 'bi bi-exclamation-triangle-fill';
+                    toastIcon.style.color = 'white';
+                }
+            } else {
+                toast.style.background = '#333';
+                if(toastIcon) {
+                    toastIcon.className = 'bi bi-check-circle-fill';
+                    toastIcon.style.color = '#4ade80';
+                }
+            }
+
+            toast.classList.add('show');
+            
+            if(toast.timeoutId) clearTimeout(toast.timeoutId);
+            
+            toast.timeoutId = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        } else {
+            // Fallback
+            console.log(type.toUpperCase() + ": " + msg);
+        }
+    }
+
+    /**
+     * FUNCIÓN HELPER: showConfirm
+     * Muestra modal de confirmación
+     * @param {string} message - Mensaje a mostrar
+     * @param {function} onConfirmCallback - Función a ejecutar si confirma
+     */
+    function showConfirm(message, onConfirmCallback) {
+        const overlay = document.getElementById('modalConfirmOverlay');
+        const msgDiv = document.getElementById('confirmMessage');
+        const btnYes = document.getElementById('btnConfirmYes');
+        
+        if(overlay && msgDiv && btnYes) {
+            msgDiv.textContent = message;
+            
+            // Limpiamos eventos anteriores clonando el botón
+            const newBtn = btnYes.cloneNode(true);
+            btnYes.parentNode.replaceChild(newBtn, btnYes);
+            
+            newBtn.addEventListener('click', function() {
+                closeConfirm();
+                onConfirmCallback();
+            });
+            
+            overlay.classList.add('show');
+        } else {
+            // Fallback si algo falla
+            if(confirm(message)) {
+                onConfirmCallback();
+            }
+        }
+    }
+
+    function closeConfirm() {
+        const overlay = document.getElementById('modalConfirmOverlay');
+        if(overlay) overlay.classList.remove('show');
+    }
+    </script>
 </body>
-<!-- Cerramos body -->
+<!-- Cerramos body (correctamente esta vez) -->
 </html>
-<!-- Cerramos html -->

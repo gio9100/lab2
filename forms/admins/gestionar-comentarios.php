@@ -60,17 +60,25 @@ $comentarios = obtenerTodosComentarios($conn);
 <body class="admin-page">
 
     <!-- Header -->
+    <!-- Header -->
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explora</h1><span></span>
-                </a>
-                
+
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+
+                    <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
+                    </a>
+                </div>
+
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
                         <a href="logout-admin.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
@@ -84,23 +92,9 @@ $comentarios = obtenerTodosComentarios($conn);
             <div class="row">
                 
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4">
-                    <div class="sidebar-nav">
-                        <div class="list-group">
-                            <a href="../../pagina-principal.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-house-door me-2"></i>Página Principal
-                            </a>
-                            <a href="index-admin.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>Panel Principal
-                            </a>
-                            <a href="gestionar-reportes.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-flag me-2"></i>Reportes
-                            </a>
-                            <a href="gestionar-comentarios.php" class="list-group-item list-group-item-action active">
-                                <i class="bi bi-chat-square-text me-2"></i>Comentarios
-                            </a>
-                        </div>
-                    </div>
+                <!-- Sidebar -->
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                    <?php include 'sidebar-admin.php'; ?>
                 </div>
 
                 <!-- Contenido Derecho -->
@@ -139,7 +133,11 @@ $comentarios = obtenerTodosComentarios($conn);
                                                 <td><?= date('d/m/Y H:i', strtotime($com['fecha_creacion'])) ?></td>
                                                 <td><?= htmlspecialchars($com['usuario_nombre']) ?></td>
                                                 <td><?= htmlspecialchars($com['publicacion_titulo']) ?></td>
-                                                <td><?= htmlspecialchars(substr($com['contenido'], 0, 50)) ?>...</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="verComentarioCompleto('<?= htmlspecialchars(addslashes($com['contenido'])) ?>', '<?= htmlspecialchars($com['usuario_nombre']) ?>')">
+                                                        <i class="bi bi-eye"></i> Ver comentario
+                                                    </button>
+                                                </td>
                                                 <td>
                                                     <div class="action-buttons">
                                                         <a href="../../ver-publicacion.php?id=<?= $com['publicacion_id'] ?>" target="_blank" class="btn btn-info btn-sm" title="Ver Publicación">
@@ -167,9 +165,37 @@ $comentarios = obtenerTodosComentarios($conn);
         </div>
     </main>
 
+    <!-- Modal para ver comentario completo -->
+    <div class="modal fade" id="modalComentario" tabindex="-1" aria-labelledby="modalComentarioLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalComentarioLabel">
+                        <i class="bi bi-chat-dots me-2"></i>Comentario Completo
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <strong class="text-muted">Usuario:</strong>
+                        <p id="modalUsuarioNombre" class="mb-0"></p>
+                    </div>
+                    <div>
+                        <strong class="text-muted">Contenido:</strong>
+                        <p id="modalComentarioContenido" class="mt-2" style="white-space: pre-wrap;"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
+    <script src="../../assets/js/main.js"></script>
     <script>
         // Inicializar AOS
         AOS.init();
@@ -178,6 +204,14 @@ $comentarios = obtenerTodosComentarios($conn);
         document.querySelectorAll('.close-btn').forEach(btn => {
             btn.addEventListener('click', e => e.target.parentElement.style.display = 'none');
         });
+        
+        // Función para mostrar comentario completo en modal
+        window.verComentarioCompleto = function(contenido, usuario) {
+            document.getElementById('modalUsuarioNombre').textContent = usuario;
+            document.getElementById('modalComentarioContenido').textContent = contenido;
+            var modal = new bootstrap.Modal(document.getElementById('modalComentario'));
+            modal.show();
+        };
     </script>
 </body>
 </html>

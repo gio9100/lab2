@@ -1,0 +1,318 @@
+/* ====================================================================
+   SISTEMA DE BADGES - ESTILOS
+   ==================================================================== */
+
+/* Contenedor principal de badges */
+.badges-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Título de sección */
+.badges-header {
+    display: flex;
+    /* Flexbox = alinear horizontal */
+    justify-content: space-between;
+    /* Espacio entre elementos */
+    align-items: center;
+    /* Centrar verticalmente */
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.badges-header h3 {
+    margin: 0;
+    color: #495057;
+    font-size: 1.3rem;
+}
+
+/* Contador de puntos y nivel */
+.puntos-nivel {
+    display: flex;
+    gap: 15px;
+    /* Espacio entre items */
+}
+
+.nivel-badge,
+.puntos-badge {
+    background: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nivel-badge {
+    background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%);
+    color: white;
+}
+
+.puntos-badge {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: white;
+}
+
+/* Grid de badges */
+.badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    /* Auto ajuste responsive */
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Tarjeta individual de badge */
+.badge-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    /* Transición suave */
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    /* Para posicionar elementos absolutos */
+    overflow: hidden;
+    /* Ocultar desbordamiento */
+}
+
+/* Hover effect */
+.badge-card:hover {
+    transform: translateY(-5px);
+    /* Levantar al pasar mouse */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Badge obtenido */
+.badge-card.obtenido {
+    border-color: var(--badge-color, #7390A0);
+    /* Variable dinámica de color */
+}
+
+/* Badge bloqueado (no obtenido) */
+.badge-card.bloqueado {
+    opacity: 0.4;
+    /* Semi-transparente */
+    filter: grayscale(100%);
+    /* Escala de grises */
+}
+
+.badge-card.bloqueado:hover {
+    opacity: 0.6;
+    transform: none;
+    /* Sin efecto de elevación */
+}
+
+/* Icono del badge */
+.badge-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Nombre del badge */
+.badge-nombre {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+/* Puntos del badge */
+.badge-puntos {
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Descripción (tooltip) */
+.badge-descripcion {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 8px;
+    display: none;
+    /* Oculto por defecto */
+}
+
+.badge-card:hover .badge-descripcion {
+    display: block;
+    /* Mostrar al hover */
+}
+
+/* Badge de rareza */
+.rareza-tag {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    /* Mayúsculas */
+}
+
+.rareza-comun {
+    background: #6c757d;
+    color: white;
+}
+
+.rareza-raro {
+    background: #0dcaf0;
+    color: white;
+}
+
+.rareza-epico {
+    background: #6f42c1;
+    color: white;
+}
+
+.rareza-legendario {
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+    color: white;
+}
+
+/* Badge nuevo (notificación) */
+.badge-nuevo {
+    animation: pulse 1.5s infinite;
+    /* Animación infinita */
+}
+
+/* Animación pulse */
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Badge recién obtenido (glow) */
+.badge-glow {
+    box-shadow: 0 0 20px rgba(115, 144, 160, 0.6);
+    animation: glow 2s ease-in-out;
+    /* Animación una vez */
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(115, 144, 160, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(115, 144, 160, 0.8);
+    }
+}
+
+/* Barra de progreso hacia siguiente nivel */
+.progreso-nivel {
+    margin-top: 15px;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.progreso-nivel h4 {
+    font-size: 0.9rem;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.progreso-bar-container {
+    background: #e9ecef;
+    border-radius: 20px;
+    height: 25px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progreso-bar {
+    background: linear-gradient(90deg, #7390A0 0%, #5a7080 100%);
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.5s ease;
+    /* Transición suave al crecer */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.progreso-texto {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Notificación de badge nuevo */
+.badge-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    /* Encima de todo */
+    animation: slideIn 0.5s ease-out;
+    /* Animación de entrada */
+    max-width: 300px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        /* Desde fuera de la pantalla */
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.badge-notification .icon {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Responsive: móviles */
+@media (max-width: 768px) {
+    .badges-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columnas en móvil */
+    }
+
+    .badges-header {
+        flex-direction: column;
+        /* Vertical en móvil */
+        text-align: center;
+    }
+
+    .puntos-nivel {
+        margin-top: 10px;
+    }
+
+    .badge-notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}

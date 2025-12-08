@@ -59,6 +59,14 @@ function loginAdmin($email, $password, $conn) {
     return false;
 }
 
+// Requiere que el usuario esté autenticado como admin
+function requerirAdmin() {
+    if (!isset($_SESSION['admin_id'])) {
+        header("Location: login-admin.php");
+        exit;
+    }
+}
+
 // Crea un nuevo administrador en la base de datos
 function registrarAdmin($datos, $conn) {
     $query = "INSERT INTO admins (nombre, email, password, nivel) VALUES (?, ?, ?, ?)";
@@ -264,52 +272,56 @@ function activarPublicador($id, $conn) {
     return $stmt->execute();
 }
 
-// Verifica si el usuario está logueado como admin
-function requerirAdmin() {
-    if (!isset($_SESSION['admin_id'])) {
-        header("Location: login-admin.php");
-        exit;
-    }
-}
-
 // Obtiene todos los reportes con filtros opcionales
 function obtenerTodosReportes($tipo = null, $estado = null, $conn) {
-    $query = "SELECT r.*, 
-              u.nombre as usuario_nombre,
-              c.contenido as comentario_contenido,
-              uc.nombre as comentario_autor_nombre
-              FROM reportes r
-              LEFT JOIN usuarios u ON r.usuario_id = u.id
-              LEFT JOIN comentarios c ON r.tipo = 'comentario' AND r.referencia_id = c.id
-              LEFT JOIN usuarios uc ON c.usuario_id = uc.id
-              WHERE 1=1";
-    
-    $params = [];
-    $types = "";
-    
-    if ($tipo) {
-        $query .= " AND r.tipo = ?";
-        $params[] = $tipo;
-        $types .= "s";
+    try {
+        $query = "SELECT r.*, 
+                  u.nombre as reportante_nombre,
+                  u.correo as reportante_email,
+                  p.titulo as publicacion_titulo,
+                  c.contenido as comentario_contenido,
+                  CASE 
+                    WHEN r.tipo = 'publicacion' THEN p.titulo
+                    WHEN r.tipo = 'comentario' THEN CONCAT('Comentario: ', SUBSTRING(c.contenido, 1, 50), '...')
+                    ELSE 'Desconocido'
+                  END as contenido_reportado
+                  FROM reportes r
+                  LEFT JOIN usuarios u ON r.usuario_id = u.id
+                  LEFT JOIN publicaciones p ON r.tipo = 'publicacion' AND r.referencia_id = p.id
+                  LEFT JOIN comentarios c ON r.tipo = 'comentario' AND r.referencia_id = c.id
+                  WHERE 1=1";
+        
+        $params = [];
+        $types = "";
+        
+        if ($tipo) {
+            $query .= " AND r.tipo = ?";
+            $params[] = $tipo;
+            $types .= "s";
+        }
+        
+        if ($estado) {
+            $query .= " AND r.estado = ?";
+            $params[] = $estado;
+            $types .= "s";
+        }
+        
+        $query .= " ORDER BY r.fecha_creacion DESC";
+        
+        $stmt = $conn->prepare($query);
+        
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    } catch (Exception $e) {
+        // En caso de error, devolver array vacío para que la página pueda cargar
+        error_log("Error en obtenerTodosReportes: " . $e->getMessage());
+        return [];
     }
-    
-    if ($estado) {
-        $query .= " AND r.estado = ?";
-        $params[] = $estado;
-        $types .= "s";
-    }
-    
-    $query .= " ORDER BY r.fecha_creacion DESC";
-    
-    $stmt = $conn->prepare($query);
-    
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
-    
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_all(MYSQLI_ASSOC);
 }
 
 // Procesa un reporte (aprobar o rechazar)
@@ -479,6 +491,26 @@ function eliminarUsuario($id, $conn) {
     $query = "DELETE FROM usuarios WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
+
+// Obtiene todos los comentarios para administración
+function obtenerTodosComentarios($conn) {
+    $query = "SELECT c.id, c.contenido, c.fecha_creacion, c.usuario_id, c.publicacion_id, 
+              u.nombre as usuario_nombre, 
+              p.titulo as publicacion_titulo 
+              FROM comentarios c 
+              JOIN usuarios u ON c.usuario_id = u.id 
+              JOIN publicaciones p ON c.publicacion_id = p.id 
+              ORDER BY c.fecha_creacion DESC";
+    $result = $conn->query($query);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+// Elimina un comentario desde admin
+function eliminarComentarioAdmin($id, $conn) {
+    $query = "DELETE FROM comentarios WHERE id = ?";
+    $stmt = $conn->prepare($query);
     return $stmt->execute();
 }
 ?>

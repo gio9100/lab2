@@ -42,6 +42,9 @@ function isActive($link_page, $current_page) {
             <span class="badge bg-danger float-end"><?= $stats_reportes['pendientes'] ?></span>
             <?php endif; ?>
         </a>
+        <a href="<?= $path_prefix ?>gestionar-comentarios.php" class="list-group-item list-group-item-action <?= isActive('gestionar-comentarios.php', $current_page) ?>">
+            <i class="bi bi-chat-dots me-2"></i>Gestionar Comentarios
+        </a>
         <a href="<?= $path_prefix ?>gestionar_publicadores.php" class="list-group-item list-group-item-action <?= isActive('gestionar_publicadores.php', $current_page) ?>">
             <i class="bi bi-people me-2"></i>Gestionar Publicadores
         </a>
@@ -53,6 +56,9 @@ function isActive($link_page, $current_page) {
         </a>
         <a href="<?= $path_prefix ?>categorias/listar_categorias.php" class="list-group-item list-group-item-action <?= isActive('listar_categorias.php', $current_page) ?>">
             <i class="bi bi-tags me-2"></i>Categorías
+        </a>
+        <a href="<?= $path_prefix ?>gestionar_accesos.php" class="list-group-item list-group-item-action <?= isActive('gestionar_accesos.php', $current_page) ?>">
+            <i class="bi bi-building me-2"></i>Correos Institucionales
         </a>
         <a href="<?= $path_prefix ?>../../mensajes/chat.php?as=admin" class="list-group-item list-group-item-action">
             <i class="bi bi-chat-left-text me-2"></i>

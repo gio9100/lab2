@@ -52,11 +52,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </a>
             <?php endif; ?>
 
-            <!-- Link Publicador -->
+             <!-- Link Publicador -->
             <a href="<?= $base_path ?>forms/publicadores/inicio-sesion-publicadores.php" class="list-group-item list-group-item-action">
                 <i class="bi bi-pencil-square me-2"></i>¿Eres publicador?
             </a>
             
+             <!-- Legal Links -->
+             <div class="mt-2">
+                <a href="<?= $base_path ?>terminos.php" class="list-group-item list-group-item-action small">
+                    <i class="bi bi-file-text me-2"></i>Términos y Condiciones
+                </a>
+                <a href="<?= $base_path ?>privacidad.php" class="list-group-item list-group-item-action small">
+                    <i class="bi bi-shield-lock me-2"></i>Política de Privacidad
+                </a>
+            </div>
+
              <!-- Social Links (Mobile Only style) -->
             <div class="mt-4 px-2">
                 <h6 class="text-muted text-uppercase small fw-bold mb-3">Síguenos</h6>

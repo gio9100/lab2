@@ -34,23 +34,58 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         $admin = loginAdmin($email, $password, $conn);
         
         if ($admin) {
-            // Guardar datos en sesión
-            $_SESSION["admin_id"] = $admin["id"];
-            $_SESSION["admin_nombre"] = $admin["nombre"];
-            $_SESSION["admin_email"] = $admin["email"];
-            $_SESSION["admin_nivel"] = $admin["nivel"];
+            // Traer funciones de 2FA
+            require_once '../2fa_functions.php';
             
-            $mensaje = "🧪 Bienvenido al Panel de Administración, " . $admin["nombre"] . "!";
-            $exito = true;
+            // Verificar si tiene 2FA activado
+            $stmt_2fa = $conn->prepare("SELECT two_factor_enabled FROM admins WHERE id = ?");
+            $stmt_2fa->bind_param("i", $admin["id"]);
+            $stmt_2fa->execute();
+            $result_2fa = $stmt_2fa->get_result();
+            $tiene2FA = false;
             
-            // Redirección automática
-            echo "
-            <script>
-                setTimeout(function() {
-                    window.location.href = 'index-admin.php';
-                }, 2000);
-            </script>
-            ";
+            if ($result_2fa && $result_2fa->num_rows > 0) {
+                $row_2fa = $result_2fa->fetch_assoc();
+                $tiene2FA = ($row_2fa['two_factor_enabled'] == 1);
+            }
+            
+            if ($tiene2FA) {
+                // Enviar código 2FA
+                $codigo = generarCodigo2FA();
+                guardarCodigo2FA($conn, 'admin', $admin['id'], $codigo);
+                enviarCodigo2FA($admin['email'], $admin['nombre'], $codigo);
+                
+                // Guardar para verificación
+                $_SESSION['pending_2fa'] = [
+                    'type' => 'admin',
+                    'id' => $admin['id'],
+                    'email' => $admin['email'],
+                    'nombre' => $admin['nombre']
+                ];
+                
+                // Redirigir a verificación
+                header('Location: ../verify_2fa.php');
+                exit();
+                
+            } else {
+                // Login normal sin 2FA
+                $_SESSION["admin_id"] = $admin["id"];
+                $_SESSION["admin_nombre"] = $admin["nombre"];
+                $_SESSION["admin_email"] = $admin["email"];
+                $_SESSION["admin_nivel"] = $admin["nivel"];
+                
+                $mensaje = "🧪 Bienvenido al Panel de Administración, " . $admin["nombre"] . "!";
+                $exito = true;
+                
+                // Redirección automática
+                echo "
+                <script>
+                    setTimeout(function() {
+                        window.location.href = 'index-admin.php';
+                    }, 2000);
+                </script>
+                ";
+            }
         } else {
             $mensaje = "⚠️ Email o contraseña incorrectos";
         }

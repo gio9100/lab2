@@ -73,7 +73,7 @@ body {
 }
 
 /* Logo del lab */
-.logo-lab img {
+.logo-Lab img {
     width: 250px;
     max-width: 100%;
     /* Responsive */
@@ -84,7 +84,7 @@ body {
 }
 
 @media (max-width: 768px) {
-    .logo-lab img {
+    .logo-Lab img {
         width: 60%;
         /* Más pequeña en celular */
         max-width: 150px;
@@ -98,7 +98,7 @@ body {
 }
 
 /* Título del formulario */
-.logo-lab h1 {
+.logo-Lab h1 {
     font-weight: 700;
     /* Texto bien grueso */
     color: #7390A0;

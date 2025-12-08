@@ -47,7 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // Verificamos si la contraseña que escribió coincide con la guardada
                 // password_verify compara la contraseña en texto plano con el hash
                 
-                // Si la contraseña es correcta, establecemos la sesión
+                // 2FA DESHABILITADO PARA USUARIOS NORMALES
+                // Solo admins y publicadores usan 2FA
+                
+                // Login normal sin 2FA para usuarios
                 $_SESSION["usuario_id"] = $usuario["id"];
                 // Guardamos el ID del usuario en la sesión
                 $_SESSION["usuario_nombre"] = $usuario["nombre"];

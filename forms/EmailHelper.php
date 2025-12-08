@@ -25,7 +25,7 @@ class EmailHelper {
         $mail = new PHPMailer(true);
 
         try {
-            // Configuración del servidor Gmail
+            // Configuración GMAIL 
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
@@ -39,6 +39,15 @@ class EmailHelper {
             $mail->addAddress($destinatario);
 
             // Adjuntar logo como imagen embebida (CID)
+            // Intentamos buscar el logo en varias rutas posibles
+            $logoPath = __DIR__ . '/../assets/img/logo/logobrayan2.ico'; 
+            
+            if (file_exists($logoPath)) {
+                $mail->addEmbeddedImage($logoPath, 'logo_lab');
+            } else {
+                // Fallback si no encuentra el archivo local
+                error_log("No se encontró el logo en: " . $logoPath);
+            }
             // Intentamos buscar un PNG o JPG primero, si no, usamos el ICO
             $logoPath = __DIR__ . '/../assets/img/logo/logo.png'; // Idealmente PNG
             if (!file_exists($logoPath)) {
@@ -167,8 +176,9 @@ class EmailHelper {
         $colorTexto = '#212529';
         $anio = date('Y');
 
-        // Logo externo optimizado (PostImg)
-        $logoUrl = 'https://i.postimg.cc/4dHvYPSG/logobrayan-removebg-preview.png';
+        // Logo: Usamos el CID (Content-ID) de la imagen embebida en PHPMailer
+        // Esto asegura que se vea en Outlook y Gmail sin bloqueo de imágenes externas
+        $logoUrl = 'cid:logo_lab';
 
         // Sanitize title to prevent HTML breakage
         $tituloSeguro = htmlspecialchars($titulo);

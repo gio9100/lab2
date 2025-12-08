@@ -42,32 +42,67 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($publicador) {
             // Si el login fue exitoso
             
-            // Guardamos datos en la sesión de publicador
-            $_SESSION["publicador_id"] = $publicador["id"];
-            $_SESSION["publicador_nombre"] = $publicador["nombre"];
-            $_SESSION["publicador_email"] = $publicador["email"];
-            $_SESSION["publicador_especialidad"] = $publicador["especialidad"];
-            // Ahora estos datos están disponibles en todas las páginas
+            // Traer funciones de 2FA
+            require_once '../2fa_functions.php';
             
-            // También guardamos en la sesión principal
-            $_SESSION["es_publicador"] = true;
-            // Variable booleana que indica que es un publicador
-            $_SESSION["publicador_data"] = $publicador;
-            // Guardamos todos los datos del publicador
+            // Verificar si tiene 2FA activado
+            $stmt_2fa = $conn->prepare("SELECT two_factor_enabled FROM publicadores WHERE id = ?");
+            $stmt_2fa->bind_param("i", $publicador["id"]);
+            $stmt_2fa->execute();
+            $result_2fa = $stmt_2fa->get_result();
+            $tiene2FA = false;
             
-            $mensaje = "🧪 Bienvenido al Panel de Publicadores, " . $publicador["nombre"] . "!";
-            $exito = true;
+            if ($result_2fa && $result_2fa->num_rows > 0) {
+                $row_2fa = $result_2fa->fetch_assoc();
+                $tiene2FA = ($row_2fa['two_factor_enabled'] == 1);
+            }
             
-            // Redirección con JavaScript
-            echo "
-            <script>
-                setTimeout(function() {
-                    window.location.href = 'index-publicadores.php';
-                }, 2000);
-            </script>
-            ";
-            // setTimeout() espera 2000 milisegundos (2 segundos)
-            // Luego redirige al panel de publicadores
+            if ($tiene2FA) {
+                // Enviar código 2FA
+                $codigo = generarCodigo2FA();
+                guardarCodigo2FA($conn, 'publicador', $publicador['id'], $codigo);
+                enviarCodigo2FA($publicador['email'], $publicador['nombre'], $codigo);
+                
+                // Guardar para verificación
+                $_SESSION['pending_2fa'] = [
+                    'type' => 'publicador',
+                    'id' => $publicador['id'],
+                    'email' => $publicador['email'],
+                    'nombre' => $publicador['nombre']
+                ];
+                
+                // Redirigir a verificación
+                header('Location: ../verify_2fa.php');
+                exit();
+                
+            } else {
+                // Login normal sin 2FA
+                $_SESSION["publicador_id"] = $publicador["id"];
+                $_SESSION["publicador_nombre"] = $publicador["nombre"];
+                $_SESSION["publicador_email"] = $publicador["email"];
+                $_SESSION["publicador_especialidad"] = $publicador["especialidad"];
+                // Ahora estos datos están disponibles en todas las páginas
+                
+                // También guardamos en la sesión principal
+                $_SESSION["es_publicador"] = true;
+                // Variable booleana que indica que es un publicador
+                $_SESSION["publicador_data"] = $publicador;
+                // Guardamos todos los datos del publicador
+                
+                $mensaje = "🧪 Bienvenido al Panel de Publicadores, " . $publicador["nombre"] . "!";
+                $exito = true;
+                
+                // Redirección con JavaScript
+                echo "
+                <script>
+                    setTimeout(function() {
+                        window.location.href = 'index-publicadores.php';
+                    }, 2000);
+                </script>
+                ";
+                // setTimeout() espera 2000 milisegundos (2 segundos)
+                // Luego redirige al panel de publicadores
+            }
         } else {
             // Si el login falló
             $mensaje = "⚠️ Correo o contraseña incorrectos";

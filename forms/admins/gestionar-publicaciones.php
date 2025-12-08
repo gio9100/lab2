@@ -228,22 +228,16 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-<<<<<<< HEAD
                 <div class="d-flex align-items-center">
                     <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebar-toggle">
                         <i class="bi bi-list"></i>
                     </button>
-                    <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                        <h1 class="sitename">Lab-Explorer</h1><span></span>
-                    </a>
-                </div>
-=======
-                <a href="../../index.php" class="logo d-flex align-items-end">
+                
+                <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
                     <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
                     <h1 class="sitename">Lab-Explora</h1><span></span>
                 </a>
->>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
+                </div>
                 <div class="d-flex align-items-center">
                     <div class="social-links">
                         <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>

@@ -36,7 +36,7 @@ function enviarCorreoAprobacion($email_publicador, $nombre_publicador) {
         $asunto,
         $mensaje_html,
         '🚀 Iniciar Sesión Ahora',
-        'http://localhost/lab/forms/publicadores/inicio-sesion-publicadores.php'
+        'http://localhost/lab2/forms/publicadores/inicio-sesion-publicadores.php'
     );
 }
 
@@ -107,7 +107,7 @@ function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicado
             $asunto,
             $mensaje_html,
             'Ver Panel de Administración',
-            'http://localhost/lab/forms/admins/index-admin.php'
+            'http://localhost/lab2/forms/admins/index-admin.php'
         );
         
         if ($exito) {

@@ -12,13 +12,13 @@ require_once '../admins/enviar_correo_publicador.php';
 $mensaje = "";
 $exito = false;
 
-// Lista de dominios de correo permitidos
-$dominios_validos = [
-    'gmail.com',
-    'outlook.com',
-    'outlook.es',
-];
-// Array con los dominios que aceptamos
+// Incluimos las validaciones centralizadas
+require_once '../validaciones.php';
+// Nota: usamos ../ porque estamos en una subcarpeta
+
+// Recuperamos dominios permitidos desde la BD para el frontend
+$dominios_extra_db = obtenerDominiosExtra($conn);
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Si el formulario se envió
@@ -52,18 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     else {
         
-        $partes_correo = explode('@', $correo);
-        // explode() divide el correo en dos partes
-        // Ejemplo: "ana@gmail.com" se vuelve ["ana", "gmail.com"]
-        $dominio = $partes_correo[1] ?? '';
-        // Tomamos la segunda parte (el dominio)
-
-        if(!in_array($dominio, $dominios_validos)) {
-            // in_array() busca si el dominio está en la lista
-            $dominios_lista = implode(', ', array_slice($dominios_validos, 0, 5));
-            // array_slice() toma los primeros 5 elementos
-            // implode() los une con comas
-            $mensaje = "Solo se permiten correos de dominio verificados como: " . $dominios_lista;
+        // Validamos usando la función centralizada
+        // Pasamos 'publicador' como tipo para verificar permisos específicos
+        if(!esCorreoPermitido($correo, 'publicador', $conn)) {
+            // Si el correo no es válido/autorizado
+            $mensaje = "Este correo institucional no está autorizado para registro de publicadores.";
         }
         elseif (strlen($contrasena) < 6) {
             // strlen() cuenta los caracteres
@@ -131,6 +124,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     <link rel="stylesheet" href="../../assets/css/registro.css">
     <!-- Cargamos el CSS -->
+    <style>
+        .mensaje-validacion {
+            font-size: 0.95rem;
+            margin-top: 3px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .mensaje-validacion.error {
+            color: #dc3545;
+        }
+        .mensaje-validacion.success {
+            color: #28a745;
+        }
+        input.error {
+            border-color: #dc3545 !important;
+        }
+        input.success {
+            border-color: #28a745 !important;
+        }
+        
+        /* FIX LOGO DIRECTO */
+        .logo-Lab img {
+            width: 250px !important;
+            max-width: 100% !important;
+            height: auto !important;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        /* FIX DE SCROLL Y CORTE EN PANTALLAS PEQUEÑAS */
+        body {
+            align-items: flex-start !important; /* Evita que se corte arriba */
+            padding-top: 40px !important;
+            padding-bottom: 40px !important;
+            height: auto !important;
+            min-height: 100vh;
+        }
+    </style>
 </head>
 <!-- Cerramos head -->
 <body>
@@ -283,107 +314,109 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- JavaScript para validación en tiempo real -->
     <script>
     // Abrimos JavaScript
-        // Lista de dominios válidos (igual que en PHP)
+        // Lista de dominios válidos incluyendo DB
+    // Lista de dominios válidos incluyendo DB
         const dominiosValidos = [
             'gmail.com',
             'outlook.com',
             'outlook.es',
+            <?php 
+            foreach($dominios_extra_db as $d) {
+                echo "'$d',";
+            }
+            ?>
         ];
-        // Array de dominios permitidos
+
+        // Lista de correos específicos válidos (Excepciones logradas con la nueva función)
+        const correosValidos = [
+            <?php 
+            $correos_extra_db = obtenerCorreosExtra($conn);
+            foreach($correos_extra_db as $c) {
+                echo "'$c',";
+            }
+            ?>
+        ];
 
         const correoInput = document.getElementById('correo');
-        // Obtenemos el input de correo
         const mensajeCorreo = document.getElementById('mensaje-correo');
-        // Obtenemos el div de mensajes
 
         // Validación del correo en tiempo real
-        correoInput.addEventListener('input', function() {
-            // addEventListener() ejecuta una función cada vez que el usuario escribe
-            // 'input' es el evento que se dispara al escribir
-            
-            const val = this.value.trim().toLowerCase();
-            // Obtenemos el valor, quitamos espacios y convertimos a minúsculas
-            
-            if (!val) {
-                // Si está vacío
-                correoInput.classList.remove('error', 'success');
-                // classList.remove() quita clases CSS
-                mensajeCorreo.style.display = 'none';
-                // Ocultamos el mensaje
-                return;
-                // Salimos de la función
-            }
-
-            const partesCorreo = val.split('@');
-            // split() divide el texto por el @
-            const dominio = partesCorreo[1] || '';
-            // Tomamos la segunda parte
-            
-            if (dominiosValidos.includes(dominio)) {
-                // includes() busca si el dominio está en el array
-                // Es como in_array() de PHP pero en JavaScript
+        if (correoInput) {
+            correoInput.addEventListener('input', function() {
+                const val = this.value.trim().toLowerCase();
                 
-                // Correo válido
-                correoInput.classList.remove('error');
-                correoInput.classList.add('success');
-                // classList.add() agrega una clase CSS
-                mensajeCorreo.textContent = '✓ Correo válido';
-                // textContent cambia el texto del elemento
-                mensajeCorreo.style.color = 'green';
-                // Cambiamos el color a verde
-                mensajeCorreo.style.display = 'block';
-                // Mostramos el mensaje
-            } else {
-                // Correo no válido
-                correoInput.classList.remove('success');
-                correoInput.classList.add('error');
-                mensajeCorreo.textContent = '✗ Dominio no permitido';
-                mensajeCorreo.style.color = 'red';
-                // Color rojo
-                mensajeCorreo.style.display = 'block';
-            }
-        });
-        // Cerramos addEventListener
+                if (!val) {
+                    this.classList.remove('error', 'success');
+                    mensajeCorreo.textContent = '';
+                    mensajeCorreo.className = 'mensaje-validacion';
+                    return;
+                }
+            
+                // Verificar formato básico
+                if (!val.includes('@')) {
+                    this.classList.add('error');
+                    this.classList.remove('success');
+                    mensajeCorreo.textContent = '✗ Correo incompleto';
+                    mensajeCorreo.className = 'mensaje-validacion error';
+                    return;
+                }
+
+                // 1. CHEQUEO DIRECTO: ¿Es un correo específico permitido?
+                if (correosValidos.includes(val)) {
+                    this.classList.remove('error');
+                    this.classList.add('success');
+                    mensajeCorreo.textContent = '✓ Correo autorizado';
+                    mensajeCorreo.className = 'mensaje-validacion success';
+                    return; 
+                }
+            
+                // 2. Si no es un correo específico, revisamos el dominio
+                const partes = val.split('@');
+                const dominio = partes[1] || '';
+            
+                if (!dominiosValidos.includes(dominio)) {
+                    this.classList.add('error');
+                    this.classList.remove('success');
+                    mensajeCorreo.textContent = '✗ Dominio no permitido';
+                    mensajeCorreo.className = 'mensaje-validacion error';
+                } else {
+                    this.classList.remove('error');
+                    this.classList.add('success');
+                    mensajeCorreo.textContent = '✓ Dominio válido';
+                    mensajeCorreo.className = 'mensaje-validacion success';
+                }
+            });
+        }
 
         const contrasenaInput = document.getElementById('contrasena');
-        // Obtenemos el input de contraseña
         const mensajeContrasena = document.getElementById('mensaje-contrasena');
-        // Obtenemos el div de mensajes
 
         // Validación de contraseña en tiempo real
-        contrasenaInput.addEventListener('input', function() {
-            // Cada vez que el usuario escribe
-            
-            const val = this.value;
-            // Obtenemos el valor
-            
-            if (!val) {
-                // Si está vacío
-                contrasenaInput.classList.remove('error', 'success');
-                mensajeContrasena.style.display = 'none';
-                return;
-            }
-
-            if (val.length >= 6) {
-                // length es la propiedad que nos dice cuántos caracteres tiene
-                // Si tiene 6 o más caracteres
+        if (contrasenaInput) {
+            contrasenaInput.addEventListener('input', function() {
+                const val = this.value;
                 
-                // Contraseña válida
-                contrasenaInput.classList.remove('error');
-                contrasenaInput.classList.add('success');
-                mensajeContrasena.textContent = '✓ Contraseña válida';
-                mensajeContrasena.style.color = 'green';
-                mensajeContrasena.style.display = 'block';
-            } else {
-                // Contraseña muy corta
-                contrasenaInput.classList.remove('success');
-                contrasenaInput.classList.add('error');
-                mensajeContrasena.textContent = '✗ Mínimo 6 caracteres';
-                mensajeContrasena.style.color = 'red';
-                mensajeContrasena.style.display = 'block';
-            }
-        });
-        // Cerramos addEventListener
+                if (!val) {
+                    this.classList.remove('error', 'success');
+                    mensajeContrasena.style.display = 'none';
+                    return;
+                }
+
+                if (val.length >= 6) {
+                    this.classList.remove('error');
+                    this.classList.add('success');
+                    mensajeContrasena.textContent = '✓ Contraseña válida';
+                    mensajeContrasena.style.color = 'green';
+                    mensajeContrasena.style.display = 'block';
+                } else {
+                    this.classList.remove('success');
+                    this.classList.add('error');
+                    mensajeContrasena.textContent = '✗ Mínimo 6 caracteres';
+                    mensajeContrasena.style.color = 'red';
+                    mensajeContrasena.style.display = 'block';
+                }
+            });
+        }
 
         <?php if($exito): ?>
         // Si el registro fue exitoso

@@ -259,10 +259,77 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
             border-top: 1px solid rgba(255,255,255,0.2);
             padding-top: 10px;
         }
-        .no-print {
-            display: none;
+        /* Clase para ocultar elementos al generar PDF */
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+
+        /* ESTILOS PARA LA FIRMA ELECTRÓNICA VISUAL */
+        .signature-box {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(255,255,255,0.3);
+            text-align: center;
+        }
+        .signature-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+        .signature-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.65rem;
+            word-break: break-all;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #e0f7fa;
+            letter-spacing: -0.5px;
+        }
+
+        /* OFFICIAL SEAL */
+        .credential-seal {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border: 3px double rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-15deg);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .credential-seal span {
+            font-size: 0.6em;
+            font-weight: bold;
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            text-transform: uppercase;
+            line-height: 1.2;
+            border-top: 1px solid rgba(255,255,255,0.4);
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            padding: 4px 0;
         }
     </style>
+    <!-- PWA MANIFEST & SW -->
+    <link rel="manifest" href="/lab2/manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/lab2/sw.js')
+            .then(reg => console.log('Service Worker registrado', reg))
+            .catch(err => console.log('Error SW:', err));
+        });
+      }
+    </script>
 </head>
 <body class="publicador-page">
 
@@ -369,6 +436,36 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                                             <i class="bi bi-save me-2"></i>Guardar Cambios
                                         </button>
                                     </form>
+
+                                    <hr class="my-4">
+
+                                    <!-- Cambiar Contraseña -->
+                                    <h6 class="fw-bold mb-3"><i class="bi bi-key me-2"></i>Cambiar Contraseña</h6>
+                                    <form method="POST" action="">
+                                        <input type="hidden" name="cambiar_password" value="1">
+                                        
+                                        <div class="mb-3">
+                                            <label for="password_actual" class="form-label">Contraseña Actual *</label>
+                                            <input type="password" class="form-control" id="password_actual" name="password_actual" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="password_nueva" class="form-label">Nueva Contraseña *</label>
+                                            <input type="password" class="form-control" id="password_nueva" name="password_nueva" 
+                                                   minlength="6" required>
+                                            <small class="text-muted">Mínimo 6 caracteres</small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="password_confirmar" class="form-label">Confirmar *</label>
+                                            <input type="password" class="form-control" id="password_confirmar" name="password_confirmar" 
+                                                   minlength="6" required>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="bi bi-key me-2"></i>Cambiar Contraseña
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -403,7 +500,9 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                             <div class="admin-card mb-4" data-aos="fade-up">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0"><i class="bi bi-person-badge me-2"></i>Credencial</h5>
-                                    <!-- Botón PDF ELIMINADO -->
+                                    <button class="btn btn-outline-danger btn-sm no-print" onclick="descargarCredencial()">
+                                        <i class="bi bi-file-earmark-pdf-fill me-1"></i>Descargar Oficial
+                                    </button>
                                 </div>
                                 <div class="card-body bg-light d-flex justify-content-center">
                                     <div id="credencial-content" class="credential-card w-100">
@@ -412,7 +511,7 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                                             <!-- Logo y Título -->
                                             <div class="d-flex align-items-center justify-content-center mb-2">
                                                 <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo" style="width: 40px; margin-right: 10px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));">
-                                                <h4 style="margin:0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Lab-Explorer</h4>
+                                                <h4 style="margin:0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Lab-Explora</h4>
                                             </div>
                                             <small style="letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem;">Acreditación Oficial</small>
                                         </div>
@@ -434,269 +533,58 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                                         <div class="credential-footer">
                                             <p>Miembro desde: <?= date('d/m/Y', strtotime($publicador['fecha_registro'])) ?></p>
                                             <p>ID: #<?= str_pad($publicador['id'], 4, '0', STR_PAD_LEFT) ?></p>
+
+                                            <div class="mt-2 mb-2 p-2" style="background: rgba(0,0,0,0.1); border-radius: 5px; font-size: 0.7rem; text-align: justify;">
+                                                <strong>ROL: PUBLICADOR</strong><br>
+                                                Esta credencial digital valida la capacidad del usuario para publicar contenido científico en Lab-Explora. La firma electrónica inferior es una cadena única e irrepetible generada criptográficamente, lo que garantiza su autenticidad y evita duplicaciones o falsificaciones de identidad.
+                                            </div>
+
+                                            <!-- FIRMA ELECTRÓNICA VISUAL -->
+                                            <div class="signature-box" style="margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.4); padding-top: 5px;">
+                                                <div class="signature-label" style="font-size: 0.6rem; text-transform: uppercase;">Firma Digital Verificada</div>
+                                                <div class="signature-hash" style="font-family: 'Courier New', monospace; font-size: 0.7rem; background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 4px;">
+                                                    <?php 
+                                                    // Generamos un hash visual único para el publicador
+                                                    $data_to_hash = $publicador['id'] . $publicador['nombre'] . $publicador['email'] . "LAB_EXPLORA_PUB_SECURE_KEY";
+                                                    echo strtoupper(substr(hash('sha256', $data_to_hash), 0, 24)); 
+                                                    ?>
+                                                </div>
+                                            </div>
+                                            <!-- SELLO OFICIAL -->
+                                            <div class="credential-seal">
+                                                <span>Official<br>Certified<br>Member</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="admin-card" data-aos="fade-up" data-aos-delay="100">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">
-                                        <i class="bi bi-info-circle me-2"></i>
-                                        Información de Cuenta
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block mb-1">Estado de la cuenta</small>
-                                        <span class="badge bg-success">Activo</span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block mb-1">Fecha de registro</small>
-                                        <strong><?= date('d/m/Y', strtotime($publicador['fecha_registro'])) ?></strong>
-                                    </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block mb-1">ID de Publicador</small>
-                                        <strong>#<?= $publicador['id'] ?></strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Cambiar Contraseña -->
-                    <div class="row">
-                        <div class="col-lg-8 mb-4">
-                            <div class="admin-card" data-aos="fade-up">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">
-                                        <i class="bi bi-shield-lock me-2"></i>
-                                        Cambiar Contraseña
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <form method="POST" action="">
-                                        <input type="hidden" name="cambiar_password" value="1">
-                                        
-                                        <div class="mb-3">
-                                            <label for="password_actual" class="form-label fw-bold">Contraseña Actual *</label>
-                                            <input type="password" class="form-control" id="password_actual" name="password_actual" required>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="password_nueva" class="form-label fw-bold">Nueva Contraseña *</label>
-                                            <input type="password" class="form-control" id="password_nueva" name="password_nueva" 
-                                                   minlength="6" required>
-                                            <small class="text-muted">Mínimo 6 caracteres</small>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="password_confirmar" class="form-label fw-bold">Confirmar Nueva Contraseña *</label>
-                                            <input type="password" class="form-control" id="password_confirmar" name="password_confirmar" 
-                                                   minlength="6" required>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-warning">
-                                            <i class="bi bi-key me-2"></i>Cambiar Contraseña
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Scroll Top -->
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-    <!-- Vendor JS -->
-    <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/vendor/aos/aos.js"></script>
-
-    <!-- Main JS-->
-    <script src="../../assets/js/main.js"></script>
-
-    <script>
-        // Inicializar AOS
-        AOS.init({
-            duration: 1000,
-            once: true
-        });
-
-        // Cerrar alertas
-        document.querySelectorAll('.close-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                this.parentElement.style.display = 'none';
-            });
-        });
-        // Sidebar Toggle Logic
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarWrapper = document.getElementById('sidebarWrapper');
-        const sidebarClose = document.getElementById('sidebarClose');
-
-        if(sidebarToggle && sidebarWrapper) {
-            // Create overlay
-            const overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-
-            function toggleSidebar() {
-                sidebarWrapper.classList.toggle('active');
-                overlay.classList.toggle('active');
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="especialidad" class="form-label fw-bold">Especialidad</label>
-                                            <input type="text" class="form-control" id="especialidad" name="especialidad" 
-                                                   value="<?= htmlspecialchars($publicador['especialidad'] ?? '') ?>"
-                                                   placeholder="Ej: Biología Molecular, Química Orgánica, etc.">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="telefono" class="form-label fw-bold">Teléfono</label>
-                                            <input type="tel" class="form-control" id="telefono" name="telefono" 
-                                                   value="<?= htmlspecialchars($publicador['telefono'] ?? '') ?>"
-                                                   placeholder="Ej: +52 123 456 7890">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="biografia" class="form-label fw-bold">Biografía</label>
-                                            <textarea class="form-control" id="biografia" name="biografia" rows="4"
-                                                      placeholder="Cuéntanos sobre tu experiencia y áreas de investigación..."><?= htmlspecialchars($publicador['biografia'] ?? '') ?></textarea>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-save me-2"></i>Guardar Cambios
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Información de Cuenta y Credencial -->
-                        <div class="col-lg-5 mb-4">
-                            
-                            <!-- TARJETA PARA SUBIR FOTO (Arriba de la credencial) -->
-                            <div class="admin-card mb-4">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">Foto de Perfil</h5>
-                                </div>
-                                <div class="card-body text-center">
-                                    <form method="POST" action="" enctype="multipart/form-data" class="d-flex flex-column align-items-center gap-3">
-                                        <!-- Mostrar foto actual pequeña -->
-                                        <img src="<?= !empty($publicador['foto_perfil']) ? htmlspecialchars($publicador['foto_perfil']) : '../../assets/img/defecto.png' ?>" 
-                                             alt="Vista previa" class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;">
-                                        
-                                        <div class="w-100">
-                                            <label for="foto_perfil_input" class="form-label visually-hidden">Subir nueva foto</label>
-                                            <input type="file" class="form-control" id="foto_perfil_input" name="foto_perfil" accept="image/*" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-sm w-100">
-                                            <i class="bi bi-upload me-1"></i> Actualizar Foto
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- TARJETA DE CREDENCIAL -->
+                            <!-- SECCIÓN 2FA -->
                             <div class="admin-card mb-4" data-aos="fade-up">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="card-title mb-0"><i class="bi bi-person-badge me-2"></i>Credencial</h5>
-                                    <!-- Botón PDF ELIMINADO -->
-                                </div>
-                                <div class="card-body bg-light d-flex justify-content-center">
-                                    <div id="credencial-content" class="credential-card w-100">
-                                        <div class="credential-header">
-                                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                                <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo" style="width: 30px; margin-right: 8px; filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.2));">
-                                                <strong>Lab-Explorer</strong>
-                                            </div>
-                                            <small style="letter-spacing: 1px;">PUBLICADOR VERIFICADO</small>
-                                        </div>
-                                        <div class="credential-body">
-                                            <img src="<?= !empty($publicador['foto_perfil']) ? htmlspecialchars($publicador['foto_perfil']) : '../../assets/img/defecto.png' ?>" 
-                                                 alt="Avatar" class="credential-avatar" style="border: 2px solid white; object-fit: cover;">
-                                            
-                                            <div class="credential-info">
-                                                <h4><?= htmlspecialchars($publicador['nombre']) ?></h4>
-                                                <p><?= htmlspecialchars($publicador['email']) ?></p>
-                                                <span class="badge bg-light text-success mt-1"><?= htmlspecialchars($publicador['especialidad'] ?: 'Investigador') ?></span>
-                                            </div>
-                                        </div>
-                                        <div class="credential-footer">
-                                            Miembro desde: <?= date('d/m/Y', strtotime($publicador['fecha_registro'])) ?> <br>
-                                            ID: #<?= str_pad($publicador['id'], 4, '0', STR_PAD_LEFT) ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="admin-card" data-aos="fade-up" data-aos-delay="100">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">
-                                        <i class="bi bi-info-circle me-2"></i>
-                                        Información de Cuenta
+                                        <i class="bi bi-shield-lock me-2"></i>
+                                        Verificación en 2 Pasos
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block mb-1">Estado de la cuenta</small>
-                                        <span class="badge bg-success">Activo</span>
+                                    <p class="text-muted small mb-2">
+                                        Protege tu cuenta con seguridad extra.
+                                    </p>
+                                    <div id="2fa-status" class="mb-2">
+                                        <!-- El estado se carga dinámicamente -->
                                     </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block mb-1">Fecha de registro</small>
-                                        <strong><?= date('d/m/Y', strtotime($publicador['fecha_registro'])) ?></strong>
-                                    </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block mb-1">ID de Publicador</small>
-                                        <strong>#<?= $publicador['id'] ?></strong>
-                                    </div>
+                                    <button id="toggle-2fa-btn" class="btn btn-primary btn-sm w-100" onclick="togglear2FA()">
+                                        <i class="bi bi-gear"></i> <span id="btn-text">Cargando...</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Cambiar Contraseña -->
-                    <div class="row">
-                        <div class="col-lg-8 mb-4">
-                            <div class="admin-card" data-aos="fade-up">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">
-                                        <i class="bi bi-shield-lock me-2"></i>
-                                        Cambiar Contraseña
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <form method="POST" action="">
-                                        <input type="hidden" name="cambiar_password" value="1">
-                                        
-                                        <div class="mb-3">
-                                            <label for="password_actual" class="form-label fw-bold">Contraseña Actual *</label>
-                                            <input type="password" class="form-control" id="password_actual" name="password_actual" required>
-                                        </div>
+                    </div>
 
-                                        <div class="mb-3">
-                                            <label for="password_nueva" class="form-label fw-bold">Nueva Contraseña *</label>
-                                            <input type="password" class="form-control" id="password_nueva" name="password_nueva" 
-                                                   minlength="6" required>
-                                            <small class="text-muted">Mínimo 6 caracteres</small>
-                                        </div>
 
-                                        <div class="mb-3">
-                                            <label for="password_confirmar" class="form-label fw-bold">Confirmar Nueva Contraseña *</label>
-                                            <input type="password" class="form-control" id="password_confirmar" name="password_confirmar" 
-                                                   minlength="6" required>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-warning">
-                                            <i class="bi bi-key me-2"></i>Cambiar Contraseña
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -747,6 +635,82 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
             if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
             overlay.addEventListener('click', toggleSidebar);
         }
+    </script>
+    <script>
+        // Función para descargar PDF
+        function descargarCredencial() {
+            const elemento = document.getElementById('credencial-content');
+            const opciones = {
+                margin:       [10, 10, 10, 10], // Margenes top, left, bottom, right
+                filename:     'Credencial_LabExplorer_<?= preg_replace("/[^a-zA-Z0-9]/", "_", $publicador['nombre']) ?>.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    scrollY: 0,
+                    logging: true 
+                },
+                jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' } 
+            };
+            html2pdf().set(opciones).from(elemento).save();
+        }
+    </script>
+
+    <!-- JavaScript para 2FA -->
+    <script>
+    function cargarEstado2FA() {
+        fetch('../toggle_2fa.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'accion=verificar'
+        })
+        .then(res => res.json())
+        .then(data => {
+            const statusDiv = document.getElementById('2fa-status');
+            const btn = document.getElementById('toggle-2fa-btn');
+            const btnText = document.getElementById('btn-text');
+            
+            if (data.enabled) {
+                statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-shield-check"></i> <strong>ACTIVADA</strong> - Tu cuenta está protegida</div>';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-danger');
+                btnText.textContent = 'Desactivar 2FA';
+            } else {
+                statusDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-shield-exclamation"></i> <strong>DESACTIVADA</strong> - Actívala para mayor seguridad</div>';
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-success');
+                btnText.textContent = 'Activar 2FA';
+            }
+        });
+    }
+
+    function togglear2FA() {
+        const btn = document.getElementById('toggle-2fa-btn');
+        const esActivar = btn.classList.contains('btn-success');
+        const accion = esActivar ? 'activar' : 'desactivar';
+        const mensaje = esActivar ? '¿Activar verificación en 2 pasos?' : '¿Desactivar 2FA?';
+        
+        if (!confirm(mensaje)) return;
+        
+        fetch('../toggle_2fa.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'accion=' + accion
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                cargarEstado2FA();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+    }
+
+    if (document.getElementById('2fa-status')) {
+        cargarEstado2FA();
+    }
     </script>
 </body>
 </html>

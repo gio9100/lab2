@@ -109,3 +109,7 @@ Estado: publicado
 2025-12-03 23:21:05 - Correo enviado a admin: giovannidossantos929a@gmail.com
 2025-12-03 23:21:09 - Correo enviado a admin: brandonioriz117@gmail.com
 2025-12-03 23:21:14 - Correo enviado a admin: perezingo70@gmail.com
+2025-12-06 21:58:58 - ✅ Correo enviado a publicador: 1.pueba.prototipo.1@gmail.com
+2025-12-06 21:59:01 - Correo enviado a admin: giovannidossantos929a@gmail.com
+2025-12-06 21:59:05 - Correo enviado a admin: brandonioriz117@gmail.com
+2025-12-06 21:59:08 - Correo enviado a admin: perezingo70@gmail.com

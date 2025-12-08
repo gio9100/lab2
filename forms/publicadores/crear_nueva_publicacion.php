@@ -47,6 +47,9 @@ $categorias = obtenerCategorias($conn);
     <!-- Estilos del Editor Quill -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     
+    <!-- Estilos del Asistente de IA -->
+    <link href="../../assets/css/ai-asistente.css" rel="stylesheet">
+    
     <style>
         /* Estilos personalizados para la tarjeta */
         .card {
@@ -96,7 +99,6 @@ $categorias = obtenerCategorias($conn);
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-<<<<<<< HEAD
                 <div class="d-flex align-items-center">
                     <!-- Hamburger Button -->
                     <button class="btn btn-outline-primary d-md-none me-2" id="sidebarToggle">
@@ -105,16 +107,9 @@ $categorias = obtenerCategorias($conn);
                     <!-- Logo -->
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
                         <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
-=======
-                <!-- Logo -->
-                <a href="../../index.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explora</h1><span></span>
-                </a>
->>>>>>> fb0fcd8bcbd77da65d4cfafc071306162a214b0c
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
@@ -147,11 +142,16 @@ $categorias = obtenerCategorias($conn);
                         <p class="text-muted">Comparte tu conocimiento con la comunidad científica</p>
                     </div>
 
-                    <!-- Formulario de creación -->
-                    <div class="admin-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="card-body p-4">
-                            <!-- Formulario con soporte para subida de archivos (multipart/form-data) -->
-                            <form id="form-publicacion" action="guardar_publicacion.php" method="POST" enctype="multipart/form-data">
+                    <!-- Contenedor flex para editor + sidebar de IA -->
+                    <div class="editor-ai-container">
+                        
+                        <!-- Parte izquierda: Editor Principal -->
+                        <div class="editor-main">
+                            <!-- Formulario de creación -->
+                            <div class="admin-card" data-aos="fade-up" data-aos-delay="100">
+                                <div class="card-body p-4">
+                                    <!-- Formulario con soporte para subida de archivos (multipart/form-data) -->
+                                    <form id="form-publicacion" action="guardar_publicacion.php" method="POST" enctype="multipart/form-data">
                                 
                                 <!-- Título -->
                                 <div class="mb-4">
@@ -217,9 +217,54 @@ $categorias = obtenerCategorias($conn);
                                         <i class="bi bi-send me-2"></i>Enviar Para Revision
                                     </button>
                                 </div>
-                            </form>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
+                        <!-- Fin editor-main -->
+                        
+                        <!-- Parte derecha: Sidebar de IA -->
+                        <div class="ai-sidebar" data-aos="fade-left" data-aos-delay="200">
+                            <h4><i class="bi bi-stars"></i> Asistente IA</h4>
+                            <p class="text-muted small mb-4">Herramientas inteligentes para mejorar tu artículo</p>
+                            
+                            <!-- BOTÓN 1: Generar Resumen -->
+                            <div class="ai-action">
+                                <button type="button" onclick="generarResumenIA()" class="ai-btn">
+                                    <i class="bi bi-file-text"></i> Generar Resumen
+                                </button>
+                            </div>
+                            <!-- Panel de resultado del resumen -->
+                            <div id="resumen-ia-resultado"></div>
+                            
+                            <!-- BOTÓN 2: Formatear Contenido -->
+                            <div class="ai-action">
+                                <button type="button" onclick="formatearContenidoProfesional()" class="ai-btn">
+                                    <i class="bi bi-magic"></i> Formatear Contenido
+                                </button>
+                            </div>
+                            <!-- Panel de resultado del formato -->
+                            <div id="formato-ia-resultado"></div>
+                            
+                            <!-- BOTÓN 3: Verificar Gramática -->
+                            <div class="ai-action">
+                                <button type="button" onclick="verificarGramaticaIA()" class="ai-btn">
+                                    <i class="bi bi-check2-circle"></i> Verificar Gramática
+                                </button>
+                            </div>
+                            <!-- Panel de resultado de gramática -->
+                            <div id="gramatica-ia-resultado"></div>
+                            
+                            <!-- Info adicional -->
+                            <div class="alert alert-info mt-4" style="font-size: 0.85rem;">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Tip:</strong> Escribe al menos 200 caracteres para obtener mejores sugerencias de la IA.
+                            </div>
+                        </div>
+                        <!-- Fin ai-sidebar -->
+                        
                     </div>
+                    <!-- Fin editor-ai-container -->
                 </div>
             </div>
         </div>
@@ -237,6 +282,9 @@ $categorias = obtenerCategorias($conn);
 
     <!-- Script Principal -->
     <script src="../../assets/js/main.js"></script>
+    
+    <!-- Script del Asistente de IA (cargar después de Quill) -->
+    <script src="../../assets/js/ai-asistente.js"></script>
 
     <script>
         // Inicializar animaciones AOS

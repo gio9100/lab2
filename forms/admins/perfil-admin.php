@@ -158,7 +158,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil - Admin Lab Explorer</title>
+    <title>Mi Perfil - Admin Lab-Explora</title>
     
     <!-- Fuentes de Google (Roboto, Poppins, Nunito) para tipografía moderna -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -231,11 +231,77 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
             border-top: 1px solid rgba(255,255,255,0.2);
             padding-top: 10px;
         }
-        /* Clase para ocultar elementos al generar PDF si fuera necesario */
-        .no-print {
-            display: none;
+        /* Clase para ocultar elementos al generar PDF */
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+        
+        /* ESTILOS PARA LA FIRMA ELECTRÓNICA VISUAL */
+        .signature-box {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(255,255,255,0.3);
+            text-align: center;
+        }
+        .signature-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+        .signature-hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.65rem;
+            word-break: break-all;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #e0f7fa;
+            letter-spacing: -0.5px;
+        }
+        
+        /* OFFICIAL SEAL */
+        .credential-seal {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border: 3px double rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-15deg);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .credential-seal span {
+            font-size: 0.6em;
+            font-weight: bold;
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            text-transform: uppercase;
+            line-height: 1.2;
+            border-top: 1px solid rgba(255,255,255,0.4);
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            padding: 4px 0;
         }
     </style>
+    <!-- PWA MANIFEST & SW -->
+    <link rel="manifest" href="/lab2/manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/lab2/sw.js')
+            .then(reg => console.log('Service Worker registrado', reg))
+            .catch(err => console.log('Error SW:', err));
+        });
+      }
+    </script>
 </head>
 <body class="admin-page">
 
@@ -250,7 +316,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                     </button>
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
                         <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                        <h1 class="sitename">Lab-Explorer</h1><span></span>
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
                 <div class="d-flex align-items-center">
@@ -326,6 +392,34 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                             </div>
                         </div>
 
+                        <!-- SECCIÓN 2FA -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-shield-lock me-2"></i>
+                                        Verificación en 2 Pasos
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted">
+                                        Protege tu cuenta con una capa extra de seguridad. Al iniciar sesión, 
+                                        recibirás un código de 6 dígitos en tu correo electrónico.
+                                    </p>
+                                    
+                                    <div id="2fa-status" class="mb-3">
+                                        <!-- El estado se carga dinámicamente -->
+                                    </div>
+                                    
+                                    <button id="toggle-2fa-btn" class="btn btn-primary" onclick="togglear2FA()">
+                                        <i class="bi bi-gear"></i> <span id="btn-text">Cargando...</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <!-- Columna Derecha: Credencial Digital -->
 
                         <!-- Columna Derecha: Credencial Digital -->
@@ -369,7 +463,9 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                             <div class="card h-100">
                                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0">Credencial Digital</h5>
-                                    <!-- Botón PDF ELIMINADO por solicitud del usuario -->
+                                    <button class="btn btn-outline-danger btn-sm no-print" onclick="descargarCredencial()">
+                                        <i class="bi bi-file-earmark-pdf-fill me-1"></i>Descargar Oficial
+                                    </button>
                                 </div>
                                 <div class="card-body d-flex align-items-center justify-content-center bg-light">
                                     
@@ -381,7 +477,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                                             <div class="d-flex align-items-center justify-content-center mb-2">
                                                 <!-- LOGO AGREGADO -->
                                                 <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo" style="width: 40px; margin-right: 10px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));">
-                                                <h4 style="margin:0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Lab-Explorer</h4>
+                                                <h4 style="margin:0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Lab-Explora</h4>
                                             </div>
                                             <small style="letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem;">Acreditación Oficial</small>
                                         </div>
@@ -403,13 +499,34 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                                         <div class="credential-footer">
                                             <p>Miembro desde: <?= $fecha_registro ?></p>
                                             <p>ID: #<?= str_pad($admin_id, 4, '0', STR_PAD_LEFT) ?></p>
+
+                                            <div class="mt-2 mb-2 p-2" style="background: rgba(0,0,0,0.1); border-radius: 5px; font-size: 0.7rem; text-align: justify;">
+                                                <strong>ROL: ADMINISTRADOR</strong><br>
+                                                Esta credencial digital valida la identidad y permisos del usuario en Lab-Explora. La firma electrónica inferior es una cadena única e irrepetible generada criptográficamente, lo que garantiza su autenticidad y evita duplicaciones o falsificaciones de identidad.
+                                            </div>
+
+                                            <!-- FIRMA ELECTRÓNICA VISUAL -->
+                                            <div class="signature-box">
+                                                <div class="signature-label">Firma Digital Autenticada</div>
+                                                <div class="signature-hash">
+                                                    <?php 
+                                                    // Generamos un hash visual basado en los datos del usuario + una "salt" secreta
+                                                    $data_to_hash = $admin_id . $admin_nombre . $admin_email . "LAB_EXPLORA_ADMIN_SECURE_2024";
+                                                    echo strtoupper(substr(hash('sha256', $data_to_hash), 0, 24)); // Mostramos los primeros 24 caracteres
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- SELLO OFICIAL -->
+                                        <div class="credential-seal">
+                                            <span>Official<br>Certified<br>Science</span>
                                         </div>
                                     </div>
                                     <!-- FIN DE LA CREDENCIAL -->
 
                                 </div>
                                 <div class="card-footer text-muted text-center" style="font-size: 0.8rem;">
-                                    Tu identificación oficial como administrador de Lab-Explorer.
+                                    Tu identificación oficial como administrador de Lab-Explora.
                                 </div>
                             </div>
                         </div>
@@ -430,12 +547,15 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
             
             // 2. Configuramos las opciones para html2pdf
             const opciones = {
-                margin:       10, // Margen alrededor del PDF
-                filename:     'Credencial_LabExplorer_<?= $admin_nombre ?>.pdf', // Nombre del archivo a descargar
-                image:        { type: 'jpeg', quality: 0.98 }, // Calidad de imagen (0 a 1)
-                html2canvas:  { scale: 2 }, // Escala 2 mejora la resolución (más nítido)
-                // jsPDF define el formato del documento (unit: milímetros, format: a4 o personalizado, orientation: portrait/landscape)
-                // Aquí usamos un tamaño personalizado pequeño tipo tarjeta (100mm x 150mm aprox) para que se vea bien la credencial sola
+                margin:       [10, 10, 10, 10],
+                filename:     'Credencial_LabExplorer_<?= $admin_nombre ?>.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    scrollY: 0,
+                    logging: true
+                },
                 jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' } 
             };
 
@@ -449,6 +569,65 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
     
     <!-- Scripts de Bootstrap requeridos para el sidebar y navbar -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript para 2FA -->
+    <script>
+    function cargarEstado2FA() {
+        fetch('../toggle_2fa.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'accion=verificar'
+        })
+        .then(res => res.json())
+        .then(data => {
+            const statusDiv = document.getElementById('2fa-status');
+            const btn = document.getElementById('toggle-2fa-btn');
+            const btnText = document.getElementById('btn-text');
+            
+            if (statusDiv && btn && btnText) {
+                if (data.enabled) {
+                    statusDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-shield-check"></i> <strong>ACTIVADA</strong> - Tu cuenta está protegida</div>';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-danger');
+                    btnText.textContent = 'Desactivar 2FA';
+                } else {
+                    statusDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-shield-exclamation"></i> <strong>DESACTIVADA</strong> - Actívala para mayor seguridad</div>';
+                    btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-success');
+                    btnText.textContent = 'Activar 2FA';
+                }
+            }
+        });
+    }
+
+    function togglear2FA() {
+        const btn = document.getElementById('toggle-2fa-btn');
+        const esActivar = btn.classList.contains('btn-success');
+        const accion = esActivar ? 'activar' : 'desactivar';
+        const mensaje = esActivar ? '¿Activar verificación en 2 pasos?' : '¿Desactivar 2FA?';
+        
+        if (!confirm(mensaje)) return;
+        
+        fetch('../toggle_2fa.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'accion=' + accion
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                cargarEstado2FA();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+    }
+
+    if (document.getElementById('2fa-status')) {
+        cargarEstado2FA();
+    }
+    </script>
 
 </body>
 </html>

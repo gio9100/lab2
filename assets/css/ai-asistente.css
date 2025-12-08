@@ -1,0 +1,577 @@
+/* ====================================================================
+   ESTILOS PARA EL ASISTENTE DE IA - LAB-EXPLORA
+   ====================================================================
+   Este archivo contiene todos los estilos CSS para los componentes
+   del asistente de IA integrado en el editor Quill
+   ==================================================================== */
+
+/* ====================================================================
+   SIDEBAR DE IA (Panel lateral derecho)
+   ==================================================================== */
+
+/* Contenedor principal que divide el espacio entre el editor y el sidebar */
+.editor-ai-container {
+    display: flex;
+    /* Flexbox para distribuir el espacio */
+    gap: 20px;
+    /* Espacio entre el editor y el sidebar */
+    align-items: flex-start;
+    /* Alinear arriba */
+}
+
+/* Contenedor del editor Quill (ocupa ~ 70% del ancho) */
+.editor-main {
+    flex: 1;
+    /* Toma todo el espacio disponible */
+    min-width: 0;
+    /* Permite que se encoja si es necesario */
+}
+
+/* Panel lateral de IA (ancho fijo de 320px) */
+.ai-sidebar {
+    width: 320px;
+    /* Ancho fijo del sidebar */
+    background: #f8f9fa;
+    /* Fondo gris claro sólido */
+    padding: 20px;
+    /* Espacio interno */
+    border-radius: 12px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* Sombra sutil */
+    border: 1px solid #dee2e6;
+    /* Borde gris claro */
+    position: sticky;
+    /* Se queda fijo al hacer scroll */
+    top: 100px;
+    /* Distancia desde arriba (para no tapar el header) */
+    max-height: calc(100vh - 120px);
+    /* Altura máxima (no exceder el viewport) */
+    overflow-y: auto;
+    /* Scroll si el contenido es muy largo */
+}
+
+/* Título del sidebar "Asistente IA" */
+.ai-sidebar h4 {
+    color: #2c3e50;
+    /* Color oscuro */
+    font-weight: 700;
+    /* Negrita */
+    margin-bottom: 20px;
+    /* Espacio debajo del título */
+    display: flex;
+    /* Flexbox para alinear icono y texto */
+    align-items: center;
+    /* Centrar verticalmente */
+    gap: 8px;
+    /* Espacio entre icono y texto */
+}
+
+/* Scrollbar personalizado para el sidebar (solo WebKit: Chrome, Safari, Edge) */
+.ai-sidebar::-webkit-scrollbar {
+    width: 6px;
+    /* Ancho del scrollbar */
+}
+
+.ai-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.5);
+    /* Fondo de la pista */
+    border-radius: 10px;
+    /* Bordes redondeados */
+}
+
+.ai-sidebar::-webkit-scrollbar-thumb {
+    background: #6c757d;
+    /* Gris oscuro */
+    border-radius: 10px;
+    /* Bordes redondeados */
+}
+
+.ai-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #495057;
+    /* Más oscuro al pasar el mouse */
+}
+
+
+/* ====================================================================
+   BOTONES DE ACCIÓN DE IA
+   ==================================================================== */
+
+/* Contenedor de cada botón de IA */
+.ai-action {
+    margin-bottom: 12px;
+    /* Espacio entre botones */
+}
+
+/* Estilo base de los botones de IA */
+.ai-btn {
+    width: 100%;
+    /* Ocupa todo el ancho del sidebar */
+    padding: 14px 18px;
+    /* Espacio interno (arriba/abajo izquierda/derecha) */
+    background: #6c757d;
+    /* Gris oscuro sólido */
+    color: white;
+    /* Texto blanco */
+    border: none;
+    /* Sin borde */
+    border-radius: 10px;
+    /* Bordes muy redondeados */
+    cursor: pointer;
+    /* Cursor de manita al pasar el mouse */
+    font-weight: 600;
+    /* Semi-negrita */
+    font-size: 0.95rem;
+    /* Tamaño de fuente ligeramente menor */
+    transition: all 0.3s ease;
+    /* Transición suave para todos los cambios */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    /* Sombra gris */
+}
+
+/* Efecto cuando pasas el mouse sobre el botón */
+.ai-btn:hover {
+    background: #5a6268;
+    /* Gris más oscuro */
+    transform: translateY(-3px);
+    /* Levantarse 3px */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    /* Sombra más grande */
+}
+
+/* Efecto cuando haces clic en el botón (presionado) */
+.ai-btn:active {
+    transform: translateY(-1px);
+    /* Baja un poco */
+}
+
+/* Icono dentro del botón */
+.ai-btn i {
+    margin-right: 8px;
+    /* Espacio entre icono y texto */
+    font-size: 1.1rem;
+    /* Icono ligeramente más grande que el texto */
+}
+
+
+/* ====================================================================
+   PANELES DE RESULTADOS
+   ==================================================================== */
+
+/* Contenedor base para cada resultado de IA (resumen, etiquetas, gramática) */
+.ai-result-card {
+    background: white;
+    /* Fondo blanco */
+    border-radius: 10px;
+    /* Bordes redondeados */
+    padding: 16px;
+    /* Espacio interno */
+    margin-top: 15px;
+    /* Espacio arriba */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    /* Sombra sutil */
+}
+
+/* Encabezado del resultado (contiene el badge "Generado con IA") */
+.ai-badge-header {
+    display: flex;
+    /* Flexbox para alinear elementos */
+    justify-content: space-between;
+    /* Separar elementos a los extremos */
+    align-items: center;
+    /* Centrar verticalmente */
+    margin-bottom: 15px;
+    /* Espacio debajo */
+}
+
+/* Badge "✨ Generado con IA" */
+.ai-badge {
+    background: #495057;
+    /* Gris oscuro sólido */
+    color: white;
+    /* Texto blanco */
+    padding: 6px 14px;
+    /* Espacio interno */
+    border-radius: 20px;
+    /* Muy redondeado (píldora) */
+    font-size: 0.85rem;
+    /* Texto pequeño */
+    font-weight: 600;
+    /* Semi-negrita */
+    display: inline-flex;
+    /* Flexbox en línea */
+    align-items: center;
+    /* Centrar contenido verticalmente */
+    gap: 6px;
+    /* Espacio entre icono y texto */
+}
+
+/* Texto del resultado (por ejemplo, el resumen generado) */
+.resultado-texto {
+    color: #2c3e50;
+    /* Color oscuro */
+    line-height: 1.7;
+    /* Espaciado entre líneas */
+    margin-bottom: 15px;
+    /* Espacio debajo */
+    font-size: 0.95rem;
+    /* Tamaño de fuente moderado */
+}
+
+/* Contenedor de botones de acción dentro del resultado */
+.ai-actions {
+    display: flex;
+    /* Flexbox para botones en fila */
+    gap: 10px;
+    /* Espacio entre botones */
+    flex-wrap: wrap;
+    /* Permitir que se envuelvan en pantallas pequeñas */
+}
+
+
+/* ====================================================================
+   SUGERENCIAS DE ETIQUETAS
+   ==================================================================== */
+
+/* Contenedor de las etiquetas sugeridas */
+.tags-container {
+    display: flex;
+    /* Flexbox para distribuir badges */
+    flex-wrap: wrap;
+    /* Permitir saltos de línea */
+    gap: 10px;
+    /* Espacio entre badges */
+}
+
+/* Badge individual de etiqueta sugerida */
+.tag-sugerencia {
+    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+    /* Degradado cyan-morado */
+    color: white;
+    /* Texto blanco */
+    padding: 8px 16px;
+    /* Espacio interno */
+    border-radius: 20px;
+    /* Forma de píldora */
+    cursor: pointer;
+    /* Cursor de manita */
+    font-size: 0.9rem;
+    /* Tamaño de fuente moderado */
+    font-weight: 600;
+    /* Semi-negrita */
+    transition: all 0.3s ease;
+    /* Transición suave */
+    display: inline-flex;
+    /* Flexbox en línea */
+    align-items: center;
+    /* Centrar contenido */
+    gap: 6px;
+    /* Espacio entre icono y texto */
+    box-shadow: 0 2px 6px rgba(48, 207, 208, 0.3);
+    /* Sombra cyan */
+}
+
+/* Efecto al pasar el mouse sobre la etiqueta */
+.tag-sugerencia:hover {
+    transform: translateY(-2px) scale(1.05);
+    /* Levantarse y crecer un poco */
+    box-shadow: 0 4px 12px rgba(48, 207, 208, 0.5);
+    /* Sombra más grande */
+}
+
+/* Relevancia (número de matches) dentro de la etiqueta */
+.tag-sugerencia .relevancia {
+    font-size: 0.75rem;
+    /* Más pequeño */
+    opacity: 0.85;
+    /* Ligeramente transparente */
+    margin-left: 4px;
+    /* Espacio a la izquierda */
+}
+
+
+/* ====================================================================
+   ERRORES GRAMATICALES
+   ==================================================================== */
+
+/* Lista de errores gramaticales */
+.errores-lista {
+    display: flex;
+    /* Flexbox */
+    flex-direction: column;
+    /* Dirección vertical (uno debajo del otro) */
+    gap: 12px;
+    /* Espacio entre errores */
+}
+
+/* Tarjeta de cada error individual */
+.error-gramatical {
+    border-left: 4px solid #ffc107;
+    /* Borde amarillo a la izquierda */
+    background: #fff9e6;
+    /* Fondo amarillo muy claro */
+    padding: 12px;
+    /* Espacio interno */
+    border-radius: 6px;
+    /* Bordes ligeramente redondeados */
+}
+
+/* Encabezado del error (tipo de error) */
+.error-header {
+    margin-bottom: 8px;
+    /* Espacio debajo */
+}
+
+/* Badge del tipo de error */
+.error-tipo {
+    display: inline-block;
+    /* En línea pero con propiedades de bloque */
+    padding: 4px 10px;
+    /* Espacio interno */
+    border-radius: 12px;
+    /* Bordes redondeados */
+    font-size: 0.8rem;
+    /* Texto pequeño */
+    font-weight: 600;
+    /* Semi-negrita */
+}
+
+/* Colores específicos para cada tipo de error */
+.tipo-ortografia {
+    background: #ffe6e6;
+    /* Rojo claro */
+    color: #dc3545;
+    /* Rojo oscuro */
+}
+
+.tipo-repeticion {
+    background: #fff3cd;
+    /* Amarillo claro */
+    color: #856404;
+    /* Amarillo oscuro */
+}
+
+.tipo-estilo {
+    background: #cfe2ff;
+    /* Azul claro */
+    color: #084298;
+    /* Azul oscuro */
+}
+
+.tipo-concordancia {
+    background: #f8d7da;
+    /* Rosa claro */
+    color: #842029;
+    /* Rosa oscuro */
+}
+
+.tipo-formato {
+    background: #d1ecf1;
+    /* Cyan claro */
+    color: #0c5460;
+    /* Cyan oscuro */
+}
+
+/* Cuerpo del error (mensaje principal) */
+.error-body {
+    font-size: 0.9rem;
+    /* Tamaño moderado */
+}
+
+/* Texto del error (el fragmento que tiene el error) */
+.error-texto {
+    font-weight: 700;
+    /* Negrita */
+    color: #dc3545;
+    /* Rojo */
+    font-family: 'Courier New', monospace;
+    /* Fuente monoespaciada */
+    background: #ffe6e6;
+    /* Fondo rojo claro */
+    padding: 4px 8px;
+    /* Espacio interno */
+    border-radius: 4px;
+    /* Bordes ligeramente redondeados */
+    display: inline-block;
+    /* En línea pero con propiedades de bloque */
+    margin-bottom: 8px;
+    /* Espacio debajo */
+}
+
+/* Mensaje explicativo del error */
+.error-mensaje {
+    color: #495057;
+    /* Gris oscuro */
+    margin: 8px 0;
+    /* Espacio arriba y abajo */
+    line-height: 1.6;
+    /* Espaciado entre líneas */
+}
+
+/* Sugerencia de corrección */
+.error-sugerencia {
+    color: #198754;
+    /* Verde */
+    font-weight: 600;
+    /* Semi-negrita */
+    margin-top: 8px;
+    /* Espacio arriba */
+    line-height: 1.6;
+    /* Espaciado entre líneas */
+}
+
+
+/* ====================================================================
+   EFECTOS Y ANIMACIONES
+   ==================================================================== */
+
+/* Efecto de resaltado cuando se actualiza un campo automáticamente */
+.campo-actualizado {
+    animation: highlight 2s ease;
+    /* Animación de 2 segundos */
+}
+
+/* Keyframes para la animación de resaltado */
+@keyframes highlight {
+    0% {
+        background-color: #fff3cd;
+        /* Amarillo claro */
+        box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.4);
+        /* Sombra amarilla */
+    }
+
+    50% {
+        background-color: #fff3cd;
+        /* Mantener amarillo */
+        box-shadow: 0 0 0 8px rgba(255, 193, 7, 0.2);
+        /* Sombra se expande */
+    }
+
+    100% {
+        background-color: white;
+        /* Volver a blanco */
+        box-shadow: none;
+        /* Sin sombra */
+    }
+}
+
+
+/* ====================================================================
+   RESPONSIVIDAD (MOBILE)
+   ==================================================================== */
+
+/* En pantallas menores a 768px (tablets y móviles) */
+@media (max-width: 768px) {
+
+    /* El contenedor cambia a columna vertical */
+    .editor-ai-container {
+        flex-direction: column;
+        /* Apilar verticalmente */
+    }
+
+    /* El sidebar ocupa todo el ancho */
+    .ai-sidebar {
+        width: 100%;
+        /* Ancho completo */
+        position: relative;
+        /* No sticky en móvil */
+        max-height: none;
+        /* Sin altura máxima */
+        margin-top: 20px;
+        /* Espacio arriba para separarlo del editor */
+    }
+
+    /* Botones más pequeños en móvil */
+    .ai-btn {
+        padding: 12px 14px;
+        /* Menos padding */
+        font-size: 0.9rem;
+        /* Texto ligeramente más pequeño */
+    }
+
+    /* Tags más pequeños en móvil */
+    .tag-sugerencia {
+        font-size: 0.85rem;
+        /* Texto más pequeño */
+        padding: 6px 12px;
+        /* Menos padding */
+    }
+}
+
+/* En pantallas muy pequeñas (móviles en vertical) */
+@media (max-width: 480px) {
+
+    /* Sidebar con menos padding para aprovechar espacio */
+    .ai-sidebar {
+        padding: 15px;
+        /* Menos espacio interno */
+    }
+
+    /* Resultados más compactos */
+    .ai-result-card {
+        padding: 12px;
+        /* Menos espacio interno */
+    }
+
+    /* Botones de acción apilados verticalmente */
+    .ai-actions {
+        flex-direction: column;
+        /* Columna vertical */
+    }
+
+    .ai-actions .btn {
+        width: 100%;
+        /* Ancho completo */
+    }
+}
+
+
+/* ====================================================================
+   ALERTAS PERSONALIZADAS DE BOOTSTRAP
+   ==================================================================== */
+
+/* Sobrescribir estilos de alertas dentro del sidebar de IA */
+.ai-sidebar .alert {
+    border-radius: 8px;
+    /* Bordes redondeados */
+    font-size: 0.9rem;
+    /* Texto moderado */
+    padding: 12px 14px;
+    /* Espacio interno */
+}
+
+.ai-sidebar .alert i {
+    margin-right: 8px;
+    /* Espacio entre icono y texto */
+}
+
+
+/* ====================================================================
+   SPINNER/LOADER PERSONALIZADO
+   ==================================================================== */
+
+/* Contenedor del spinner de carga */
+.ai-loading {
+    text-align: center;
+    /* Centrar contenido */
+    padding: 30px 20px;
+    /* Espacio interno */
+}
+
+.ai-loading .spinner-border {
+    width: 2.5rem;
+    /* Tamaño del spinner */
+    height: 2.5rem;
+    /* Tamaño del spinner */
+    border-width: 0.3rem;
+    /* Grosor del borde */
+}
+
+.ai-loading p {
+    margin-top: 15px;
+    /* Espacio arriba del texto */
+    color: #6c757d;
+    /* Gris */
+    font-size: 0.9rem;
+    /* Tamaño moderado */
+}

@@ -1,0 +1,25 @@
+{
+    "name": "Lab-Explora",
+    "short_name": "LabExplora",
+    "start_url": "/lab2/pagina-principal.php",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0d6efd",
+    "icons": [
+        {
+            "src": "/lab2/assets/img/logo/logobrayan2.ico",
+            "sizes": "64x64 32x32 24x24 16x16",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "/lab2/assets/img/logo/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/lab2/assets/img/logo/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
