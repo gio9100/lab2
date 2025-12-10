@@ -42,7 +42,7 @@ function enviarCodigo2FA($email, $nombre, $codigo) {
     // Crear asunto del email
     $asunto = "Código de verificación - Lab-Explora";
     
-    // Crear cuerpo del email con HTML bonito
+    // Crear cuerpo del email con HTML 
     $cuerpo = "
     <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
         <div style='background: #7390A0; padding: 30px; text-align: center; color: white;'>
