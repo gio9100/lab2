@@ -92,15 +92,12 @@ Estado: publicado
 2025-12-01 23:47:52 - ✅ Correo enviado a publicador: giovannidossantos929@gmail.com
 2025-12-01 23:47:57 - Correo enviado a admin: giovannidossantos929a@gmail.com
 2025-12-01 23:48:00 - Correo enviado a admin: brandonioriz117@gmail.com
-<<<<<<< Updated upstream
 2025-12-02 19:31:37 - ✅ Correo enviado a publicador: giovannidossantos929@gmail.com
 2025-12-02 19:31:41 - Correo enviado a admin: giovannidossantos929a@gmail.com
 2025-12-02 19:31:43 - Correo enviado a admin: brandonioriz117@gmail.com
 2025-12-02 19:31:47 - Correo enviado a admin: perezingo70@gmail.com
-=======
 2025-12-02 17:54:43 - ✅ Correo enviado a publicador: lopez.edwin.est79@gmail.com
 2025-12-02 17:54:47 - Correo enviado a admin: brandonioriz117@gmail.com
->>>>>>> Stashed changes
 2025-12-02 21:52:39 - ✅ Correo enviado a publicador: lopez.edwin.est79@gmail.com
 2025-12-02 21:52:43 - Correo enviado a admin: brandonioriz117@gmail.com
 2025-12-03 14:51:06 - ❌ Error enviando correo a publicador: lopez.edwin.est79@gmail.com

@@ -40,71 +40,92 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         // Busca el publicador en la BD y verifica la contraseña
         
         if ($publicador) {
-            // Si el login fue exitoso
-            
-            // Traer funciones de 2FA
-            require_once '../2fa_functions.php';
-            
-            // Verificar si tiene 2FA activado
-            $stmt_2fa = $conn->prepare("SELECT two_factor_enabled FROM publicadores WHERE id = ?");
-            $stmt_2fa->bind_param("i", $publicador["id"]);
-            $stmt_2fa->execute();
-            $result_2fa = $stmt_2fa->get_result();
-            $tiene2FA = false;
-            
-            if ($result_2fa && $result_2fa->num_rows > 0) {
-                $row_2fa = $result_2fa->fetch_assoc();
-                $tiene2FA = ($row_2fa['two_factor_enabled'] == 1);
-            }
-            
-            if ($tiene2FA) {
-                // Enviar código 2FA
-                $codigo = generarCodigo2FA();
-                guardarCodigo2FA($conn, 'publicador', $publicador['id'], $codigo);
-                enviarCodigo2FA($publicador['email'], $publicador['nombre'], $codigo);
+            // Verificar si es un array con estado_cuenta (cuenta no activa)
+            if (isset($publicador['estado_cuenta'])) {
+                // La cuenta existe pero no está activa
+                $estado = $publicador['estado_cuenta'];
                 
-                // Guardar para verificación
-                $_SESSION['pending_2fa'] = [
-                    'type' => 'publicador',
-                    'id' => $publicador['id'],
-                    'email' => $publicador['email'],
-                    'nombre' => $publicador['nombre']
-                ];
-                
-                // Redirigir a verificación
-                header('Location: ../verify_2fa.php');
-                exit();
-                
+                switch($estado) {
+                    case 'pendiente':
+                        $mensaje = "⏳ Tu cuenta está pendiente de aprobación.\n\nUn administrador revisará tu solicitud pronto. Recibirás un correo electrónico cuando tu cuenta sea aprobada o si necesitamos más información.\n\n¡Gracias por tu paciencia!";
+                        break;
+                    case 'suspendido':
+                        $mensaje = "🚫 Tu cuenta ha sido suspendida.\n\nPor favor, contacta con el administrador para más información.";
+                        break;
+                    case 'rechazado':
+                        $mensaje = "❌ Tu solicitud de registro fue rechazada.\n\nSi crees que esto es un error, por favor contacta con el administrador.";
+                        break;
+                    default:
+                        $mensaje = "⚠️ Tu cuenta no está activa. Contacta con el administrador.";
+                }
+                $exito = false;
             } else {
-                // Login normal sin 2FA
-                $_SESSION["publicador_id"] = $publicador["id"];
-                $_SESSION["publicador_nombre"] = $publicador["nombre"];
-                $_SESSION["publicador_email"] = $publicador["email"];
-                $_SESSION["publicador_especialidad"] = $publicador["especialidad"];
-                // Ahora estos datos están disponibles en todas las páginas
+                // Si el login fue exitoso y la cuenta está activa
                 
-                // También guardamos en la sesión principal
-                $_SESSION["es_publicador"] = true;
-                // Variable booleana que indica que es un publicador
-                $_SESSION["publicador_data"] = $publicador;
-                // Guardamos todos los datos del publicador
+                // Traer funciones de 2FA
+                require_once '../2fa_functions.php';
                 
-                $mensaje = "🧪 Bienvenido al Panel de Publicadores, " . $publicador["nombre"] . "!";
-                $exito = true;
+                // Verificar si tiene 2FA activado
+                $stmt_2fa = $conn->prepare("SELECT two_factor_enabled FROM publicadores WHERE id = ?");
+                $stmt_2fa->bind_param("i", $publicador["id"]);
+                $stmt_2fa->execute();
+                $result_2fa = $stmt_2fa->get_result();
+                $tiene2FA = false;
                 
-                // Redirección con JavaScript
-                echo "
-                <script>
-                    setTimeout(function() {
-                        window.location.href = 'index-publicadores.php';
-                    }, 2000);
-                </script>
-                ";
-                // setTimeout() espera 2000 milisegundos (2 segundos)
-                // Luego redirige al panel de publicadores
+                if ($result_2fa && $result_2fa->num_rows > 0) {
+                    $row_2fa = $result_2fa->fetch_assoc();
+                    $tiene2FA = ($row_2fa['two_factor_enabled'] == 1);
+                }
+                
+                if ($tiene2FA) {
+                    // Enviar código 2FA
+                    $codigo = generarCodigo2FA();
+                    guardarCodigo2FA($conn, 'publicador', $publicador['id'], $codigo);
+                    enviarCodigo2FA($publicador['email'], $publicador['nombre'], $codigo);
+                    
+                    // Guardar para verificación
+                    $_SESSION['pending_2fa'] = [
+                        'type' => 'publicador',
+                        'id' => $publicador['id'],
+                        'email' => $publicador['email'],
+                        'nombre' => $publicador['nombre']
+                    ];
+                    
+                    // Redirigir a verificación
+                    header('Location: ../verify_2fa.php');
+                    exit();
+                    
+                } else {
+                    // Login normal sin 2FA
+                    $_SESSION["publicador_id"] = $publicador["id"];
+                    $_SESSION["publicador_nombre"] = $publicador["nombre"];
+                    $_SESSION["publicador_email"] = $publicador["email"];
+                    $_SESSION["publicador_especialidad"] = $publicador["especialidad"];
+                    // Ahora estos datos están disponibles en todas las páginas
+                    
+                    // También guardamos en la sesión principal
+                    $_SESSION["es_publicador"] = true;
+                    // Variable booleana que indica que es un publicador
+                    $_SESSION["publicador_data"] = $publicador;
+                    // Guardamos todos los datos del publicador
+                    
+                    $mensaje = "🧪 Bienvenido al Panel de Publicadores, " . $publicador["nombre"] . "!";
+                    $exito = true;
+                    
+                    // Redirección con JavaScript
+                    echo "
+                    <script>
+                        setTimeout(function() {
+                            window.location.href = 'index-publicadores.php';
+                        }, 2000);
+                    </script>
+                    ";
+                    // setTimeout() espera 2000 milisegundos (2 segundos)
+                    // Luego redirige al panel de publicadores
+                }
             }
         } else {
-            // Si el login falló
+            // Si el login falló (credenciales incorrectas)
             $mensaje = "⚠️ Correo o contraseña incorrectos";
         }
     }
@@ -262,11 +283,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Contenido del modal -->
             
             <!-- Título dinámico -->
-            <h2><?= $exito ? "🧪 Bienvenido A Lab Explorer!" : "Error" ?></h2>
+            <h2><?= $exito ? "🧪 Bienvenido A Lab Explorer!" : "Información" ?></h2>
             
             <!-- Mensaje -->
-            <p><?= htmlspecialchars($mensaje) ?></p>
-            <!-- htmlspecialchars() previene XSS -->
+            <p style="white-space: pre-line;"><?= nl2br(htmlspecialchars($mensaje)) ?></p>
+            <!-- nl2br() convierte saltos de línea en <br> -->
+            <!-- white-space: pre-line preserva los saltos de línea -->
             
             <?php if($exito): ?>
             <!-- Si fue exitoso -->

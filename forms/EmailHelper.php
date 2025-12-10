@@ -25,7 +25,7 @@ class EmailHelper {
         $mail = new PHPMailer(true);
 
         try {
-            // Configuración GMAIL 
+            // Configuración GMAIL
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;

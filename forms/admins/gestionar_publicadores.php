@@ -564,6 +564,7 @@ if (isset($_GET['editar'])) {
                                             <th>Nombre / Email</th>
                                             <th>Especialidad</th>
                                             <th>Estado</th>
+                                            <th>Firma Digital</th>
                                             <th>Fecha Registro</th>
                                             <th>Acciones</th>
                                         </tr>
@@ -590,6 +591,16 @@ if (isset($_GET['editar'])) {
                                                 <span class="badge bg-<?= $clase_estado ?>">
                                                     <?= ucfirst($pub['estado']) ?>
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                // Generar firma digital única para el publicador
+                                                $data_to_hash = $pub['id'] . $pub['nombre'] . $pub['email'] . "LAB_EXPLORA_PUB_SECURE_KEY";
+                                                $firma = strtoupper(substr(hash('sha256', $data_to_hash), 0, 16));
+                                                ?>
+                                                <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital Única">
+                                                    <?= $firma ?>
+                                                </code>
                                             </td>
                                             <td><?= date('d/m/Y', strtotime($pub['fecha_registro'])) ?></td>
                                             <td>

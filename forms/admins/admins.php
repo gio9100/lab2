@@ -444,13 +444,13 @@ if (isset($_GET['editar'])) {
                                             <th>Nombre</th>
                                             <th>Email</th>
                                             <th>Nivel</th>
+                                            <th>Firma Digital</th>
                                             <th>Fecha Registro</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach($admins as $adm): ?>
-                                        <tr>
                                             <td><?= $adm['id'] ?></td>
                                             <td><strong><?= htmlspecialchars($adm['nombre']) ?></strong></td>
                                             <td><?= htmlspecialchars($adm['email']) ?></td>
@@ -459,6 +459,17 @@ if (isset($_GET['editar'])) {
                                                 <span class="badge badge-nivel bg-<?= $adm['nivel'] == 'superadmin' ? 'danger' : 'primary' ?>">
                                                     <?= $adm['nivel'] == 'superadmin' ? 'SuperAdmin' : 'Admin' ?>
                                                 </span>
+                                            </td>
+                                            
+                                            <td>
+                                                <?php 
+                                                // Generar firma digital única para el admin
+                                                $data_to_hash = $adm['id'] . $adm['nombre'] . $adm['email'] . "LAB_EXPLORA_ADMIN_SECURE_2024";
+                                                $firma = strtoupper(substr(hash('sha256', $data_to_hash), 0, 16));
+                                                ?>
+                                                <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital Única">
+                                                    <?= $firma ?>
+                                                </code>
                                             </td>
                                             
                                             <td><?= date('d/m/Y', strtotime($adm['fecha_registro'])) ?></td>

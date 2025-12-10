@@ -481,6 +481,7 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                                 </div>
                                 <div class="card-body text-center">
                                     <form method="POST" action="" enctype="multipart/form-data" class="d-flex flex-column align-items-center gap-3">
+                                        <input type="hidden" name="subir_foto" value="1">
                                         <!-- Mostrar foto actual pequeña -->
                                         <img src="<?= !empty($publicador['foto_perfil']) ? htmlspecialchars($publicador['foto_perfil']) : '../../assets/img/defecto.png' ?>" 
                                              alt="Vista previa" class="rounded-circle" style="width: 64px; height: 64px; object-fit: cover;">
@@ -493,6 +494,16 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                                             <i class="bi bi-upload me-1"></i> Actualizar Foto
                                         </button>
                                     </form>
+                                    
+                                    <!-- Formulario separado para eliminar foto -->
+                                    <?php if (!empty($publicador['foto_perfil'])): ?>
+                                        <form method="POST" action="" class="w-100 mt-2">
+                                            <input type="hidden" name="eliminar_foto" value="1">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm w-100" onclick="return confirm('¿Estás seguro de eliminar tu foto de perfil?')">
+                                                <i class="bi bi-trash me-1"></i> Eliminar Foto
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             </div>
 

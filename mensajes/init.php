@@ -96,18 +96,25 @@ if ($current_user_id && $current_user_role) {
 // function = declara una función
 function checkAuth() {
     // global = permite acceder a variables globales dentro de la función
-    global $current_user_id;
+    global $current_user_id, $current_user_role, $force_role;
     
     // ! = operador NOT lógico
     if (!$current_user_id) {
-        // header() = envía encabezado HTTP
-        // HTTP/1.1 403 Forbidden = código de error "prohibido"
-        header('HTTP/1.1 403 Forbidden');
-        // json_encode() = convierte array PHP a JSON
-        // => = operador de asignación en arrays asociativos
-        echo json_encode(['error' => 'No autorizado']);
-        // exit = detiene la ejecución del script
-        exit;
+        // Si se solicitó un rol específico, redirigir al login apropiado
+        if ($force_role === 'publicador') {
+            // Redirigir al login de publicadores
+            header('Location: ../forms/publicadores/inicio-sesion-publicadores.php');
+            exit;
+        } elseif ($force_role === 'admin') {
+            // Redirigir al login de admins
+            header('Location: ../forms/admins/login-admin.php');
+            exit;
+        } else {
+            // Sin rol específico, mostrar error genérico
+            header('HTTP/1.1 403 Forbidden');
+            echo json_encode(['error' => 'No autorizado. Por favor inicia sesión.']);
+            exit;
+        }
     }
 }
 ?>

@@ -117,9 +117,6 @@ $stmt->close();
                         <h2>Estadísticas de Publicaciones</h2>
                         <p class="text-muted">Monitorea el rendimiento y la interacción de tu contenido</p>
                     </div>
-                    </div>
-
-                    </div>
                     
                     <!-- 1. Tabla de Resumen de Interacciones (Moved Up) -->
                     <div class="admin-card mb-4" data-aos="fade-up" data-aos-delay="100">

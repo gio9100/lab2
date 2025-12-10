@@ -291,6 +291,7 @@ foreach($usuarios_normales as $usuario) {
                                                 <th>ID</th>
                                                 <th>Nombre</th>
                                                 <th>Email</th>
+                                                <th>Firma Digital</th>
                                                 <th>Fecha Registro</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
@@ -302,6 +303,16 @@ foreach($usuarios_normales as $usuario) {
                                                 <td><?= htmlspecialchars($usuario['id']) ?></td>
                                                 <td><?= htmlspecialchars($usuario['nombre']) ?></td>
                                                 <td><?= htmlspecialchars($usuario['correo']) ?></td>
+                                                <td>
+                                                    <?php 
+                                                    // Generar firma digital única para el usuario
+                                                    $data_to_hash = $usuario['id'] . $usuario['nombre'] . $usuario['correo'] . "LAB_EXPLORA_2024";
+                                                    $firma = strtoupper(substr(hash('sha256', $data_to_hash), 0, 16));
+                                                    ?>
+                                                    <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital Única">
+                                                        <?= $firma ?>
+                                                    </code>
+                                                </td>
                                                 <td><?= date('d/m/Y', strtotime($usuario['fecha_registro'])) ?></td>
                                                 <td>
                                                     <span class="status-badge active">Activo</span>

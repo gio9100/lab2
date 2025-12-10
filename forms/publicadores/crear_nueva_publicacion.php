@@ -224,7 +224,12 @@ $categorias = obtenerCategorias($conn);
                         <!-- Fin editor-main -->
                         
                         <!-- Parte derecha: Sidebar de IA -->
-                        <div class="ai-sidebar" data-aos="fade-left" data-aos-delay="200">
+                        <div class="ai-sidebar" id="aiSidebar" data-aos="fade-left" data-aos-delay="200">
+                            <!-- Botón de cerrar (solo visible en móvil) -->
+                            <button class="ai-close-btn" id="aiCloseBtn" style="display: none;">
+                                <i class="bi bi-x"></i>
+                            </button>
+                            
                             <h4><i class="bi bi-stars"></i> Asistente IA</h4>
                             <p class="text-muted small mb-4">Herramientas inteligentes para mejorar tu artículo</p>
                             
@@ -269,6 +274,14 @@ $categorias = obtenerCategorias($conn);
             </div>
         </div>
     </main>
+
+    <!-- Botón flotante para abrir asistente IA (solo móvil) -->
+    <button class="ai-toggle-btn" id="aiToggleBtn" title="Abrir Asistente IA">
+        <i class="bi bi-stars"></i>
+    </button>
+
+    <!-- Overlay oscuro (solo móvil) -->
+    <div class="ai-overlay" id="aiOverlay"></div>
 
     <!-- Botón volver arriba -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -450,6 +463,32 @@ $categorias = obtenerCategorias($conn);
             sidebarToggle.addEventListener('click', toggleSidebar);
             if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
             overlay.addEventListener('click', toggleSidebar);
+        }
+
+        // ========================================
+        // ASISTENTE DE IA RESPONSIVE
+        // ========================================
+        const aiToggleBtn = document.getElementById('aiToggleBtn');
+        const aiSidebar = document.getElementById('aiSidebar');
+        const aiOverlay = document.getElementById('aiOverlay');
+        const aiCloseBtn = document.getElementById('aiCloseBtn');
+
+        function toggleAISidebar() {
+            aiSidebar.classList.toggle('active');
+            aiOverlay.classList.toggle('active');
+            document.body.style.overflow = aiSidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        if (aiToggleBtn) {
+            aiToggleBtn.addEventListener('click', toggleAISidebar);
+        }
+
+        if (aiCloseBtn) {
+            aiCloseBtn.addEventListener('click', toggleAISidebar);
+        }
+
+        if (aiOverlay) {
+            aiOverlay.addEventListener('click', toggleAISidebar);
         }
     </script>
     <script>

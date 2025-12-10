@@ -457,44 +457,143 @@
 
 
 /* ====================================================================
-   RESPONSIVIDAD (MOBILE)
+   RESPONSIVIDAD (MOBILE) - MEJORADO CON BOTÓN FLOTANTE
    ==================================================================== */
 
-/* En pantallas menores a 768px (tablets y móviles) */
-@media (max-width: 768px) {
+/* Botón flotante para abrir el asistente en móvil */
+.ai-toggle-btn {
+    display: none;
+    /* Oculto por defecto en desktop */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    cursor: pointer;
+    z-index: 999;
+    font-size: 24px;
+    transition: all 0.3s ease;
+}
+
+.ai-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+}
+
+.ai-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* Overlay oscuro cuando el sidebar está abierto en móvil */
+.ai-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ai-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* En pantallas menores a 992px (tablets y móviles) */
+@media (max-width: 991px) {
+
+    /* Mostrar botón flotante */
+    .ai-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     /* El contenedor cambia a columna vertical */
     .editor-ai-container {
         flex-direction: column;
-        /* Apilar verticalmente */
     }
 
-    /* El sidebar ocupa todo el ancho */
+    /* El sidebar se convierte en modal lateral */
     .ai-sidebar {
-        width: 100%;
-        /* Ancho completo */
-        position: relative;
-        /* No sticky en móvil */
-        max-height: none;
-        /* Sin altura máxima */
-        margin-top: 20px;
-        /* Espacio arriba para separarlo del editor */
+        position: fixed;
+        top: 0;
+        right: -100%;
+        /* Oculto fuera de la pantalla */
+        width: 90%;
+        max-width: 400px;
+        height: 100vh;
+        max-height: 100vh;
+        z-index: 999;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+        transition: right 0.3s ease;
+        overflow-y: auto;
     }
+
+    /* Cuando está activo, se desliza desde la derecha */
+    .ai-sidebar.active {
+        right: 0;
+    }
+
+    /* Botón de cerrar en el sidebar móvil */
+    .ai-sidebar .ai-close-btn {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        z-index: 1000;
+        transition: all 0.2s ease;
+    }
+
+    .ai-sidebar .ai-close-btn:hover {
+        background: #c82333;
+        transform: rotate(90deg);
+    }
+
+    /* Agregar padding arriba para el botón de cerrar */
+    .ai-sidebar h4 {
+        padding-top: 15px;
+    }
+}
+
+/* En pantallas menores a 768px */
+@media (max-width: 768px) {
 
     /* Botones más pequeños en móvil */
     .ai-btn {
         padding: 12px 14px;
-        /* Menos padding */
         font-size: 0.9rem;
-        /* Texto ligeramente más pequeño */
     }
 
     /* Tags más pequeños en móvil */
     .tag-sugerencia {
         font-size: 0.85rem;
-        /* Texto más pequeño */
         padding: 6px 12px;
-        /* Menos padding */
+    }
+
+    /* Sidebar ocupa más ancho en pantallas pequeñas */
+    .ai-sidebar {
+        width: 95%;
+        max-width: none;
     }
 }
 
@@ -504,24 +603,30 @@
     /* Sidebar con menos padding para aprovechar espacio */
     .ai-sidebar {
         padding: 15px;
-        /* Menos espacio interno */
+        width: 100%;
     }
 
     /* Resultados más compactos */
     .ai-result-card {
         padding: 12px;
-        /* Menos espacio interno */
     }
 
     /* Botones de acción apilados verticalmente */
     .ai-actions {
         flex-direction: column;
-        /* Columna vertical */
     }
 
     .ai-actions .btn {
         width: 100%;
-        /* Ancho completo */
+    }
+
+    /* Botón flotante más pequeño */
+    .ai-toggle-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 22px;
+        bottom: 15px;
+        right: 15px;
     }
 }
 

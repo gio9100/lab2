@@ -45,7 +45,10 @@ function generarResumenIA() {
     // Llamar a la función que extrae las oraciones más importantes
     const resumenGenerado = extraerResumenInteligente(textoCompleto);
 
-    // Ocultar el spinner ya que terminó el procesamiento
+    // Guardar el resumen en una variable global para usarlo después
+    window.resumenGeneradoActual = resumenGenerado;
+
+    // Ocultar el spinner
     ocultarCargando('resumen');
 
     // Mostrar el resumen generado en el panel con un diseño bonito
@@ -56,7 +59,7 @@ function generarResumenIA() {
             </div>
             <p class="resultado-texto">${resumenGenerado}</p>
             <div class="ai-actions">
-                <button onclick="copiarAlResumen('${escapeHTML(resumenGenerado)}')" class="btn btn-sm btn-primary">
+                <button id="btn-usar-resumen" class="btn btn-sm btn-primary">
                     <i class="bi bi-clipboard"></i> Usar este resumen
                 </button>
                 <button onclick="regenerarResumen()" class="btn btn-sm btn-outline-secondary">
@@ -65,85 +68,101 @@ function generarResumenIA() {
             </div>
         </div>
     `;
+
+    // Agregar event listener al botón después de crearlo
+    document.getElementById('btn-usar-resumen').addEventListener('click', function () {
+        copiarAlResumen(window.resumenGeneradoActual);
+    });
 }
 
 // --------------------------------------------------------------------
 // Función auxiliar que hace el trabajo pesado de extraer el resumen
-// Usa un algoritmo extractivo simple pero efectivo
+// Usa un algoritmo extractivo mejorado para generar resúmenes coherentes
 // --------------------------------------------------------------------
 function extraerResumenInteligente(texto) {
     // PASO 1: Dividir el texto en oraciones individuales
-    // Esta expresión regular busca puntos, signos de exclamación o interrogación
-    // seguidos de un espacio (fin de oración)
     const oraciones = texto.match(/[^\.!\?]+[\.!\?]+/g) || [];
 
-    // Si no hay suficientes oraciones, devolver el texto tal cual
-    if (oraciones.length < 3) {
-        return texto.substring(0, 280) + '...';
+    // Si no hay suficientes oraciones, devolver el inicio del texto
+    if (oraciones.length < 2) {
+        return texto.substring(0, 300).trim() + (texto.length > 300 ? '...' : '');
     }
 
-    // PASO 2: Calcular un "peso" o "importancia" para cada oración
-    // Las oraciones con más palabras "importantes" tendrán mayor peso
+    // PASO 2: Calcular peso de cada oración
     const oracionesPonderadas = oraciones.map((oracion, indice) => {
-        // Limpiar la oración y convertir a minúsculas para análisis
         const oracionLimpia = oracion.toLowerCase().trim();
-
-        // Dividir la oración en palabras individuales
         const palabras = oracionLimpia.split(/\s+/);
 
-        // Contar cuántas palabras "importantes" tiene (más de 5 letras)
-        // Las palabras largas suelen ser más significativas (no artículos, preposiciones, etc.)
+        // Contar palabras importantes (más de 5 letras)
         const palabrasImportantes = palabras.filter(palabra => palabra.length > 5).length;
 
-        // La primera oración del texto suele ser más importante (introducción)
-        // Le damos un multiplicador de 2 para darle más peso
-        const bonusPosicion = indice === 0 ? 2 : 1;
+        // Bonificaciones
+        const bonusPosicion = indice === 0 ? 2.5 : (indice === 1 ? 1.5 : 1);
+        const tieneNumeros = /\d/.test(oracion) ? 1.3 : 1;
 
-        // Si la oración contiene números, probablemente tenga datos importantes
-        const tieneNumeros = /\d/.test(oracion) ? 1.5 : 1;
+        // Palabras clave científicas
+        const palabrasClave = ['resultado', 'conclusión', 'objetivo', 'método', 'análisis',
+            'estudio', 'investigación', 'demostrar', 'evidencia', 'dato'];
+        const tienePalabrasClave = palabrasClave.some(pc => oracionLimpia.includes(pc)) ? 1.5 : 1;
 
-        // Calcular el peso final de la oración
-        const peso = palabrasImportantes * bonusPosicion * tieneNumeros;
+        // Penalizar oraciones muy cortas o muy largas
+        const longitudIdeal = palabras.length >= 8 && palabras.length <= 25 ? 1.2 : 0.8;
 
-        // Devolver un objeto con la oración y su peso calculado
+        const peso = palabrasImportantes * bonusPosicion * tieneNumeros * tienePalabrasClave * longitudIdeal;
+
         return {
-            texto: oracion.trim(),  // El texto de la oración sin espacios extras
-            peso: peso,              // Su puntuación de importancia
-            indiceOriginal: indice   // Su posición original (para mantener orden)
+            texto: oracion.trim(),
+            peso: peso,
+            indiceOriginal: indice,
+            longitud: oracion.length
         };
     });
 
-    // PASO 3: Ordenar las oraciones de mayor a menor peso
-    // y seleccionar las 3 más importantes
+    // PASO 3: Seleccionar las mejores oraciones
     const mejoresOraciones = oracionesPonderadas
-        .sort((a, b) => b.peso - a.peso)  // Ordenar de mayor a menor peso
-        .slice(0, 3);  // Tomar solo las 3 primeras
+        .sort((a, b) => b.peso - a.peso)
+        .slice(0, 3);
 
-    // PASO 4: Re-ordenar las oraciones seleccionadas según su posición original
-    // para que el resumen tenga sentido cronológico
+    // PASO 4: Re-ordenar cronológicamente
     mejoresOraciones.sort((a, b) => a.indiceOriginal - b.indiceOriginal);
 
-    // PASO 5: Unir las oraciones seleccionadas con espacios
+    // PASO 5: Construir resumen
     let resumenFinal = mejoresOraciones.map(o => o.texto).join(' ');
 
-    // PASO 6: Si el resumen es muy largo, cortarlo a 280 caracteres
-    if (resumenFinal.length > 280) {
-        resumenFinal = resumenFinal.substring(0, 277) + '...';
+    // PASO 6: Limitar a 300 caracteres de forma inteligente
+    if (resumenFinal.length > 300) {
+        // Cortar en el último punto antes de 300 caracteres
+        const cortado = resumenFinal.substring(0, 300);
+        const ultimoPunto = cortado.lastIndexOf('.');
+
+        if (ultimoPunto > 150) {
+            resumenFinal = cortado.substring(0, ultimoPunto + 1);
+        } else {
+            resumenFinal = cortado.substring(0, 297) + '...';
+        }
     }
 
-    // Devolver el resumen generado
-    return resumenFinal;
+    return resumenFinal.trim();
 }
 
 // --------------------------------------------------------------------
 // Función para copiar el resumen generado al campo de resumen del formulario
 // --------------------------------------------------------------------
 function copiarAlResumen(texto) {
+    console.log('📋 Intentando copiar resumen:', texto);
+
     // Obtener el elemento textarea del resumen en el formulario
     const campoResumen = document.getElementById('resumen');
 
+    if (!campoResumen) {
+        console.error('❌ No se encontró el campo de resumen');
+        mostrarToast('❌ Error: Campo de resumen no encontrado', 'error');
+        return;
+    }
+
     // Establecer el valor del textarea con el resumen generado
     campoResumen.value = texto;
+    console.log('✅ Resumen copiado al campo');
 
     // Disparar el evento 'input' para que se actualice el contador de caracteres
     campoResumen.dispatchEvent(new Event('input'));
@@ -607,171 +626,202 @@ function buscarErroresGramaticales(texto) {
 // ====================================================================
 
 function formatearContenidoProfesional() {
-    // Mostrar indicador de carga
     mostrarCargando('formato');
 
-    // Obtener el contenido HTML del editor Quill
-    // Usamos .root.innerHTML porque necesitamos mantener el formato HTML
     const contenidoHTML = quill.root.innerHTML;
 
-    // Verificar que haya contenido para formatear
     if (quill.getText().trim().length < 10) {
         ocultarCargando('formato');
         mostrarToast('⚠️ Escribe algo de contenido primero', 'warning');
         return;
     }
 
-    // Crear un elemento div temporal para manipular el HTML
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = contenidoHTML;
 
-    // PASO 1: Procesar cada párrafo (elementos <p>)
+    let cambiosRealizados = [];
+
+    // PASO 1: Procesar cada párrafo y limpiar formato
     const parrafos = tempDiv.querySelectorAll('p');
+    let parrafosCorregidos = 0;
 
     parrafos.forEach((parrafo, indice) => {
-        // Obtener el texto del párrafo
         let texto = parrafo.textContent;
 
-        // Si el párrafo está vacío, saltar
         if (!texto.trim()) return;
 
-        // --- CORRECCIÓN 1: Capitalizar primera letra ---
-        // La primera letra de cada párrafo debe ser mayúscula
+        const textoOriginal = texto;
+
+        // Capitalizar primera letra
         texto = texto.charAt(0).toUpperCase() + texto.slice(1);
 
-        // --- CORRECCIÓN 2: Espacios después de puntuación ---
-        // Agregar espacio después de punto, coma, punto y coma si no existe
-        texto = texto.replace(/\./g, '. ');      // Punto seguido de espacio
-        texto = texto.replace(/,/g, ', ');       // Coma seguida de espacio
-        texto = texto.replace(/;/g, '; ');       // Punto y coma seguido de espacio
-        texto = texto.replace(/:/g, ': ');       // Dos puntos seguidos de espacio
+        // Espacios después de puntuación (solo si no existe)
+        texto = texto.replace(/\.(?!\s|$)/g, '. ');
+        texto = texto.replace(/,(?!\s|$)/g, ', ');
+        texto = texto.replace(/;(?!\s|$)/g, '; ');
+        texto = texto.replace(/:(?!\s|$)/g, ': ');
 
-        // --- CORRECCIÓN 3: Eliminar espacios múltiples ---
-        // Reemplazar 2 o más espacios por uno solo
+        // Eliminar espacios múltiples
         texto = texto.replace(/\s+/g, ' ');
 
-        // --- CORRECCIÓN 4: Eliminar espacios antes de puntuación ---
-        // "Hola ." → "Hola."
-        texto = texto.replace(/\s+\./g, '.');
-        texto = texto.replace(/\s+,/g, ',');
-        texto = texto.replace(/\s+;/g, ';');
-        texto = texto.replace(/\s+:/g, ':');
+        // Eliminar espacios antes de puntuación
+        texto = texto.replace(/\s+([.,;:!?])/g, '$1');
 
-        // --- CORRECCIÓN 5: Corregir espacios dobles después de corrección ---
-        // Después de agregar espacios, pueden quedar dobles (ejemplo: ".  ")
-        texto = texto.replace(/\.\s{2,}/g, '. ');
-        texto = texto.replace(/,\s{2,}/g, ', ');
+        // Corregir espacios dobles después de puntuación
+        texto = texto.replace(/([.,;:])\s{2,}/g, '$1 ');
 
-        // --- MEJORA 1: Detectar y resaltar términos científicos clave ---
-        // Lista de palabras que suelen ser importantes en textos científicos
-        const terminosClave = [
-            'hipótesis', 'resultado', 'conclusión', 'metodología',
-            'experimento', 'análisis', 'investigación', 'estudio',
-            'observación', 'dato', 'evidencia', 'teoría'
+        if (texto !== textoOriginal) {
+            parrafosCorregidos++;
+        }
+
+        // Actualizar contenido
+        parrafo.textContent = texto;
+
+        // Agregar margen entre párrafos
+        if (indice < parrafos.length - 1) {
+            parrafo.style.marginBottom = '15px';
+        }
+    });
+
+    if (parrafosCorregidos > 0) {
+        cambiosRealizados.push(`${parrafosCorregidos} párrafos corregidos`);
+    }
+
+    // PASO 2: Detectar y formatear TÍTULOS de forma MUY selectiva
+    // SOLO convertir a título si tiene características MUY específicas
+    const parrafosArray = Array.from(tempDiv.querySelectorAll('p'));
+    let titulosH2 = 0;
+    let titulosH3 = 0;
+
+    parrafosArray.forEach((parrafo, indice) => {
+        const texto = parrafo.textContent.trim();
+        const palabras = texto.split(/\s+/);
+
+        // Palabras clave que indican que ES un título
+        const palabrasClaveTitulo = [
+            '¿qué es', '¿qué son', 'introducción', 'conclusión', 'resumen',
+            'objetivos', 'metodología', 'resultados', 'discusión',
+            'importancia', 'aplicaciones', 'características', 'definición',
+            'antecedentes', 'marco teórico', 'hipótesis'
         ];
 
-        // Por cada término clave, si está al inicio de una oración, resaltarlo
-        terminosClave.forEach(termino => {
-            // Crear expresión regular para buscar el término al inicio de oración
-            // \b = borde de palabra, para no encontrar en medio de otras palabras
-            const regex = new RegExp('(^|\\. )(' + termino + ')', 'gi');
+        const textoLower = texto.toLowerCase();
+        const tienePalabraClave = palabrasClaveTitulo.some(pc => textoLower.includes(pc));
 
-            // Reemplazar con el término en negrita
-            texto = texto.replace(regex, '$1<strong>$2</strong>');
-        });
+        // Detectar si empieza con emoji (común en títulos)
+        const empiezaConEmoji = /^[\u{1F300}-\u{1F9FF}]/u.test(texto);
 
-        // Act ualizar el contenido del párrafo con el texto corregido
-        parrafo.innerHTML = texto;
+        // TÍTULO PRINCIPAL (H2): Solo si tiene emoji O palabra clave específica
+        const esMuyCorto = texto.length >= 10 && texto.length <= 60;
+        const noTerminaEnPunto = !texto.endsWith('.');
+        const pocasPalabras = palabras.length >= 2 && palabras.length <= 10;
+        const noEsUltimo = indice < parrafosArray.length - 2;
 
-        // --- MEJORA 2: Agregar margen entre párrafos para mejor legibilidad ---
-        // Solo si no es el último párrafo
-        if (indice < parrafos.length - 1) {
-            parrafo.style.marginBottom = '12px';
+        if ((empiezaConEmoji || tienePalabraClave) && esMuyCorto && noTerminaEnPunto && pocasPalabras && noEsUltimo) {
+            const h2 = document.createElement('h2');
+            h2.textContent = texto;
+            h2.style.marginTop = '25px';
+            h2.style.marginBottom = '12px';
+            h2.style.fontWeight = 'bold';
+            h2.style.fontSize = '1.4em';
+            h2.style.color = '#2c3e50';
+            parrafo.replaceWith(h2);
+            titulosH2++;
+        }
+        // SUBTÍTULO (H3): Solo si tiene número al inicio (1., 2., etc.) O emoji
+        else {
+            const empiezaConNumero = /^\d+\./.test(texto);
+            const esCortoMedio = texto.length >= 8 && texto.length <= 70;
+            const tienePocasPalabras = palabras.length >= 2 && palabras.length <= 10;
+
+            if ((empiezaConNumero || empiezaConEmoji) && esCortoMedio && noTerminaEnPunto && tienePocasPalabras && noEsUltimo) {
+                // Verificar que el siguiente párrafo NO sea también un título
+                const siguienteParrafo = parrafosArray[indice + 1];
+                const siguienteTexto = siguienteParrafo ? siguienteParrafo.textContent.trim() : '';
+                const siguienteEsLargo = siguienteTexto.length > 50;
+                const siguienteNoEsLista = !/^[\-\*\d]/.test(siguienteTexto);
+
+                if (siguienteEsLargo && siguienteNoEsLista) {
+                    const h3 = document.createElement('h3');
+                    h3.textContent = texto;
+                    h3.style.marginTop = '18px';
+                    h3.style.marginBottom = '8px';
+                    h3.style.fontWeight = '600';
+                    h3.style.fontSize = '1.15em';
+                    h3.style.color = '#34495e';
+                    parrafo.replaceWith(h3);
+                    titulosH3++;
+                }
+            }
         }
     });
 
-    // PASO 2: Detectar y formatear posibles títulos/subtítulos
-    // Si un párrafo es muy corto (< 60 caracteres) y term ina sin punto,
-    // probablemente sea un título
-    parrafos.forEach(parrafo => {
-        const texto = parrafo.textContent.trim();
+    if (titulosH2 > 0) {
+        cambiosRealizados.push(`${titulosH2} título${titulosH2 > 1 ? 's' : ''} principal${titulosH2 > 1 ? 'es' : ''} (H2)`);
+    }
+    if (titulosH3 > 0) {
+        cambiosRealizados.push(`${titulosH3} subtítulo${titulosH3 > 1 ? 's' : ''} (H3)`);
+    }
 
-        // Características de un título:
-        // - Menos de 60 caracteres
-        // - No termina en punto
-        // - No está vacío
-        if (texto.length > 0 && texto.length < 60 && !texto.endsWith('.')) {
-            // Convertir a header nivel 3 (subtítulo)
-            const h3 = document.createElement('h3');
-            h3.textContent = texto;
-            h3.style.marginTop = '20px';
-            h3.style.marginBottom = '10px';
-
-            // Reemplazar el párrafo con el h3
-            parrafo.replaceWith(h3);
-        }
-    });
-
-    // PASO 3: Procesar listas (si existen)
+    // PASO 3: Mejorar listas
     const listas = tempDiv.querySelectorAll('ul, ol');
+    let listasFormateadas = 0;
 
     listas.forEach(lista => {
-        // Agregar espaciado a cada elemento de la lista
         const items = lista.querySelectorAll('li');
 
         items.forEach(item => {
             let texto = item.textContent.trim();
+            const textoOriginal = texto;
 
-            // Capitalizar primera letra de cada elemento
             texto = texto.charAt(0).toUpperCase() + texto.slice(1);
 
-            // Si no termina en punto, agregarlo (buena práctica)
-            if (!texto.endsWith('.') && !texto.endsWith(':')) {
+            if (!texto.endsWith('.') && !texto.endsWith(':') && !texto.endsWith('?') && !texto.endsWith('!') && texto.length > 10) {
                 texto += '.';
             }
 
-            item.textContent = texto;
+            if (texto !== textoOriginal) {
+                item.textContent = texto;
+            }
         });
 
-        // Agregar margen a la lista completa
-        lista.style.marginTop = '10px';
-        lista.style.marginBottom = '10px';
+        lista.style.marginTop = '15px';
+        lista.style.marginBottom = '15px';
+        lista.style.paddingLeft = '25px';
+        listasFormateadas++;
     });
 
-    // PASO 4: Procesar negritas existentes (limpiarlas si son excesivas)
-    const negritas = tempDiv.querySelectorAll('strong, b');
-
-    // Si hay demasiadas negritas (más de 20% del texto), es contraproducente
-    const totalPalabras = quill.getText().split(/\s+/).length;
-    let palabrasEnNegrita = 0;
-
-    negritas.forEach(negrita => {
-        palabrasEnNegrita += negrita.textContent.split(/\s+/).length;
-    });
-
-    // Si más del 30% está en negrita, advertir
-    const porcentajeNegrita = (palabrasEnNegrita / totalPalabras) * 100;
-
-    // PASO 5: Aplicar el contenido formateado al editor
-    quill.root.innerHTML = tempDiv.innerHTML;
-
-    // Ocultar indicador de carga
-    ocultarCargando('formato');
-
-    // Preparar mensaje de resumen
-    let mensajeResumen = '<ul style="margin: 0; padding-left: 20px;">';
-    mensajeResumen += '<li>✅ Espaciado corregido</li>';
-    mensajeResumen += '<li>✅ Puntuación normalizada</li>';
-    mensajeResumen += '<li>✅ Capitalización ajustada</li>';
-    mensajeResumen += '<li>✅ Términos clave resaltados</li>';
-
-    if (porcentajeNegrita > 30) {
-        mensajeResumen += '<li>⚠️ Demasiadas negritas (' + porcentajeNegrita.toFixed(0) + '%), considera reducirlas</li>';
+    if (listasFormateadas > 0) {
+        cambiosRealizados.push(`${listasFormateadas} lista${listasFormateadas > 1 ? 's' : ''} mejorada${listasFormateadas > 1 ? 's' : ''}`);
     }
 
+    // PASO 4: Mejorar negritas y énfasis
+    const negritas = tempDiv.querySelectorAll('strong, b');
+    negritas.forEach(negrita => {
+        negrita.style.fontWeight = 'bold';
+        negrita.style.color = '#2c3e50';
+    });
+
+    // PASO 5: Aplicar contenido formateado
+    quill.root.innerHTML = tempDiv.innerHTML;
+
+    ocultarCargando('formato');
+
+    // Mensaje de resumen detallado
+    let mensajeResumen = '<ul style="margin: 0; padding-left: 20px;">';
+
+    if (cambiosRealizados.length > 0) {
+        cambiosRealizados.forEach(cambio => {
+            mensajeResumen += `<li>✅ ${cambio}</li>`;
+        });
+    } else {
+        mensajeResumen += '<li>✅ Formato verificado y optimizado</li>';
+    }
+
+    mensajeResumen += '<li>✅ Espaciado y puntuación normalizados</li>';
+    mensajeResumen += '<li>✅ Estructura profesional aplicada</li>';
     mensajeResumen += '</ul>';
 
-    // Mostrar resultado
     document.getElementById('formato-ia-resultado').innerHTML = `
         <div class="ai-result-card">
             <div class="ai-badge-header">
@@ -781,12 +831,11 @@ function formatearContenidoProfesional() {
             ${mensajeResumen}
             <div class="alert alert-success mt-3 mb-0" style="font-size: 0.9rem;">
                 <i class="bi bi-check-circle"></i>
-                El contenido ha sido formateado siguiendo estándares profesionales para artículos científicos.
+                El contenido ha sido formateado siguiendo estándares profesionales.
             </div>
         </div>
     `;
 
-    // Mostrar toast de confirmación
     mostrarToast('✅ Contenido formateado profesionalmente', 'success');
 }
 

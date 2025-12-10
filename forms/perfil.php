@@ -41,23 +41,92 @@ function obtenerLeerMasTarde($usuario_id, $conexion) {
 }
 
 // Procesar subida de foto
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
-    $target_dir = "../assets/img/uploads/";
-    $imageFileType = strtolower(pathinfo($_FILES["imagen"]["name"], PATHINFO_EXTENSION));
-    $new_filename = "usuario_" . $usuario_id . "_" . time() . "." . $imageFileType;
-    $target_file = $target_dir . $new_filename;
+$mensaje_foto = "";
+$exito_foto = false;
+
+// Procesar eliminación de foto
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_foto'])) {
+    // Obtener la foto actual del usuario
+    $stmt = $conexion->prepare("SELECT imagen FROM usuarios WHERE id = ?");
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    $datos_usuario = $resultado->fetch_assoc();
+    $stmt->close();
     
-    $check = getimagesize($_FILES["imagen"]["tmp_name"]);
-    if($check !== false && $_FILES["imagen"]["size"] <= 2000000) {
-        if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
-            $stmt = $conexion->prepare("UPDATE usuarios SET imagen = ? WHERE id = ?");
-            $foto_path = "assets/img/uploads/" . $new_filename;
-            $stmt->bind_param("si", $foto_path, $usuario_id);
-            $stmt->execute();
-            $stmt->close();
-            header("Location: perfil.php");
-            exit();
+    // Eliminar archivo físico si existe
+    if (!empty($datos_usuario['imagen']) && file_exists('../' . $datos_usuario['imagen'])) {
+        @unlink('../' . $datos_usuario['imagen']);
+    }
+    
+    // Actualizar BD para poner NULL en la columna imagen
+    $stmt = $conexion->prepare("UPDATE usuarios SET imagen = NULL WHERE id = ?");
+    $stmt->bind_param("i", $usuario_id);
+    
+    if ($stmt->execute()) {
+        $stmt->close();
+        // Recargar datos del usuario
+        $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE id = ?");
+        $stmt->bind_param("i", $usuario_id);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        $usuario = $resultado->fetch_assoc();
+        $stmt->close();
+        
+        $mensaje_foto = "✅ Foto eliminada correctamente";
+        $exito_foto = true;
+    } else {
+        $mensaje_foto = "❌ Error al eliminar la foto de la base de datos";
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto_perfil'])) {
+    $target_dir = "../assets/img/uploads/";
+    
+    // Validar que el archivo fue subido sin errores
+    if ($_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+        $imageFileType = strtolower(pathinfo($_FILES["foto_perfil"]["name"], PATHINFO_EXTENSION));
+        $new_filename = "usuario_" . $usuario_id . "_" . time() . "." . $imageFileType;
+        $target_file = $target_dir . $new_filename;
+        
+        // Validar que sea una imagen real y tamaño
+        $check = getimagesize($_FILES["foto_perfil"]["tmp_name"]);
+        if($check !== false && $_FILES["foto_perfil"]["size"] <= 2000000) {
+            // Validar extensiones permitidas
+            $extensiones_permitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (in_array($imageFileType, $extensiones_permitidas)) {
+                if (move_uploaded_file($_FILES["foto_perfil"]["tmp_name"], $target_file)) {
+                    // Actualizar base de datos con la columna correcta
+                    $stmt = $conexion->prepare("UPDATE usuarios SET imagen = ? WHERE id = ?");
+                    $foto_path = "assets/img/uploads/" . $new_filename;
+                    $stmt->bind_param("si", $foto_path, $usuario_id);
+                    
+                    if ($stmt->execute()) {
+                        $stmt->close();
+                        // Recargar datos del usuario
+                        $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE id = ?");
+                        $stmt->bind_param("i", $usuario_id);
+                        $stmt->execute();
+                        $resultado = $stmt->get_result();
+                        $usuario = $resultado->fetch_assoc();
+                        $stmt->close();
+                        
+                        $mensaje_foto = "✅ Foto actualizada correctamente";
+                        $exito_foto = true;
+                    } else {
+                        $mensaje_foto = "❌ Error al actualizar la base de datos";
+                    }
+                } else {
+                    $mensaje_foto = "❌ Error al mover el archivo subido";
+                }
+            } else {
+                $mensaje_foto = "❌ Formato no permitido. Usa JPG, PNG, GIF o WEBP";
+            }
+        } else {
+            $mensaje_foto = "❌ El archivo debe ser una imagen válida y menor a 2MB";
         }
+    } else {
+        $mensaje_foto = "❌ Error al subir el archivo: " . $_FILES['foto_perfil']['error'];
     }
 }
 ?>
@@ -144,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
         <!-- Perfil Header -->
         <div class="profile-card">
             <div class="profile-header">
-                <img src="<?= !empty($usuario['foto_perfil']) ? '../' . htmlspecialchars($usuario['foto_perfil']) : '../assets/img/defecto.png' ?>" 
+                <img src="<?= !empty($usuario['imagen']) ? '../' . htmlspecialchars($usuario['imagen']) : '../assets/img/defecto.png' ?>" 
                      alt="Foto de perfil" class="profile-avatar">
                 <h2><?= htmlspecialchars($usuario['nombre']) ?></h2>
                 <p class="text-muted"><?= htmlspecialchars($usuario['correo']) ?></p>
@@ -165,15 +234,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
                 <!-- Subir Foto -->
                 <div class="profile-card">
                     <h5 class="mb-3"><i class="bi bi-camera me-2"></i>Actualizar Foto de Perfil</h5>
+                    
+                    <?php if($mensaje_foto): ?>
+                    <div class="alert alert-<?= $exito_foto ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
+                        <?= htmlspecialchars($mensaje_foto) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <?php endif; ?>
+                    
                     <form method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <input type="file" name="foto_perfil" class="form-control" accept="image/*" required>
-                            <small class="text-muted">JPG, PNG. Máximo 2MB</small>
+                            <small class="text-muted">JPG, PNG, GIF, WEBP. Máximo 2MB</small>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-upload me-2"></i>Subir Foto
                         </button>
                     </form>
+                    
+                    <?php if (!empty($usuario['imagen'])): ?>
+                        <form method="POST" class="mt-2">
+                            <input type="hidden" name="eliminar_foto" value="1">
+                            <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('¿Estás seguro de eliminar tu foto de perfil?')">
+                                <i class="bi bi-trash me-2"></i>Eliminar Foto
+                            </button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -188,8 +274,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
                         </div>
                         <div class="credential-body">
                             <div class="credential-avatar">
-                                <?php if (!empty($usuario['foto_perfil'])): ?>
-                                    <img src="../<?= htmlspecialchars($usuario['foto_perfil']) ?>">
+                                <?php if (!empty($usuario['imagen'])): ?>
+                                    <img src="../<?= htmlspecialchars($usuario['imagen']) ?>">
                                 <?php else: ?>
                                     <i class="bi bi-person-fill" style="font-size: 2rem; color: #0dcaf0; padding-top: 15px;"></i>
                                 <?php endif; ?>

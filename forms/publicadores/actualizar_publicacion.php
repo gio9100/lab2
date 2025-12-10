@@ -39,13 +39,10 @@ if ($result->num_rows === 0) {
 // trim() = quita espacios al inicio y final
 $titulo = trim($_POST['titulo'] ?? '');
 $categoria_id = intval($_POST['categoria_id'] ?? 0);
-$tipo = $_POST['tipo'] ?? 'articulo';
 $resumen = trim($_POST['resumen'] ?? '');
-$meta_descripcion = trim($_POST['meta_descripcion'] ?? '');
 $contenido = $_POST['contenido'] ?? '';
-$tags = trim($_POST['tags'] ?? '');
-$estado = $_POST['estado'] ?? 'borrador';
-$fecha_publicacion = !empty($_POST['fecha_publicacion']) ? $_POST['fecha_publicacion'] : null;
+// Estado siempre es 'revision' al editar
+$estado = 'revision';
 
 // Validar campos obligatorios
 if (empty($titulo)) {
@@ -110,30 +107,22 @@ if ($imagen_principal) {
     $query = "UPDATE publicaciones SET 
               titulo = ?,
               categoria_id = ?,
-              tipo = ?,
               resumen = ?,
-              meta_descripcion = ?,
               contenido = ?,
-              tags = ?,
               estado = ?,
-              fecha_publicacion = ?,
               imagen_principal = ?,
               fecha_actualizacion = NOW()
               WHERE id = ? AND publicador_id = ?";
     
     $stmt = $conn->prepare($query);
-    // "sissssssssii" = tipos de datos para bind_param
-    // s=string, i=integer
-    $stmt->bind_param("sissssssssii", 
+    // Tipos: s=string, i=integer
+    // titulo(s), categoria_id(i), resumen(s), contenido(s), estado(s), imagen_principal(s), id(i), publicador_id(i)
+    $stmt->bind_param("sissssii", 
         $titulo, 
         $categoria_id, 
-        $tipo, 
         $resumen, 
-        $meta_descripcion, 
         $contenido, 
-        $tags, 
         $estado, 
-        $fecha_publicacion,
         $imagen_principal,
         $publicacion_id,
         $publicador_id
@@ -143,27 +132,21 @@ if ($imagen_principal) {
     $query = "UPDATE publicaciones SET 
               titulo = ?,
               categoria_id = ?,
-              tipo = ?,
               resumen = ?,
-              meta_descripcion = ?,
               contenido = ?,
-              tags = ?,
               estado = ?,
-              fecha_publicacion = ?,
               fecha_actualizacion = NOW()
               WHERE id = ? AND publicador_id = ?";
     
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sississsii", 
+    // Tipos: s=string, i=integer
+    // titulo(s), categoria_id(i), resumen(s), contenido(s), estado(s), id(i), publicador_id(i)
+    $stmt->bind_param("sisssii", 
         $titulo, 
         $categoria_id, 
-        $tipo, 
         $resumen, 
-        $meta_descripcion, 
         $contenido, 
-        $tags, 
         $estado, 
-        $fecha_publicacion,
         $publicacion_id,
         $publicador_id
     );

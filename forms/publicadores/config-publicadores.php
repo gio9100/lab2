@@ -18,7 +18,8 @@ date_default_timezone_set('America/Mexico_City');
 
 // Verifica credenciales de publicador y retorna sus datos
 function loginPublicador($email, $password, $conn) {
-    $query = "SELECT * FROM publicadores WHERE email = ? AND estado = 'activo'";
+    // Primero buscamos el publicador sin importar el estado
+    $query = "SELECT * FROM publicadores WHERE email = ?";
     
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
@@ -30,13 +31,23 @@ function loginPublicador($email, $password, $conn) {
         
         // password_verify() = compara contraseña con hash
         if (password_verify($password, $publicador['password'])) {
-            // Actualizar último acceso
-            $update_query = "UPDATE publicadores SET ultimo_acceso = NOW() WHERE id = ?";
-            $update_stmt = $conn->prepare($update_query);
-            $update_stmt->bind_param("i", $publicador['id']);
-            $update_stmt->execute();
-            
-            return $publicador;
+            // Verificar el estado del publicador
+            if ($publicador['estado'] === 'activo') {
+                // Actualizar último acceso
+                $update_query = "UPDATE publicadores SET ultimo_acceso = NOW() WHERE id = ?";
+                $update_stmt = $conn->prepare($update_query);
+                $update_stmt->bind_param("i", $publicador['id']);
+                $update_stmt->execute();
+                
+                return $publicador;
+            } else {
+                // Retornar array con información del estado
+                return [
+                    'estado_cuenta' => $publicador['estado'],
+                    'nombre' => $publicador['nombre'],
+                    'email' => $publicador['email']
+                ];
+            }
         }
     }
     

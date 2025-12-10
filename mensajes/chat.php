@@ -142,14 +142,12 @@ checkAuth();
         </div>
     </header>
 
-    <!-- GLOBAL SIDEBAR (Hidden by default, toggled via JS) -->
     <div class="sidebar-wrapper" id="sidebarWrapper" style="z-index: 9999;">
         <div class="d-flex justify-content-end d-md-none p-2">
             <button class="btn-close" id="sidebarClose"></button>
         </div>
         <?php 
         $path_prefix = '../forms/publicadores/';
-        // Adjust for admin if needed, but per request "publicadores"
         if(isset($current_user_role) && $current_user_role == 'admin') {
             $path_prefix = '../forms/admins/';
             include '../forms/admins/sidebar-admin.php'; 

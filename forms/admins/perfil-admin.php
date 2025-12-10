@@ -364,7 +364,6 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                                 <div class="card-body">
                                     <form method="POST" action="">
                                         <input type="hidden" name="actualizar_datos" value="1">
-                                        <!-- (Foto movida a la derecha) -->
 
                                         <div class="mb-3">
                                             <label for="nombre" class="form-label">Nombre Completo</label>
@@ -392,39 +391,9 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                             </div>
                         </div>
 
-                        <!-- SECCIÓN 2FA -->
+                        <!-- Columna Derecha: Foto de Perfil + 2FA -->
                         <div class="col-lg-6 mb-4">
-                            <div class="card">
-                                <div class="card-header bg-white">
-                                    <h5 class="card-title mb-0">
-                                        <i class="bi bi-shield-lock me-2"></i>
-                                        Verificación en 2 Pasos
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <p class="text-muted">
-                                        Protege tu cuenta con una capa extra de seguridad. Al iniciar sesión, 
-                                        recibirás un código de 6 dígitos en tu correo electrónico.
-                                    </p>
-                                    
-                                    <div id="2fa-status" class="mb-3">
-                                        <!-- El estado se carga dinámicamente -->
-                                    </div>
-                                    
-                                    <button id="toggle-2fa-btn" class="btn btn-primary" onclick="togglear2FA()">
-                                        <i class="bi bi-gear"></i> <span id="btn-text">Cargando...</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <!-- Columna Derecha: Credencial Digital -->
-
-                        <!-- Columna Derecha: Credencial Digital -->
-                        <div class="col-lg-6 mb-4">
-                            <!-- TARJETA PARA SUBIR FOTO (Arriba de la credencial) -->
+                            <!-- TARJETA PARA SUBIR FOTO -->
                             <div class="card mb-4">
                                 <div class="card-header bg-white">
                                     <h5 class="card-title mb-0">Foto de Perfil</h5>
@@ -459,15 +428,43 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                                 </div>
                             </div>
 
-                            <!-- CREDENCIAL DIGITAL -->
-                            <div class="card h-100">
+                            <!-- SECCIÓN 2FA -->
+                            <div class="card">
+                                <div class="card-header bg-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-shield-lock me-2"></i>
+                                        Verificación en 2 Pasos
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted">
+                                        Protege tu cuenta con una capa extra de seguridad. Al iniciar sesión, 
+                                        recibirás un código de 6 dígitos en tu correo electrónico.
+                                    </p>
+                                    
+                                    <div id="2fa-status" class="mb-3">
+                                        <!-- El estado se carga dinámicamente -->
+                                    </div>
+                                    
+                                    <button id="toggle-2fa-btn" class="btn btn-primary w-100" onclick="togglear2FA()">
+                                        <i class="bi bi-gear"></i> <span id="btn-text">Cargando...</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CREDENCIAL DIGITAL - Fila completa abajo -->
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="card">
                                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                     <h5 class="card-title mb-0">Credencial Digital</h5>
                                     <button class="btn btn-outline-danger btn-sm no-print" onclick="descargarCredencial()">
                                         <i class="bi bi-file-earmark-pdf-fill me-1"></i>Descargar Oficial
                                     </button>
                                 </div>
-                                <div class="card-body d-flex align-items-center justify-content-center bg-light">
+                                <div class="card-body d-flex align-items-center justify-content-center bg-light" style="min-height: 400px;">
                                     
                                     <!-- AQUI EMPIEZA LA CREDENCIAL QUE SE VA A IMPRIMIR -->
                                     <div id="credencial-content" class="credential-card">
