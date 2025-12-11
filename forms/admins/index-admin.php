@@ -89,7 +89,39 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
 
     <!-- Main CSS -->
     <link href="../../assets/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css-admins/admin.css">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.css?v=2.0">
+    
+    <!-- Estilos inline para badges de estado (fallback) -->
+    <style>
+        .status-badge {
+            display: inline-block !important;
+            padding: 0.35em 0.65em !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            line-height: 1 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            vertical-align: baseline !important;
+            border-radius: 0.375rem !important;
+            text-transform: capitalize !important;
+        }
+        .status-badge.pendiente {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+        }
+        .status-badge.activo {
+            background-color: #28a745 !important;
+            color: #fff !important;
+        }
+        .status-badge.suspendido {
+            background-color: #dc3545 !important;
+            color: #fff !important;
+        }
+        .status-badge.rechazado {
+            background-color: #6c757d !important;
+            color: #fff !important;
+        }
+    </style>
     
     <!-- Driver.js para Onboarding -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
@@ -330,7 +362,8 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                                                 <td><?= htmlspecialchars($publicador['especialidad']) ?></td>
                                                 
                                                 <td>
-                                                    <span class="status-badge <?= $publicador['estado'] ?>">
+                                                    <!-- DEBUG: Estado = '<?= $publicador['estado'] ?>' -->
+                                                    <span class="status-badge <?= $publicador['estado'] ?>" style="background-color: <?= $publicador['estado'] == 'rechazado' ? '#6c757d' : '' ?> !important; color: <?= $publicador['estado'] == 'rechazado' ? '#fff' : '' ?> !important;">
                                                         <?= ucfirst($publicador['estado']) ?>
                                                     </span>
                                                 </td>
@@ -354,6 +387,13 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
                                                                 <input type="hidden" name="publicador_id" value="<?= $publicador['id'] ?>">
                                                                 <button type="submit" name="activar_publicador" class="btn btn-success btn-sm">
                                                                     <i class="bi bi-play"></i> Activar
+                                                                </button>
+                                                            </form>
+                                                        <?php elseif($publicador['estado'] == 'rechazado'): ?>
+                                                            <form method="POST" class="d-inline">
+                                                                <input type="hidden" name="publicador_id" value="<?= $publicador['id'] ?>">
+                                                                <button type="submit" name="activar_publicador" class="btn btn-success btn-sm">
+                                                                    <i class="bi bi-arrow-counterclockwise"></i> Dar otra oportunidad
                                                                 </button>
                                                             </form>
                                                         <?php endif; ?>

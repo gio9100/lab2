@@ -203,18 +203,144 @@ function obtenerUsuariosNormales($conn) {
 
 // Aprueba un publicador
 function aprobarPublicador($id, $conn) {
+    // Primero obtenemos los datos del publicador para enviar el correo
+    $query_datos = "SELECT nombre, email FROM publicadores WHERE id = ?";
+    $stmt_datos = $conn->prepare($query_datos);
+    $stmt_datos->bind_param("i", $id);
+    $stmt_datos->execute();
+    $result_datos = $stmt_datos->get_result();
+    $publicador_datos = $result_datos->fetch_assoc();
+    
+    // Actualizamos el estado a activo
     $query = "UPDATE publicadores SET estado = 'activo' WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $id);
-    return $stmt->execute();
+    $exito = $stmt->execute();
+    
+    // Si se aprobó exitosamente, enviamos correo de bienvenida
+    if ($exito && $publicador_datos) {
+        require_once __DIR__ . '/../EmailHelper.php';
+        
+        $asunto = "🎉 ¡Bienvenido a Lab-Explora como Publicador!";
+        
+        $mensaje_html = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                <div style='background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%); padding: 30px; text-align: center; color: white; border-radius: 10px 10px 0 0;'>
+                    <h1 style='margin: 0; font-size: 28px;'>🎉 ¡Felicidades!</h1>
+                </div>
+                <div style='padding: 30px; background: #f9f9f9; border-radius: 0 0 10px 10px;'>
+                    <p style='font-size: 16px; color: #333;'>Hola <strong>" . htmlspecialchars($publicador_datos['nombre']) . "</strong>,</p>
+                    
+                    <p style='font-size: 16px; color: #333;'>¡Excelentes noticias! Tu solicitud para ser <strong>publicador en Lab-Explora</strong> ha sido <strong style='color: #28a745;'>APROBADA</strong>. 🎊</p>
+                    
+                    <div style='background: #e8f5e9; padding: 20px; border-left: 4px solid #28a745; border-radius: 4px; margin: 20px 0;'>
+                        <h3 style='margin-top: 0; color: #2e7d32;'>✅ ¿Qué puedes hacer ahora?</h3>
+                        <ul style='color: #333; line-height: 1.8;'>
+                            <li>Crear y publicar artículos científicos</li>
+                            <li>Compartir tu conocimiento con la comunidad</li>
+                            <li>Acceder a herramientas de edición profesionales</li>
+                            <li>Obtener estadísticas de tus publicaciones</li>
+                            <li>Descargar tu credencial digital oficial</li>
+                        </ul>
+                    </div>
+                    
+                    <div style='background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 4px; margin: 20px 0;'>
+                        <h3 style='margin-top: 0; color: #856404;'>📋 Próximos pasos:</h3>
+                        <ol style='color: #333; line-height: 1.8;'>
+                            <li>Inicia sesión en tu panel de publicador</li>
+                            <li>Completa tu perfil profesional</li>
+                            <li>Crea tu primera publicación</li>
+                            <li>Comparte conocimiento con la comunidad</li>
+                        </ol>
+                    </div>
+                    
+                    <p style='font-size: 16px; color: #333;'>Estamos emocionados de tenerte como parte de nuestra comunidad científica. 🔬</p>
+                    
+                    <p style='font-size: 16px; color: #333;'><strong>¡Bienvenido a Lab-Explora!</strong></p>
+                    
+                    <div style='text-align: center; margin-top: 30px;'>
+                        <a href='http://localhost/lab2/forms/publicadores/login.php' style='background: linear-gradient(135deg, #7390A0 0%, #5a7080 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;'>
+                            🚀 Acceder a mi Panel
+                        </a>
+                    </div>
+                    
+                    <p style='font-size: 14px; color: #666; margin-top: 30px; text-align: center;'>
+                        Si tienes alguna pregunta, no dudes en contactarnos.
+                    </p>
+                </div>
+            </div>
+        ";
+        
+        EmailHelper::enviarCorreo(
+            $publicador_datos['email'],
+            $asunto,
+            $mensaje_html
+        );
+    }
+    
+    return $exito;
 }
 
 // Rechaza un publicador
 function rechazarPublicador($id, $motivo, $conn) {
+    // Primero obtenemos los datos del publicador para enviar el correo
+    $query_datos = "SELECT nombre, email FROM publicadores WHERE id = ?";
+    $stmt_datos = $conn->prepare($query_datos);
+    $stmt_datos->bind_param("i", $id);
+    $stmt_datos->execute();
+    $result_datos = $stmt_datos->get_result();
+    $publicador_datos = $result_datos->fetch_assoc();
+    
+    // Actualizamos el estado a rechazado y guardamos el motivo
     $query = "UPDATE publicadores SET estado = 'rechazado', motivo_rechazo = ? WHERE id = ?";
     $stmt = $conn->prepare($query);
+    
+    if (!$stmt) {
+        error_log("ERROR en rechazarPublicador: " . $conn->error);
+        return false;
+    }
+    
     $stmt->bind_param("si", $motivo, $id);
-    return $stmt->execute();
+    $exito = $stmt->execute();
+    
+    if (!$exito) {
+        error_log("ERROR al ejecutar UPDATE en rechazarPublicador: " . $stmt->error);
+        error_log("ID: $id, Motivo: $motivo");
+        return false;
+    }
+    
+    error_log("SUCCESS: Publicador $id rechazado. Filas afectadas: " . $stmt->affected_rows);
+    
+    // Si se rechazó exitosamente, enviamos correo
+    if ($exito && $publicador_datos) {
+        require_once __DIR__ . '/../EmailHelper.php';
+        
+        $asunto = "❌ Tu solicitud de publicador ha sido rechazada";
+        
+        $mensaje_html = "
+            <p>Lamentamos informarte que tu solicitud para ser publicador en <strong>Lab-Explora</strong> ha sido <strong>rechazada</strong>.</p>
+            <h3>📋 Motivo del rechazo:</h3>
+            <p style='background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 4px;'>
+                " . htmlspecialchars($motivo) . "
+            </p>
+            <h3>ℹ️ ¿Qué significa esto?</h3>
+            <ul>
+                <li>Tu cuenta de publicador no ha sido aprobada</li>
+                <li>No podrás crear publicaciones científicas</li>
+                <li>Puedes seguir usando la plataforma como lector</li>
+            </ul>
+            <p>Si consideras que esto es un error o deseas volver a aplicar corrigiendo los problemas mencionados, por favor contacta al equipo de administración.</p>
+            <p><strong>Gracias por tu interés en Lab-Explora.</strong></p>
+        ";
+        
+        EmailHelper::enviarCorreo(
+            $publicador_datos['email'],
+            $asunto,
+            $mensaje_html
+        );
+    }
+    
+    return $exito;
 }
 
 // Suspende un publicador

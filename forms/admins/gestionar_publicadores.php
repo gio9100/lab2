@@ -95,6 +95,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $publicador_id = intval($_POST['publicador_id']);
         $motivo = trim($_POST['motivo'] ?? "");
         
+        // DEBUG: Log valores recibidos
+        error_log("=== RECHAZAR PUBLICADOR ===");
+        error_log("ID: " . $publicador_id);
+        error_log("Motivo: " . $motivo);
+        
         // Obtener datos para correo
         $query_datos = "SELECT nombre, email FROM publicadores WHERE id = ?";
         $stmt_datos = $conn->prepare($query_datos);
@@ -103,18 +108,41 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $result_datos = $stmt_datos->get_result();
         $publicador_datos = $result_datos->fetch_assoc();
         
-        // Actualizar estado
-        $query = "UPDATE publicadores SET estado = 'rechazado', motivo_suspension = ? WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("si", $motivo, $publicador_id);
+        // Actualizar estado (CORREGIDO: motivo_rechazo en lugar de motivo_suspension)
+        $query = "UPDATE publicadores SET estado = 'rechazado', motivo_rechazo = ? WHERE id = ?";
+        error_log("Query: " . $query);
         
-        if ($stmt->execute()) {
-            enviarCorreoRechazo($publicador_datos['email'], $publicador_datos['nombre'], $motivo);
-            $_SESSION['mensaje'] = "Publicador rechazado correctamente y notificado por correo";
-            $_SESSION['tipo_mensaje'] = "success";
-        } else {
-            $_SESSION['mensaje'] = "Error al rechazar publicador";
+        $stmt = $conn->prepare($query);
+        
+        if (!$stmt) {
+            error_log("ERROR al preparar query: " . $conn->error);
+            $_SESSION['mensaje'] = "Error al preparar query: " . $conn->error;
             $_SESSION['tipo_mensaje'] = "danger";
+        } else {
+            $stmt->bind_param("si", $motivo, $publicador_id);
+            error_log("Parámetros bind: motivo='$motivo', id=$publicador_id");
+            
+            if ($stmt->execute()) {
+                $filas_afectadas = $stmt->affected_rows;
+                error_log("SUCCESS: Filas afectadas = " . $filas_afectadas);
+                
+                // Verificar que realmente se guardó
+                $verify_query = "SELECT estado, motivo_rechazo FROM publicadores WHERE id = ?";
+                $verify_stmt = $conn->prepare($verify_query);
+                $verify_stmt->bind_param("i", $publicador_id);
+                $verify_stmt->execute();
+                $verify_result = $verify_stmt->get_result();
+                $verify_data = $verify_result->fetch_assoc();
+                error_log("Verificación - Estado guardado: '" . $verify_data['estado'] . "', Motivo: '" . $verify_data['motivo_rechazo'] . "'");
+                
+                enviarCorreoRechazo($publicador_datos['email'], $publicador_datos['nombre'], $motivo);
+                $_SESSION['mensaje'] = "Publicador rechazado correctamente. Estado: " . $verify_data['estado'] . ", Motivo: " . $verify_data['motivo_rechazo'];
+                $_SESSION['tipo_mensaje'] = "success";
+            } else {
+                error_log("ERROR al ejecutar query: " . $stmt->error);
+                $_SESSION['mensaje'] = "Error al rechazar publicador: " . $stmt->error;
+                $_SESSION['tipo_mensaje'] = "danger";
+            }
         }
         
         header("Location: gestionar_publicadores.php");
@@ -319,7 +347,39 @@ if (isset($_GET['editar'])) {
 
     <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css-admins/admin.css">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.css?v=2.0">
+    
+    <!-- Estilos inline para badges de estado (fallback) -->
+    <style>
+        .status-badge {
+            display: inline-block !important;
+            padding: 0.35em 0.65em !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            line-height: 1 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            vertical-align: baseline !important;
+            border-radius: 0.375rem !important;
+            text-transform: capitalize !important;
+        }
+        .status-badge.pendiente {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+        }
+        .status-badge.activo {
+            background-color: #28a745 !important;
+            color: #fff !important;
+        }
+        .status-badge.suspendido {
+            background-color: #dc3545 !important;
+            color: #fff !important;
+        }
+        .status-badge.rechazado {
+            background-color: #6c757d !important;
+            color: #fff !important;
+        }
+    </style>
 </head>
 <body class="admin-page">
 
@@ -579,17 +639,31 @@ if (isset($_GET['editar'])) {
                                             </td>
                                             <td><?= htmlspecialchars($pub['especialidad']) ?></td>
                                             <td>
-                                                <?php
-                                                $clase_estado = 'secondary';
-                                                switch($pub['estado']) {
-                                                    case 'activo': $clase_estado = 'success'; break;
-                                                    case 'pendiente': $clase_estado = 'warning'; break;
-                                                    case 'suspendido': $clase_estado = 'danger'; break;
-                                                    case 'rechazado': $clase_estado = 'dark'; break;
+                                                <?php 
+                                                $estado_valor = $pub['estado'] ?? 'NULL';
+                                                $estado_texto = $estado_valor === 'NULL' ? 'SIN ESTADO' : ucfirst($estado_valor);
+                                                
+                                                // Determinar color según estado
+                                                $bg_color = '#cccccc'; // gris por defecto
+                                                $text_color = '#000';
+                                                
+                                                if ($estado_valor == 'rechazado') {
+                                                    $bg_color = '#6c757d';
+                                                    $text_color = '#fff';
+                                                } elseif ($estado_valor == 'activo') {
+                                                    $bg_color = '#28a745';
+                                                    $text_color = '#fff';
+                                                } elseif ($estado_valor == 'pendiente') {
+                                                    $bg_color = '#ffc107';
+                                                    $text_color = '#000';
+                                                } elseif ($estado_valor == 'suspendido') {
+                                                    $bg_color = '#dc3545';
+                                                    $text_color = '#fff';
                                                 }
                                                 ?>
-                                                <span class="badge bg-<?= $clase_estado ?>">
-                                                    <?= ucfirst($pub['estado']) ?>
+                                                <!-- DEBUG: Estado DB = '<?= $estado_valor ?>' -->
+                                                <span style="background-color: <?= $bg_color ?>; color: <?= $text_color ?>; display: inline-block; padding: 0.35em 0.65em; font-size: 0.75rem; font-weight: 600; border-radius: 0.375rem;">
+                                                    <?= $estado_texto ?>
                                                 </span>
                                             </td>
                                             <td>
@@ -638,6 +712,15 @@ if (isset($_GET['editar'])) {
                                                             <input type="hidden" name="publicador_id" value="<?= $pub['id'] ?>">
                                                             <button type="submit" name="activar_publicador" class="btn btn-sm btn-outline-success" title="Reactivar">
                                                                 <i class="bi bi-play-fill"></i>
+                                                            </button>
+                                                        </form>
+                                                    
+                                                    <?php elseif($pub['estado'] == 'rechazado'): ?>
+                                                        <!-- Activar (dar otra oportunidad) -->
+                                                        <form method="POST" class="d-inline">
+                                                            <input type="hidden" name="publicador_id" value="<?= $pub['id'] ?>">
+                                                            <button type="submit" name="activar_publicador" class="btn btn-sm btn-outline-success" title="Dar otra oportunidad">
+                                                                <i class="bi bi-arrow-counterclockwise"></i>
                                                             </button>
                                                         </form>
                                                     <?php endif; ?>
