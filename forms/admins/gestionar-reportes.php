@@ -298,7 +298,7 @@ $stats = obtenerEstadisticasReportes($conn);
                                                     </span>
                                                 </td>
                                                 <td><?= htmlspecialchars($reporte['motivo']) ?></td>
-                                                <td><?= htmlspecialchars($reporte['usuario_nombre'] ?? 'Usuario eliminado') ?></td>
+                                                <td><?= htmlspecialchars($reporte['reportante_nombre'] ?? 'Usuario eliminado') ?></td>
                                                 <td><?= date('d/m/Y H:i', strtotime($reporte['fecha_creacion'])) ?></td>
                                                 <td>
                                                     <span class="status-badge <?= $reporte['estado'] ?>">
