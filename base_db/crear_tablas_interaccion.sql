@@ -17,26 +17,43 @@ CREATE TABLE IF NOT EXISTS `comentarios` (
   KEY `estado` (`estado`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ----------------------------------------------------------------------------
--- TABLA: reportes
--- Almacena los reportes que los usuarios hacen sobre publicaciones o comentarios
--- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `reportes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tipo` enum('publicacion','comentario') NOT NULL,
-  `referencia_id` int(11) NOT NULL COMMENT 'ID de la publicación o comentario reportado',
-  `usuario_id` int(11) NOT NULL COMMENT 'Usuario que hizo el reporte',
-  `motivo` varchar(50) NOT NULL COMMENT 'Categoría del reporte',
-  `descripcion` text DEFAULT NULL COMMENT 'Descripción adicional del reporte',
-  `estado` enum('pendiente','revisado','resuelto','ignorado') NOT NULL DEFAULT 'pendiente',
-  `fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_revision` datetime DEFAULT NULL,
-  `admin_id` int(11) DEFAULT NULL COMMENT 'Admin que revisó el reporte',
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+
+  `tipo` ENUM('publicacion','comentario') NOT NULL,
+
+  `referencia_id` INT(11) NOT NULL COMMENT 'ID de la publicación o comentario reportado',
+
+  `usuario_id` INT(11) NULL COMMENT 'Usuario que hizo el reporte (NULL si fue eliminado)',
+
+  `motivo` VARCHAR(50) NOT NULL COMMENT 'Categoría del reporte',
+
+  `descripcion` TEXT DEFAULT NULL COMMENT 'Descripción adicional del reporte',
+
+  `estado` ENUM('pendiente','revisado','resuelto','ignorado') 
+      NOT NULL DEFAULT 'pendiente',
+
+  `fecha_creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  `fecha_revision` DATETIME DEFAULT NULL,
+
+  `admin_id` INT(11) DEFAULT NULL COMMENT 'Admin que revisó el reporte',
+
   PRIMARY KEY (`id`),
-  KEY `tipo` (`tipo`),
-  KEY `estado` (`estado`),
-  KEY `usuario_id` (`usuario_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+  KEY `idx_tipo` (`tipo`),
+  KEY `idx_estado` (`estado`),
+  KEY `idx_usuario_id` (`usuario_id`),
+
+  CONSTRAINT `fk_reportes_usuario`
+      FOREIGN KEY (`usuario_id`) 
+      REFERENCES `usuarios`(`id`)
+      ON DELETE SET NULL
+) 
+ENGINE=InnoDB 
+DEFAULT CHARSET=utf8mb4 
+COLLATE=utf8mb4_unicode_ci;
+
 
 -- ----------------------------------------------------------------------------
 -- TABLA: likes
