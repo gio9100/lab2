@@ -1105,7 +1105,7 @@ $publicacion = $result->fetch_assoc();
     </header>
 
     <!-- Hero Section Restaurada con Imagen -->
-    <section class="hero-section" style="<?php if (!empty($publicacion['imagen_principal'])): ?>background-image: linear-gradient(rgba(115, 144, 160, 0.75), rgba(90, 112, 128, 0.8)), url('uploads/<?= htmlspecialchars($publicacion['imagen_principal']) ?>'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: scroll;<?php endif; ?>">
+    <section class="hero-section" style="<?php if (!empty($publicacion['imagen_principal'])): ?>background-image: linear-gradient(rgba(115, 144, 160, 0.2), rgba(90, 112, 128, 0.3)), url('uploads/<?= htmlspecialchars($publicacion['imagen_principal']) ?>'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: scroll;<?php endif; ?>">
         <div class="hero-content">
             <h1 class="hero-title" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.3);"><?= htmlspecialchars($publicacion['titulo']) ?></h1>
             <p class="hero-description" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.3);"><?= htmlspecialchars($publicacion['resumen'] ?? 'Sin descripción disponible') ?></p>
