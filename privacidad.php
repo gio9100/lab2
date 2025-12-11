@@ -166,7 +166,7 @@
 
         <h2>5. Autenticación de Dos Factores (2FA)</h2>
         <h3>5.1 Datos Recopilados</h3>
-        <p>Para publicadores y administradores que utilizan 2FA obligatoriamente:</p>
+        <p>Para publicadores y administradores que utilizan 2FA :</p>
         <ul>
             <li>Secreto compartido (almacenado encriptado en base de datos)</li>
             <li>Códigos de respaldo generados (encriptados)</li>

@@ -280,17 +280,6 @@ $resultado_lista = $conn->query($query_lista);
     
     <script>
         AOS.init();
-        
-        // Script para el sidebar móvil (Copiado de sidebar-admin.php logic pero inline por si acaso)
-        document.addEventListener('DOMContentLoaded', function() {
-            const toggle = document.getElementById('sidebar-toggle');
-            const sidebar = document.getElementById('sidebarWrapper');
-            if(toggle && sidebar) {
-                toggle.addEventListener('click', function(e) {
-                    sidebar.classList.toggle('active');
-                });
-            }
-        });
     </script>
 </body>
 </html>

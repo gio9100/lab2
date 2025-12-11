@@ -120,9 +120,8 @@
         <p>Los administradores tienen acceso completo a las funcionalidades de gestión de la Plataforma, incluyendo la moderación de contenido, gestión de usuarios y reportes. La designación de administradores es exclusiva de Lab-Explora.</p>
 
         <h2>4. Autenticación de Dos Factores (2FA)</h2>
-        <p>La autenticación de dos factores es <strong>obligatoria</strong> para cuentas de publicadores y administradores. Este sistema de seguridad adicional protege las cuentas mediante:</p>
+        <p>La autenticación de dos factores es <strong>Opcional</strong> para cuentas de publicadores y administradores. Este sistema de seguridad adicional protege las cuentas mediante:</p>
         <ul>
-            <li>Código QR para configuración inicial con aplicaciones autenticadoras (Google Authenticator, Authy, etc.)</li>
             <li>Códigos de un solo uso (OTP) de 6 dígitos</li>
             <li>Verificación requerida en cada inicio de sesión</li>
         </ul>
@@ -177,7 +176,6 @@
             <li>Información personal del usuario (nombre, correo, ID único)</li>
             <li>Foto de perfil (si está disponible)</li>
             <li>Firma digital criptográfica (hash SHA-256) para autenticidad</li>
-            <li>Código QR y sello oficial de Lab-Explora</li>
         </ul>
         <p><strong>Importante:</strong> Estas credenciales son para uso personal, educativo o de identificación dentro del ámbito académico. Queda prohibida su falsificación, adulteración o uso fraudulento. Lab-Explora se reserva el derecho de emprender acciones legales contra quienes hagan mal uso de estas credenciales.</p>
 

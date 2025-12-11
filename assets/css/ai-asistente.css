@@ -475,7 +475,7 @@
     border-radius: 50%;
     box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
     cursor: pointer;
-    z-index: 999;
+    z-index: 100000;
     font-size: 24px;
     transition: all 0.3s ease;
 }

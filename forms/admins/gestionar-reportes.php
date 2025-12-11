@@ -363,32 +363,6 @@ $stats = obtenerEstadisticasReportes($conn);
                 this.parentElement.style.display = 'none';
             });
         });
-        
-        // Toggle sidebar en móvil
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarWrapper = document.getElementById('sidebarWrapper');
-        
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
-                sidebarWrapper.classList.toggle('active');
-                
-                // Crear overlay si no existe
-                let overlay = document.querySelector('.sidebar-overlay');
-                if (!overlay) {
-                    overlay = document.createElement('div');
-                    overlay.className = 'sidebar-overlay';
-                    document.body.appendChild(overlay);
-                }
-                
-                overlay.classList.toggle('active');
-                
-                // Cerrar sidebar al hacer click en overlay
-                overlay.addEventListener('click', function() {
-                    sidebarWrapper.classList.remove('active');
-                    overlay.classList.remove('active');
-                });
-            });
-        }
     </script>
 </body>
 </html>

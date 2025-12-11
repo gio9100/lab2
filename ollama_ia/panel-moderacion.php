@@ -200,13 +200,22 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <header id="header" class="header position-relative">
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
-                <a href="../index.php" class="logo d-flex align-items-end">
-                    <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explora</h1>
-                </a>
+                
+                <div class="d-flex align-items-center">
+                    <!-- Toggle solo visible en móvil -->
+                    <button class="btn btn-outline-primary sidebar-toggle me-3 d-md-none" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="../pagina-principal.php" class="logo d-flex align-items-end">
+                        <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
+                    </a>
+                </div>
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="../forms/admins/perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">
+                            👨‍💼 Hola, <?= htmlspecialchars($admin_nombre) ?>
+                        </a>
                         <a href="../forms/admins/logout-admin.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
@@ -218,7 +227,14 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <main class="main">
         <div class="container-fluid mt-4">
             <div class="row">
-                <div class="col-12">
+
+                <!-- Sidebar (Columna Izquierda) -->
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                    <?php include '../forms/admins/sidebar-admin.php'; ?>
+                </div>
+
+                <!-- Contenido Derecho (Columna Derecha) -->
+                <div class="col-md-9">
                     <!-- Título de la sección -->
                     <div class="section-title" data-aos="fade-up">
                         <h2>🤖 Panel de Moderación Automática</h2>

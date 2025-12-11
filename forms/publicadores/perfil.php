@@ -343,13 +343,14 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                     </button>
                     <!-- Logo -->
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
-                    <h1 class="sitename">Lab-Explora</h1><span></span>
-                </a>
+                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <h1 class="sitename">Lab-Explora</h1><span></span>
+                    </a>
+                </div>
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
+                        <span class="saludo d-none d-md-inline">🧪 Publicador: <?= htmlspecialchars($publicador_nombre) ?></span>
                         <a href="logout-publicadores.php" class="logout-btn">Cerrar sesión</a>
                     </div>
                 </div>
