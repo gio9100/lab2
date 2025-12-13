@@ -3,9 +3,13 @@ const urlsToCache = [
     '/lab2/',
     '/lab2/pagina-principal.php',
     '/lab2/assets/css/main.css',
+    '/lab2/assets/css-admins/admin.css',
     '/lab2/assets/vendor/bootstrap/css/bootstrap.min.css',
     '/lab2/assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
-    '/lab2/assets/img/logo/logobrayan2.ico'
+    '/lab2/assets/vendor/aos/aos.js',
+    '/lab2/assets/js/main.js',
+    '/lab2/assets/img/logo/logo-labexplora.png',
+    '/lab2/assets/img/fondo-inicio-registro/registro-inicio.png'
 ];
 
 self.addEventListener('install', event => {

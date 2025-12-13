@@ -63,9 +63,10 @@ if ($result_categorias) {
 // Obtener estadísticas del publicador
 $estadisticas = [
     'total_publicaciones' => 0,
-    'publicadas' => 0,
-    'borradores' => 0,
-    'en_revision' => 0
+    'publicado' => 0,
+    'borrador' => 0,
+    'revision' => 0,
+    'rechazada' => 0
 ];
 
 $query_stats = "SELECT estado, COUNT(*) as total 
@@ -180,24 +181,25 @@ $stmt_recientes->close();
                     </div>
                     
                     <!-- Estadísticas -->
+                    <!-- Estadísticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up" data-aos-delay="100">
-                        <div class="col-md-3 col-6 mb-3">
+                        <div class="col-md col-6 mb-3">
                             <div class="stat-card primary">
                                 <div class="stat-content text-center">
                                     <h4><?= $estadisticas['total_publicaciones'] ?></h4>
-                                    <small>Total Publicaciones</small>
+                                    <small>Total</small>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-6 mb-3">
+                        <div class="col-md col-6 mb-3">
                             <div class="stat-card success">
                                 <div class="stat-content text-center">
-                                    <h4><?= $estadisticas['publicadas'] ?? 0 ?></h4>
+                                    <h4><?= $estadisticas['publicado'] ?? 0 ?></h4>
                                     <small>Publicadas</small>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-6 mb-3">
+                        <div class="col-md col-6 mb-3">
                             <div class="stat-card warning">
                                 <div class="stat-content text-center">
                                     <h4><?= $estadisticas['borrador'] ?? 0 ?></h4>
@@ -205,11 +207,19 @@ $stmt_recientes->close();
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-6 mb-3">
+                        <div class="col-md col-6 mb-3">
                             <div class="stat-card info">
                                 <div class="stat-content text-center">
                                     <h4><?= $estadisticas['revision'] ?? 0 ?></h4>
                                     <small>En Revisión</small>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-md col-6 mb-3">
+                            <div class="stat-card danger"> <!-- Usamos 'danger' para rojo -->
+                                <div class="stat-content text-center">
+                                    <h4><?= $estadisticas['rechazada'] ?? 0 ?></h4>
+                                    <small>Rechazadas</small>
                                 </div>
                             </div>
                         </div>
