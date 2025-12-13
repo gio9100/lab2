@@ -241,8 +241,60 @@ $categorias = obtenerCategorias($conn);
                                     </div>
                                 </div>
 
+                                <!-- Mostrar información del archivo actual si existe -->
+                                <?php 
+                                    $tiene_archivo = !empty($publicacion['archivo_url']); 
+                                    $tipo_entrada_actual = $tiene_archivo ? 'archivo' : 'texto';
+                                ?>
+
+                                <!-- Selección de Tipo de Contenido -->
+                                <div class="mb-4 p-3 bg-light rounded border">
+                                    <label class="form-label fw-bold mb-3">Tipo de Contenido</label>
+                                    <div class="d-flex gap-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_entrada" id="tipo_texto" 
+                                                   value="texto" <?= $tipo_entrada_actual === 'texto' ? 'checked' : '' ?> 
+                                                   onchange="toggleContentInput()">
+                                            <label class="form-check-label" for="tipo_texto">
+                                                <i class="bi bi-pencil-square"></i> Escribir artículo/Correcciones
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_entrada" id="tipo_archivo" 
+                                                   value="archivo" <?= $tipo_entrada_actual === 'archivo' ? 'checked' : '' ?> 
+                                                   onchange="toggleContentInput()">
+                                            <label class="form-check-label" for="tipo_archivo">
+                                                <i class="bi bi-file-earmark-arrow-up"></i> Archivo (PDF, Word, Imagen)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Input para Subir Archivo -->
+                                <div id="archivo-upload-container" class="mb-4 <?= $tipo_entrada_actual === 'texto' ? 'd-none' : '' ?>">
+                                    <label for="archivo_contenido" class="form-label fw-bold">Actualizar Archivo de Contenido</label>
+                                    
+                                    <?php if ($tiene_archivo): ?>
+                                        <div class="alert alert-secondary p-2 mb-2 d-flex align-items-center">
+                                            <i class="bi bi-file-earmark-check fs-4 me-2"></i>
+                                            <div>
+                                                <strong>Archivo Actual:</strong> 
+                                                <a href="../../uploads/<?= htmlspecialchars($publicacion['archivo_url']) ?>" target="_blank" class="text-decoration-underline">
+                                                    Ver archivo actual (<?= htmlspecialchars(strtoupper($publicacion['tipo_archivo'] ?? 'FILE')) ?>)
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <input type="file" class="form-control" id="archivo_contenido" name="archivo_contenido" 
+                                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp">
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Sube un nuevo archivo para reemplazar el actual. Formatos: PDF, Word, o Imágenes. Máx: 10MB.
+                                    </div>
+                                </div>
+
                                 <!-- Editor de Contenido (Quill) -->
-                                <div class="mb-4">
+                                <div id="editor-wrapper" class="mb-4 <?= $tipo_entrada_actual === 'archivo' ? 'd-none' : '' ?>">
                                     <label class="form-label fw-bold">Contenido de la Publicación *</label>
                                     <!-- Contenedor del editor -->
                                     <div id="editor-container"></div>
@@ -418,17 +470,61 @@ $categorias = obtenerCategorias($conn);
             };
         }
 
+        // Función para alternar entre escribir texto o subir archivo
+        function toggleContentInput() {
+            const tipo = document.querySelector('input[name="tipo_entrada"]:checked').value;
+            const editorWrapper = document.getElementById('editor-wrapper');
+            const archivoContainer = document.getElementById('archivo-upload-container');
+            
+            if (tipo === 'archivo') {
+                editorWrapper.classList.add('d-none');
+                archivoContainer.classList.remove('d-none');
+            } else {
+                editorWrapper.classList.remove('d-none');
+                archivoContainer.classList.add('d-none');
+            }
+        }
+
         // Manejo del formulario antes de enviar
         document.getElementById('form-publicacion').onsubmit = function(e) {
-            // Obtener contenido HTML del editor
-            var contenido = document.querySelector('input[name=contenido]');
-            contenido.value = quill.root.innerHTML;
+            const tipoEntrada = document.querySelector('input[name="tipo_entrada"]:checked').value;
             
-            // Validar que no esté vacío (solo etiquetas vacías)
-            if (quill.getText().trim().length === 0) {
-                alert('El contenido de la publicación no puede estar vacío');
-                e.preventDefault();
-                return false;
+            // Si es tipo TEXTO, validamos el editor Quill
+            if (tipoEntrada === 'texto') {
+                // Obtener contenido HTML del editor
+                var contenido = document.querySelector('input[name=contenido]');
+                contenido.value = quill.root.innerHTML;
+                
+                // Validar que no esté vacío (solo etiquetas vacías)
+                if (quill.getText().trim().length === 0) {
+                    alert('El contenido de la publicación no puede estar vacío');
+                    e.preventDefault();
+                    return false;
+                }
+            } else {
+                // Si es tipo ARCHIVO, verificamos
+                // En EDICIÓN: El archivo ES opcional si ya existe uno.
+                // Pero si selecciona "Archivo" y no hay archivo previo ni sube uno nuevo, eso es un problema?
+                // Vamos a asumir que si no sube nada, mantiene el anterior O si no habia anterior, error.
+                
+                const archivoInput = document.getElementById('archivo_contenido');
+                const archivo = archivoInput.files[0];
+                const tieneArchivoPrevio = <?= $tiene_archivo ? 'true' : 'false' ?>;
+
+                if (!archivo && !tieneArchivoPrevio) {
+                    alert('Debes seleccionar un archivo para subir.');
+                    e.preventDefault();
+                    return false;
+                }
+                
+                if (archivo && archivo.size > 10 * 1024 * 1024) {
+                    alert('El archivo es demasiado grande. Máximo 10MB.');
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Limpiar contenido de texto
+                document.querySelector('input[name=contenido]').value = '';
             }
             
             // Validar longitud del título

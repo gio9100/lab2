@@ -3,6 +3,7 @@
 
 // Incluimos el Helper de Emails para el diseño profesional
 require_once __DIR__ . '/../forms/EmailHelper.php';
+require_once __DIR__ . '/../forms/FuncionesTexto.php';
 
 // Definición de la clase ModeradorLocal
 class ModeradorLocal {
@@ -46,6 +47,41 @@ class ModeradorLocal {
                 'error' => 'Publicación no encontrada'
             ];
         }
+
+        // --- LÓGICA PDF: Extraer texto si hay archivo adjunto ---
+        $contenido_analizable = $publicacion['contenido'];
+        $info_pdf = "";
+
+        if (!empty($publicacion['archivo_url']) && !empty($publicacion['tipo_archivo'])) {
+            $tipo = strtolower($publicacion['tipo_archivo']);
+            
+            // Si es un PDF
+            if ($tipo === 'pdf' || $tipo === 'application/pdf' || strpos($publicacion['archivo_url'], '.pdf') !== false) {
+                $ruta_archivo = __DIR__ . '/../uploads/' . $publicacion['archivo_url'];
+                if (file_exists($ruta_archivo)) {
+                    $texto_extraido = FuncionesTexto::extraerTextoPdf($ruta_archivo);
+                    if (!empty($texto_extraido)) {
+                        $contenido_analizable .= "\n\n [CONTENIDO PDF ADJUNTO]: \n" . $texto_extraido;
+                        $info_pdf = " (Incluye análisis de PDF adjunto)";
+                    }
+                }
+            }
+            // Si es un DOCX (Word)
+            else if ($tipo === 'docx' || $tipo === 'doc' || strpos($publicacion['archivo_url'], '.docx') !== false) {
+                $ruta_archivo = __DIR__ . '/../uploads/' . $publicacion['archivo_url'];
+                if (file_exists($ruta_archivo)) {
+                    $texto_extraido = FuncionesTexto::extraerTextoDocx($ruta_archivo);
+                    if (!empty($texto_extraido)) {
+                        $contenido_analizable .= "\n\n [CONTENIDO WORD ADJUNTO]: \n" . $texto_extraido;
+                        $info_pdf = " (Incluye análisis de Word adjunto)";
+                    }
+                }
+            }
+        }
+
+        // Usamos el contenido combinado para las validaciones
+        $contenido_original = $publicacion['contenido']; // Guardamos original
+        $publicacion['contenido'] = $contenido_analizable; // Reemplazamos temporalmente para el análisis
         
         // Inicializamos la puntuación base en 100 puntos
         $puntuacion = 100;
@@ -53,14 +89,17 @@ class ModeradorLocal {
         // Inicializamos el array para guardar las razones de la decisión
         $razones = [];
         
-        // --- VALIDACIÓN 1: Longitud mínima ---
+        // --- VALIDACIÓN 1: Longitud mínima (Sólo si no hay archivo adjunto) ---
+        // Si hay archivo, asumimos que el contenido principal está allí y no requerimos longitud mínima de texto
+        $tiene_archivo = !empty($publicacion['archivo_url']);
+        
         // Obtenemos la longitud del contenido
         $longitud = strlen($publicacion['contenido']);
         
-        // Si es menor a 75 caracteres, rechazamos inmediatamente
-        if ($longitud < 75) {
+        // Si es menor a 75 caracteres Y NO tiene archivo, rechazamos
+        if (!$tiene_archivo && $longitud < 75) {
             $decision = 'rechazada';
-            $razon = "Contenido demasiado corto ({$longitud} caracteres). Mínimo requerido: 75.";
+            $razon = "Contenido de texto demasiado corto ({$longitud} caracteres). Mínimo requerido: 75. Agrega más detalles o adjunta un archivo.";
             $puntuacion = 0;
             
             // Guardamos el log y actualizamos el estado
@@ -112,18 +151,23 @@ class ModeradorLocal {
         // REGLA: Si la puntuación es 60 o más, se APRUEBA. Si no, se RECHAZA.
         if ($puntuacion >= 60) {
             // Puntuación suficiente: APROBADO
+            // Si tiene archivo o es texto y pasa el puntaje, se publica automáticamente
+            // (Las groserías ya se verificaron antes y habrían causado rechazo inmediato)
             $decision = 'publicado';
-            $razon = "Aprobada automáticamente (Puntuación: {$puntuacion}/100). " . implode('. ', $razones);
+            $razon = "Aprobada automáticamente (Puntuación: {$puntuacion}/100){$info_pdf}. " . implode('. ', $razones);
             
         } else {
             // Puntuación insuficiente: RECHAZADO
             $decision = 'rechazada';
-            $razon = "Rechazada por no cumplir estándares mínimos (Puntuación: {$puntuacion}/100). " . implode('. ', $razones);
+            $razon = "Rechazada por no cumplir estándares mínimos (Puntuación: {$puntuacion}/100){$info_pdf}. " . implode('. ', $razones);
         }
         
         // Guardamos el resultado del análisis en el historial
         $this->guardarAnalisis($publicacion_id, $decision, $razon, $puntuacion);
         
+        // Restauramos contenido original por si acaso (aunque no se usa después)
+        $publicacion['contenido'] = $contenido_original;
+
         // Actualizamos el estado de la publicación y enviamos correos
         $this->actualizarEstadoPublicacion($publicacion_id, $decision, $razon);
         
@@ -164,6 +208,9 @@ class ModeradorLocal {
         $contenido = $publicacion['contenido'];
         $texto_completo = strtolower($titulo . ' ' . $contenido);
         
+        // Contexto: ¿Hay archivo?
+        $tiene_archivo = !empty($publicacion['archivo_url']);
+        
         // --- CRITERIO 1: Vocabulario Académico ---
         $palabras_acad_encontradas = 0;
         foreach ($this->palabras_academicas as $palabra) {
@@ -177,11 +224,11 @@ class ModeradorLocal {
         if ($palabras_acad_encontradas >= 3) {
             $razones[] = "Buen vocabulario académico";
         } else if ($palabras_acad_encontradas >= 1) {
-            $puntuacion -= 10;
+             if (!$tiene_archivo) $puntuacion -= 10;
             $razones[] = "Vocabulario académico limitado";
         } else {
-            $puntuacion -= 20;
-            $razones[] = "Falta vocabulario técnico/científico";
+             if (!$tiene_archivo) $puntuacion -= 20;
+            $razones[] = "Falta vocabulario técnico/científico" . ($tiene_archivo ? " (Ignorado por archivo adjunto)" : "");
         }
         
         // --- CRITERIO 2: Estructura y Párrafos ---
@@ -198,8 +245,8 @@ class ModeradorLocal {
         if ($num_parrafos >= 3) {
             $razones[] = "Buena estructura en párrafos";
         } else {
-            $puntuacion -= 15;
-            $razones[] = "Estructura pobre (pocos párrafos)";
+             if (!$tiene_archivo) $puntuacion -= 15;
+            $razones[] = "Estructura pobre (pocos párrafos)" . ($tiene_archivo ? " (Ignorado por archivo adjunto)" : "");
         }
         
         // --- CRITERIO 3: Uso excesivo de mayúsculas (GRITOS) ---

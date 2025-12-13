@@ -236,7 +236,7 @@ $publicaciones = $q->get_result()->fetch_all(MYSQLI_ASSOC);
                                             <i class="bi bi-pencil"></i>
                                         </a>
 
-                                        <a href="../../ver-publicacion.php?id=<?= $p['id'] ?>" 
+                                        <a href="../../ver-publicacion-publicadores.php?id=<?= $p['id'] ?>" 
                                            class="btn btn-outline-secondary btn-sm" target="_blank">
                                             <i class="bi bi-eye"></i>
                                         </a>

@@ -14,6 +14,11 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     exit();
 }
 
+// Función para procesar contenido (decodificar HTML entities)
+function procesarContenido($contenido) {
+    return html_entity_decode($contenido);
+}
+
 $publicacion_id = intval($_GET['id']);
 $publicador_id = $_SESSION['publicador_id'];
 
@@ -34,6 +39,8 @@ if ($result->num_rows === 0) {
     header('Location: forms/publicadores/index-publicadores.php');
     exit();
 }
+
+$publicacion = $result->fetch_assoc();
 
 // Determinar color y texto del estado
 $estado_colores = [
@@ -351,7 +358,113 @@ $estado_info = $estado_colores[$estado_actual] ?? ['bg' => '#6c757d', 'text' => 
 
         <section class="content-section">
             <article class="publication-content">
-                <?= procesarContenido($publicacion['contenido']) ?>
+                <?php if (!empty($publicacion['archivo_url'])): ?>
+                    <!-- Lógica para mostrar archivo adjunto -->
+                    <div class="file-viewer-container" style="background: #f8f9fa; border-radius: 12px; overflow: hidden; border: 1px solid #dee2e6;">
+                        
+                        <?php 
+                        // Determinar tipo de archivo si no está en BD (fallback)
+                        $tipo = strtolower($publicacion['tipo_archivo'] ?? '');
+                        if (empty($tipo) && !empty($publicacion['archivo_url'])) {
+                            $ext = pathinfo($publicacion['archivo_url'], PATHINFO_EXTENSION);
+                            $tipo = $ext;
+                        }
+                        
+                        $archivo_path = 'uploads/' . htmlspecialchars($publicacion['archivo_url']);
+                        ?>
+
+                        <?php if ($tipo === 'pdf' || $tipo === 'application/pdf'): ?>
+                            <!-- Visor PDF Nativo -->
+                            <div style="position: relative; height: 800px; width: 100%;">
+                                <iframe src="<?= $archivo_path ?>" style="width: 100%; height: 100%; border: none;">
+                                    Tu navegador no soporta visualización de PDF. 
+                                    <a href="<?= $archivo_path ?>">Descárgalo aquí</a>.
+                                </iframe>
+                            </div>
+
+                        <?php elseif (in_array($tipo, ['jpg', 'jpeg', 'png', 'webp', 'imagen_contenido'])): ?>
+                            <!-- Visor Imagen -->
+                            <div class="text-center p-3">
+                                <img src="<?= $archivo_path ?>" class="img-fluid rounded shadow-sm" alt="Contenido" style="max-height: 800px;">
+                            </div>
+
+                        <?php elseif ($tipo === 'docx' || $tipo === 'doc'): ?>
+                            <!-- Visor DOCX con Mammoth.js -->
+                            <div class="p-4" style="background: white; min-height: 500px;">
+                                <div id="word-container" style="color: black;">
+                                    <div class="text-center py-5">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Cargando documento...</span>
+                                        </div>
+                                        <p class="mt-2 text-muted">Renderizando documento...</p>
+                                    </div>
+                                </div>
+                                <!-- Fallback download link -->
+                                <div class="text-center mt-4 pt-3 border-top">
+                                    <small class="text-muted">¿No se ve bien?</small><br>
+                                    <a href="<?= $archivo_path ?>" class="btn btn-sm btn-outline-primary mt-1" download>
+                                        <i class="bi bi-download"></i> Descargar archivo original
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Cargar librería Mammoth.js -->
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const archivoUrl = "<?= $archivo_path ?>";
+                                    
+                                    fetch(archivoUrl)
+                                        .then(response => response.arrayBuffer())
+                                        .then(arrayBuffer => mammoth.convertToHtml({arrayBuffer: arrayBuffer}))
+                                        .then(result => {
+                                            document.getElementById('word-container').innerHTML = result.value;
+                                            // Aplicar estilos básicos al contenido generado
+                                            const container = document.getElementById('word-container');
+                                            container.querySelectorAll('p').forEach(p => p.style.marginBottom = '1rem');
+                                            container.querySelectorAll('table').forEach(t => t.classList.add('table', 'table-bordered'));
+                                        })
+                                        .catch(err => {
+                                            console.error(err);
+                                            document.getElementById('word-container').innerHTML = `
+                                                <div class="alert alert-warning">
+                                                    No se pudo visualizar el documento automáticamente. 
+                                                    <br>
+                                                    <a href="${archivoUrl}" class="alert-link">Descárgalo aquí</a>
+                                                </div>
+                                            `;
+                                        });
+                                });
+                            </script>
+
+                        <?php else: ?>
+                            <!-- Tarjeta de Descarga para otros archivos (Word, Excel, etc.) -->
+                            <div class="text-center p-5">
+                                <i class="bi bi-file-earmark-richtext text-primary" style="font-size: 5rem;"></i>
+                                <h3 class="mt-4 text-dark">Documento Adjunto</h3>
+                                <p class="text-muted mb-4">
+                                    Este contenido está disponible en formato <strong><?= strtoupper($tipo) ?></strong>.
+                                    <br>Puedes descargarlo para visualizarlo.
+                                </p>
+                                <a href="<?= $archivo_path ?>" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" download>
+                                    <i class="bi bi-download me-2"></i> Descargar Documento
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Si hay contenido de texto adicional, mostrarlo abajo -->
+                    <?php if (!empty($publicacion['contenido']) && trim($publicacion['contenido']) !== '<p><br></p>'): ?>
+                        <div class="mt-5 pt-4 border-top">
+                            <h4 class="mb-3 text-secondary">Notas Adicionales</h4>
+                            <?= procesarContenido($publicacion['contenido']) ?>
+                        </div>
+                    <?php endif; ?>
+
+                <?php else: ?>
+                    <!-- Contenido Texto Normal -->
+                    <?= procesarContenido($publicacion['contenido']) ?>
+                <?php endif; ?>
             </article>
         </section>
     </main>

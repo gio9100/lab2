@@ -157,22 +157,34 @@ function obtenerTodosPublicadores($conn) {
 
 // Crea una nueva publicación en la base de datos
 function crearPublicacion($datos, $conn) {
+    // Generar slug único para la URL
     $slug = crearSlug($datos['titulo']);
+    
+    // Obtener estado, por defecto 'borrador'
     $estado = $datos['estado'] ?? 'borrador';
     
+    // Preparar la consulta SQL para insertar la nueva publicación
+    // Se agregan las columnas 'archivo_url' y 'tipo_archivo'
     $query = "INSERT INTO publicaciones (
         titulo, slug, contenido, resumen, publicador_id, 
-        categoria_id, estado, tipo, tags, imagen_principal
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        categoria_id, estado, tipo, tags, imagen_principal,
+        archivo_url, tipo_archivo
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($query);
     
-    // json_encode() = convierte array a JSON
+    // json_encode() = convierte array a JSON para guardar los tags
     $tags_json = !empty($datos['tags']) ? json_encode(explode(',', $datos['tags'])) : null;
     
+    // Obtener datos opcionales
     $imagen_principal = $datos['imagen_principal'] ?? null;
+    $archivo_url = $datos['archivo_url'] ?? null;
+    $tipo_archivo = $datos['tipo_archivo'] ?? null;
     
-    $stmt->bind_param("ssssisssss", 
+    // Vincular parámetros a la consulta
+    // s = string, i = integer
+    // Total: 12 parámetros
+    $stmt->bind_param("ssssisssssss", 
         $datos['titulo'],
         $slug,
         $datos['contenido'],
@@ -182,9 +194,12 @@ function crearPublicacion($datos, $conn) {
         $estado,
         $datos['tipo'],
         $tags_json,
-        $imagen_principal
+        $imagen_principal,
+        $archivo_url,       // Nuevo: URL del archivo adjunto
+        $tipo_archivo       // Nuevo: Tipo de archivo (pdf, doc, etc.)
     );
     
+    // Ejecutar la consulta y retornar resultado
     return $stmt->execute();
 }
 

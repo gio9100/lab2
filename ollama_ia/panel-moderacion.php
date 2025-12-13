@@ -230,7 +230,10 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
 
                 <!-- Sidebar (Columna Izquierda) -->
                 <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
-                    <?php include '../forms/admins/sidebar-admin.php'; ?>
+                    <?php 
+                    $path_prefix = '../forms/admins/';
+                    include '../forms/admins/sidebar-admin.php'; 
+                    ?>
                 </div>
 
                 <!-- Contenido Derecho (Columna Derecha) -->

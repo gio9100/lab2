@@ -58,8 +58,16 @@ if ($categoria_id <= 0) {
 }
 
 // '<p><br></p>' = contenido vacío del editor Quill
-if (empty($contenido) || $contenido === '<p><br></p>') {
-    $_SESSION['error'] = "El contenido es obligatorio";
+// Validar si tiene archivo actual en BD
+$check_file = $conn->prepare("SELECT archivo_url FROM publicaciones WHERE id = ?");
+$check_file->bind_param("i", $publicacion_id);
+$check_file->execute();
+$res_file = $check_file->get_result()->fetch_assoc();
+$tiene_archivo_previo = !empty($res_file['archivo_url']);
+$subiendo_archivo = isset($_FILES['archivo_contenido']) && $_FILES['archivo_contenido']['error'] === UPLOAD_ERR_OK;
+
+if ((empty($contenido) || $contenido === '<p><br></p>') && !$tiene_archivo_previo && !$subiendo_archivo) {
+    $_SESSION['error'] = "El contenido es obligatorio (Texto o Archivo)";
     header("Location: editar_publicacion.php?id=$publicacion_id");
     exit();
 }
@@ -102,54 +110,89 @@ if (isset($_FILES['imagen_principal']) && $_FILES['imagen_principal']['error'] =
 }
 
 // Actualizar en base de datos
+// Actualizar en base de datos
+// (Lógica dinámica abajo)
+// Procesar archivo de contenido (PDF, Doc, Imagen) si se subió
+$archivo_url = null;
+$tipo_archivo = null;
+$actualizar_archivo = false;
+
+if (isset($_FILES['archivo_contenido']) && $_FILES['archivo_contenido']['error'] === UPLOAD_ERR_OK) {
+    $upload_dir = __DIR__ . '/../../uploads/';
+    
+    if (!file_exists($upload_dir)) {
+        mkdir($upload_dir, 0755, true);
+    }
+    
+    $file_name = $_FILES['archivo_contenido']['name'];
+    $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+    $allowed_doc_extensions = ['pdf', 'doc', 'docx'];
+    $allowed_img_extensions = ['jpg', 'jpeg', 'png', 'webp'];
+    
+    // Determinar tipo de archivo
+    if (in_array($file_extension, $allowed_doc_extensions)) {
+        $tipo_archivo = $file_extension;
+    } elseif (in_array($file_extension, $allowed_img_extensions)) {
+        $tipo_archivo = 'imagen_contenido';
+    }
+    
+    if ($tipo_archivo) {
+        $new_filename = 'doc_' . time() . '_' . uniqid() . '.' . $file_extension;
+        $upload_path = $upload_dir . $new_filename;
+        
+        if (move_uploaded_file($_FILES['archivo_contenido']['tmp_name'], $upload_path)) {
+            $archivo_url = $new_filename;
+            $actualizar_archivo = true;
+            
+            // Eliminar archivo anterior si existe
+            $old_file_query = $conn->prepare("SELECT archivo_url FROM publicaciones WHERE id = ?");
+            $old_file_query->bind_param("i", $publicacion_id);
+            $old_file_query->execute();
+            $old_file_result = $old_file_query->get_result();
+            $old_file_data = $old_file_result->fetch_assoc();
+            
+            if (!empty($old_file_data['archivo_url'])) {
+                $old_file_path = '../../uploads/' . $old_file_data['archivo_url'];
+                if (file_exists($old_file_path)) {
+                    unlink($old_file_path);
+                }
+            }
+        }
+    }
+}
+
+// Construir la consulta de actualización dinámica
+$query = "UPDATE publicaciones SET 
+          titulo = ?,
+          categoria_id = ?,
+          resumen = ?,
+          contenido = ?,
+          estado = ?,
+          fecha_actualizacion = NOW()";
+
+$params = [$titulo, $categoria_id, $resumen, $contenido, $estado];
+$types = "sisss";
+
 if ($imagen_principal) {
-    // Si se subió nueva imagen, actualizar también el campo imagen_principal
-    $query = "UPDATE publicaciones SET 
-              titulo = ?,
-              categoria_id = ?,
-              resumen = ?,
-              contenido = ?,
-              estado = ?,
-              imagen_principal = ?,
-              fecha_actualizacion = NOW()
-              WHERE id = ? AND publicador_id = ?";
-    
-    $stmt = $conn->prepare($query);
-    // Tipos: s=string, i=integer
-    // titulo(s), categoria_id(i), resumen(s), contenido(s), estado(s), imagen_principal(s), id(i), publicador_id(i)
-    $stmt->bind_param("sissssii", 
-        $titulo, 
-        $categoria_id, 
-        $resumen, 
-        $contenido, 
-        $estado, 
-        $imagen_principal,
-        $publicacion_id,
-        $publicador_id
-    );
-} else {
-    // Si NO se subió nueva imagen, mantener la anterior
-    $query = "UPDATE publicaciones SET 
-              titulo = ?,
-              categoria_id = ?,
-              resumen = ?,
-              contenido = ?,
-              estado = ?,
-              fecha_actualizacion = NOW()
-              WHERE id = ? AND publicador_id = ?";
-    
-    $stmt = $conn->prepare($query);
-    // Tipos: s=string, i=integer
-    // titulo(s), categoria_id(i), resumen(s), contenido(s), estado(s), id(i), publicador_id(i)
-    $stmt->bind_param("sisssii", 
-        $titulo, 
-        $categoria_id, 
-        $resumen, 
-        $contenido, 
-        $estado, 
-        $publicacion_id,
-        $publicador_id
-    );
+    $query .= ", imagen_principal = ?";
+    $params[] = $imagen_principal;
+    $types .= "s";
+}
+
+if ($actualizar_archivo) {
+    $query .= ", archivo_url = ?, tipo_archivo = ?";
+    $params[] = $archivo_url;
+    $params[] = $tipo_archivo;
+    $types .= "ss";
+}
+
+$query .= " WHERE id = ? AND publicador_id = ?";
+$params[] = $publicacion_id;
+$params[] = $publicador_id;
+$types .= "ii";
+
+$stmt = $conn->prepare($query);
+$stmt->bind_param($types, ...$params);
 }
 
 if ($stmt->execute()) {

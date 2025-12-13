@@ -32,9 +32,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $publicador_nombre = $_SESSION['publicador_nombre'] ?? 'Un publicador';
     
     // Validar que los campos obligatorios no estén vacíos
-    if ($titulo === "" || $contenido === "" || $categoria_id === 0) {
+    // El contenido puede estar vacío si se sube un archivo
+    $tiene_archivo = isset($_FILES['archivo_contenido']) && $_FILES['archivo_contenido']['error'] === UPLOAD_ERR_OK;
+    
+    if ($titulo === "" || ($contenido === "" && !$tiene_archivo) || $categoria_id === 0) {
         // Guardar mensaje de error en sesión para mostrarlo después
-        $_SESSION['publicador_mensaje'] = "Completa todos los campos obligatorios";
+        $_SESSION['publicador_mensaje'] = "Completa todos los campos obligatorios (Texto o Archivo)";
         $_SESSION['publicador_tipo_mensaje'] = "error";
         header("Location: crear_nueva_publicacion.php");
         exit();
@@ -76,6 +79,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
     
+    // Procesar archivo de contenido (PDF, Doc, Imagen) si se subió
+    $archivo_url = null;
+    $tipo_archivo = null;
+    
+    // Verificar si se subió archivo_contenido
+    if (isset($_FILES['archivo_contenido']) && $_FILES['archivo_contenido']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = __DIR__ . '/../../uploads/';
+        
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+        
+        $file_name = $_FILES['archivo_contenido']['name'];
+        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $allowed_doc_extensions = ['pdf', 'doc', 'docx'];
+        $allowed_img_extensions = ['jpg', 'jpeg', 'png', 'webp'];
+        
+        // Determinar tipo de archivo
+        if (in_array($file_extension, $allowed_doc_extensions)) {
+            $tipo_archivo = $file_extension; // 'pdf', 'doc'
+        } elseif (in_array($file_extension, $allowed_img_extensions)) {
+            $tipo_archivo = 'imagen_contenido'; // Distinguir de imagen principal
+        }
+        
+        if ($tipo_archivo) {
+            $new_filename = 'doc_' . time() . '_' . uniqid() . '.' . $file_extension;
+            $upload_path = $upload_dir . $new_filename;
+            
+            if (move_uploaded_file($_FILES['archivo_contenido']['tmp_name'], $upload_path)) {
+                $archivo_url = $new_filename;
+            }
+        }
+    }
+    
     // Preparar array con todos los datos de la publicación
     $datos_publicacion = [
         'titulo' => $titulo,
@@ -86,7 +123,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         'tipo' => $tipo,
         'tags' => $tags,
         'estado' => $estado,
-        'imagen_principal' => $imagen_principal
+        'imagen_principal' => $imagen_principal,
+        'archivo_url' => $archivo_url,
+        'tipo_archivo' => $tipo_archivo
     ];
     
     // Intentar guardar la publicación en la base de datos

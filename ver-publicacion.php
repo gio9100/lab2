@@ -9,6 +9,7 @@ session_start();
 require_once './forms/conexion.php';
 // Traemos la conexión a la base de datos para poder hacer consultas
 require_once './forms/usuario.php';
+require_once './forms/FuncionesTexto.php';
 // Incluimos las funciones de usuario e interacción
 
 // Función para procesar el contenido de la publicación
@@ -1185,7 +1186,119 @@ $publicacion = $result->fetch_assoc();
             </div>
             
             <article class="publication-content">
-                <?= procesarContenido($publicacion['contenido']) ?>
+                <?php if (!empty($publicacion['archivo_url'])): ?>
+                    <!-- Lógica para mostrar archivo adjunto -->
+                    <div class="file-viewer-container" style="background: #f8f9fa; border-radius: 12px; overflow: hidden; border: 1px solid #dee2e6;">
+                        
+                        <?php 
+                        $tipo = strtolower($publicacion['tipo_archivo'] ?? '');
+                        $archivo_path = 'uploads/' . htmlspecialchars($publicacion['archivo_url']);
+                        ?>
+
+                        <?php if ($tipo === 'pdf' || $tipo === 'application/pdf'): ?>
+                            <!-- Visor PDF Nativo -->
+                            <div style="position: relative; height: 800px; width: 100%;">
+                                <iframe src="<?= $archivo_path ?>" style="width: 100%; height: 100%; border: none;">
+                                    Tu navegador no soporta visualización de PDF. 
+                                    <a href="<?= $archivo_path ?>">Descárgalo aquí</a>.
+                                </iframe>
+                            </div>
+
+                        <?php elseif (in_array($tipo, ['jpg', 'jpeg', 'png', 'webp', 'imagen_contenido'])): ?>
+                            <!-- Visor Imagen -->
+                            <div class="text-center p-3">
+                                <img src="<?= $archivo_path ?>" class="img-fluid rounded shadow-sm" alt="Contenido" style="max-height: 800px;">
+                            </div>
+
+                        <?php elseif ($tipo === 'docx' || $tipo === 'doc'): ?>
+                            <!-- Visor DOCX con Mammoth.js -->
+                            <div class="p-4" style="background: white; min-height: 500px;">
+                                <div id="word-container" style="color: black;">
+                                    <div class="text-center py-5">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Cargando documento...</span>
+                                        </div>
+                                        <p class="mt-2 text-muted">Renderizando documento...</p>
+                                    </div>
+                                </div>
+                                <!-- Fallback download link -->
+                                <div class="text-center mt-4 pt-3 border-top">
+                                    <small class="text-muted">¿No se ve bien?</small><br>
+                                    <a href="<?= $archivo_path ?>" class="btn btn-sm btn-outline-primary mt-1" download>
+                                        <i class="bi bi-download"></i> Descargar archivo original
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Cargar librería Mammoth.js -->
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const archivoUrl = "<?= $archivo_path ?>";
+                                    
+                                    fetch(archivoUrl)
+                                        .then(response => response.arrayBuffer())
+                                        .then(arrayBuffer => mammoth.convertToHtml({arrayBuffer: arrayBuffer}))
+                                        .then(result => {
+                                            document.getElementById('word-container').innerHTML = result.value;
+                                            // Aplicar estilos básicos al contenido generado
+                                            const container = document.getElementById('word-container');
+                                            container.querySelectorAll('p').forEach(p => p.style.marginBottom = '1rem');
+                                            container.querySelectorAll('table').forEach(t => t.classList.add('table', 'table-bordered'));
+                                        })
+                                        .catch(err => {
+                                            console.error(err);
+                                            document.getElementById('word-container').innerHTML = `
+                                                <div class="alert alert-warning">
+                                                    No se pudo visualizar el documento automáticamente. 
+                                                    <br>
+                                                    <a href="${archivoUrl}" class="alert-link">Descárgalo aquí</a>
+                                                </div>
+                                            `;
+                                        });
+                                });
+                            </script>
+
+                        <?php else: ?>
+                            <!-- Tarjeta de Descarga para otros archivos (Word, Excel, etc.) -->
+                            <div class="text-center p-5">
+                                <i class="bi bi-file-earmark-richtext text-primary" style="font-size: 5rem;"></i>
+                                <h3 class="mt-4 text-dark">Documento Adjunto</h3>
+                                <p class="text-muted mb-4">
+                                    Este contenido está disponible en formato <strong><?= strtoupper($tipo) ?></strong>.
+                                    <br>Puedes descargarlo para visualizarlo.
+                                </p>
+                                <a href="<?= $archivo_path ?>" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" download>
+                                    <i class="bi bi-download me-2"></i> Descargar Documento
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Si hay contenido de texto adicional, mostrarlo abajo -->
+                    <?php if (!empty($publicacion['contenido']) && trim($publicacion['contenido']) !== '<p><br></p>'): ?>
+                        <div class="mt-5 pt-4 border-top">
+                            <h4 class="mb-3 text-secondary">Notas Adicionales</h4>
+                            <?= procesarContenido($publicacion['contenido']) ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <!-- Lógica OCULTA para TTS (Texto a Voz) del PDF -->
+                    <?php if (($tipo === 'pdf' || $tipo === 'application/pdf') && !empty($archivo_path)): ?>
+                        <?php 
+                            $texto_pdf_tts = FuncionesTexto::extraerTextoPdf($archivo_path);
+                            // Limpiamos un poco para el TTS
+                            $texto_pdf_tts = trim(preg_replace('/\s+/', ' ', $texto_pdf_tts));
+                        ?>
+                        <?php if (!empty($texto_pdf_tts)): ?>
+                            <div id="tts-content-hidden" style="display: none;"><?= htmlspecialchars($texto_pdf_tts) ?></div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                <?php else: ?>
+                    <!-- Contenido Texto Normal -->
+                    <?= procesarContenido($publicacion['contenido']) ?>
+                <?php endif; ?>
             </article>
         </section>
 
@@ -1944,38 +2057,172 @@ function descargarPDF() {
     let originalText = "";
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Obtener el contenido del artículo, limpiando etiquetas HTML innecesarias para la lectura
-        const contentElement = document.querySelector('.publication-content');
-        if (contentElement) {
-            // Usamos innerText para obtener solo el texto visible y respetar saltos de línea
-            originalText = contentElement.innerText;
-        }
+        // Inicializar texto original
+        updateTTSContent();
 
         // Configurar el evento onend para cuando termine de hablar
         speech.onend = function() {
             resetTTSButton();
         };
+
+        // Debug: ver si se cargó algo
+        console.log("TTS Inicializado. Texto actual length: " + (originalText ? originalText.length : 0));
     });
 
-    function toggleLeerContenido() {
+    async function updateTTSContent() {
+         // 1. Intentar obtener contenido de PDF extraído (en div oculto)
+         const pdfContent = document.getElementById('tts-content-hidden');
+         if (pdfContent && pdfContent.innerText.trim().length > 0) {
+             console.log("TTS: Usando contenido PDF extraído.");
+             originalText = pdfContent.innerText;
+             return;
+         }
+
+         // 2. Intentar obtener contenido de Word (Mammoth.js)
+         const wordContainer = document.getElementById('word-container');
+         if (wordContainer && wordContainer.innerText.trim().length > 0) {
+             console.log("TTS: Usando contenido DOCX renderizado.");
+             originalText = wordContainer.innerText;
+             return;
+         }
+
+         // 3. Contenido HTML estándar (fallback inicial)
+         const contentElement = document.querySelector('.publication-content');
+         if (contentElement) {
+             originalText = contentElement.innerText;
+         }
+    }
+
+    // Tesseract worker
+    let tesseractWorker = null;
+
+    async function leerImagenConOCR() {
+        const img = document.querySelector('.publication-content img'); // Buscar primera imagen principal
+        if (!img) return null;
+
+        showToast("Procesando imagen para lectura... esto puede tardar unos segundos.", "info");
+        
+        // Cargar Tesseract si no está
+        if (typeof Tesseract === 'undefined') {
+             await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+        }
+
+        if (!tesseractWorker) {
+            tesseractWorker = await Tesseract.createWorker('eng+spa'); // Inglés y Español
+        }
+
+        const { data: { text } } = await tesseractWorker.recognize(img.src);
+        return text;
+    }
+
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
+    // Variables globales para el manejo de chunks
+    let audioChunks = [];
+    let currentChunkIndex = 0;
+    
+    // Función para dividir texto largo en chunks seguros (aprox 200 caracteres para mejor flujo)
+    function chunkText(text, maxLength = 200) {
+        const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+        let chunks = [];
+        let currentChunk = "";
+
+        sentences.forEach(sentence => {
+            if ((currentChunk + sentence).length > maxLength) {
+                chunks.push(currentChunk.trim());
+                currentChunk = sentence;
+            } else {
+                currentChunk += " " + sentence;
+            }
+        });
+        if (currentChunk.trim().length > 0) chunks.push(currentChunk.trim());
+        return chunks;
+    }
+
+    function speakNextChunk(synth) {
+        if (currentChunkIndex < audioChunks.length) {
+            speech.text = audioChunks[currentChunkIndex];
+            speech.lang = 'es-ES';
+            speech.rate = 1;
+            
+            // Cuando termine este chunk, hablar el siguiente (si no está pausado)
+            speech.onend = function() {
+                if (isSpeaking && !isPaused) {
+                    currentChunkIndex++;
+                    speakNextChunk(synth);
+                } else if (!isSpeaking) {
+                    resetTTSButton();
+                }
+            };
+            
+            synth.speak(speech);
+        } else {
+            // Fin de todos los chunks
+            isSpeaking = false;
+            resetTTSButton();
+        }
+    }
+
+    async function toggleLeerContenido() {
         const btnText = document.getElementById('tts-text');
         const btnIcon = document.getElementById('tts-icon');
         const synth = window.speechSynthesis;
 
         if (!isSpeaking) {
+            
+            // Re-chequear contenido por si cargó asíncronamente (DOCX) o no se detectó al inicio
+            await updateTTSContent();
+
+            // CASO ESPECIAL: Si es imagen y tenemos poco texto, intentar OCR
+            // Detectamos si es imagen por la estructura HTML
+            const esImagen = document.querySelector('.publication-content img') && (!originalText || originalText.length < 50); 
+            
+            if (esImagen && (!originalText || originalText.length < 50)) {
+                try {
+                    const textoOCR = await leerImagenConOCR();
+                    if (textoOCR && textoOCR.trim().length > 10) {
+                        originalText = textoOCR;
+                    } 
+                } catch (e) {
+                    console.error("Error OCR:", e);
+                }
+            }
+
             // Iniciar lectura
-            if (!originalText) {
-                showToast("No se pudo obtener el contenido para leer.", "error");
+            if (!originalText || originalText.trim().length === 0) {
+                console.warn("TTS: originalText vacío.");
+                showToast("No se encontró contenido legible para escuchar.", "error");
                 return;
             }
 
-            speech.text = originalText;
-            speech.lang = 'es-ES'; // Español
-            speech.rate = 1; // Velocidad normal
-            speech.pitch = 1; // Tono normal
+            // Cancelar cualquier lectura previa para evitar conflictos
+            synth.cancel();
 
-            synth.speak(speech);
-            
+            // LÓGICA SIMPLIFICADA
+            // Si es corto, leer directo sin chunks para evitar problemas de eventos
+            if (originalText.length < 250) {
+                speech.text = originalText;
+                speech.lang = 'es-ES';
+                speech.rate = 1;
+                speech.onend = resetTTSButton;
+                synth.speak(speech);
+            } else {
+                // Si es largo, usar chunks
+                audioChunks = chunkText(originalText);
+                currentChunkIndex = 0;
+                console.log(`TTS: Texto largo (${originalText.length} chars). Usando ${audioChunks.length} fragmentos.`);
+                speakNextChunk(synth);
+            }
+
+            // Iniciar secuencia UI
             isSpeaking = true;
             isPaused = false;
             

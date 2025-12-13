@@ -68,7 +68,7 @@ if (!isset($_SESSION['pending_2fa'])) {
     <form method="post" action="check_2fa.php" class="formulario" novalidate>
         
         <div class="logo-lab">
-            <img src="../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
+            <img src="../assets/img/logo/logo-labexplora.png" alt="Logo Lab">
             <h1>Verificación en 2 Pasos</h1>
             <p class="subtitulo">Ingresa el código enviado a tu correo</p>
         </div>

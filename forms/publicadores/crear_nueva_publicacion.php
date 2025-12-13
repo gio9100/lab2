@@ -199,8 +199,37 @@ $categorias = obtenerCategorias($conn);
                                     </div>
                                 </div>
 
+                                <!-- Selección de Tipo de Contenido -->
+                                <div class="mb-4 p-3 bg-light rounded border">
+                                    <label class="form-label fw-bold mb-3">¿Cómo quieres publicar tu contenido?</label>
+                                    <div class="d-flex gap-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_entrada" id="tipo_texto" value="texto" checked onchange="toggleContentInput()">
+                                            <label class="form-check-label" for="tipo_texto">
+                                                <i class="bi bi-pencil-square"></i> Escribir artículo
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_entrada" id="tipo_archivo" value="archivo" onchange="toggleContentInput()">
+                                            <label class="form-check-label" for="tipo_archivo">
+                                                <i class="bi bi-file-earmark-arrow-up"></i> Subir archivo (PDF, Word, Imagen)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Input para Subir Archivo (Oculto por defecto) -->
+                                <div id="archivo-upload-container" class="mb-4 d-none">
+                                    <label for="archivo_contenido" class="form-label fw-bold">Subir Archivo de Contenido *</label>
+                                    <input type="file" class="form-control" id="archivo_contenido" name="archivo_contenido" 
+                                           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp">
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Sube tu investigación completa. Formatos permitidos: PDF, Word, o Imágenes. Máx: 10MB.
+                                    </div>
+                                </div>
+
                                 <!-- Editor de Contenido (Quill) -->
-                                <div class="mb-4">
+                                <div id="editor-wrapper" class="mb-4">
                                     <label class="form-label fw-bold">Contenido de la Publicación *</label>
                                     <!-- Contenedor del editor -->
                                     <div id="editor-container"></div>
@@ -372,17 +401,58 @@ $categorias = obtenerCategorias($conn);
             };
         }
 
+        // Función para alternar entre escribir texto o subir archivo
+        function toggleContentInput() {
+            const tipo = document.querySelector('input[name="tipo_entrada"]:checked').value;
+            const editorWrapper = document.getElementById('editor-wrapper');
+            const archivoContainer = document.getElementById('archivo-upload-container');
+            
+            if (tipo === 'archivo') {
+                editorWrapper.classList.add('d-none');
+                archivoContainer.classList.remove('d-none');
+                // Requerir archivo, quitar requerimiento de texto (aunque validaremos manualmente)
+                document.getElementById('archivo_contenido').required = true;
+            } else {
+                editorWrapper.classList.remove('d-none');
+                archivoContainer.classList.add('d-none');
+                document.getElementById('archivo_contenido').required = false;
+                document.getElementById('archivo_contenido').value = ''; // Limpiar input
+            }
+        }
+
         // Manejo del formulario antes de enviar
         document.getElementById('form-publicacion').onsubmit = function(e) {
-            // Obtener contenido HTML del editor
-            var contenido = document.querySelector('input[name=contenido]');
-            contenido.value = quill.root.innerHTML;
+            const tipoEntrada = document.querySelector('input[name="tipo_entrada"]:checked').value;
             
-            // Validar que no esté vacío (solo etiquetas vacías)
-            if (quill.getText().trim().length === 0) {
-                alert('El contenido de la publicación no puede estar vacío');
-                e.preventDefault();
-                return false;
+            // Si es tipo TEXTO, validamos el editor Quill
+            if (tipoEntrada === 'texto') {
+                // Obtener contenido HTML del editor
+                var contenido = document.querySelector('input[name=contenido]');
+                contenido.value = quill.root.innerHTML;
+                
+                // Validar que no esté vacío (solo etiquetas vacías)
+                if (quill.getText().trim().length === 0) {
+                    alert('El contenido de la publicación no puede estar vacío');
+                    e.preventDefault();
+                    return false;
+                }
+            } else {
+                // Si es tipo ARCHIVO, validamos que haya uno seleccionado
+                const archivo = document.getElementById('archivo_contenido').files[0];
+                if (!archivo) {
+                    alert('Debes seleccionar un archivo para subir.');
+                    e.preventDefault();
+                    return false;
+                }
+                // Validar tamaño (máx 10MB)
+                if (archivo.size > 10 * 1024 * 1024) {
+                    alert('El archivo es demasiado grande. Máximo 10MB.');
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Limpiar contenido de texto para evitar conflictos si se cambia de opinión
+                document.querySelector('input[name=contenido]').value = '';
             }
             
             // Validar longitud del título
