@@ -395,6 +395,9 @@ $categorias = obtenerCategorias($conn);
     
     <!-- Script del Asistente de IA (cargar después de Quill) -->
     <script src="../../assets/js/ai-asistente.js"></script>
+    
+    <!-- Quill Blot Formatter (Mejor que image-resize) -->
+    <script src="https://unpkg.com/quill-blot-formatter@1.0.5/dist/quill-blot-formatter.min.js"></script>
 
     <script>
         // Inicializar animaciones AOS
@@ -403,10 +406,17 @@ $categorias = obtenerCategorias($conn);
             once: true
         });
 
+        // Registrar BlotFormatter
+        if (window.QuillBlotFormatter) {
+            Quill.register('modules/blotFormatter', window.QuillBlotFormatter.default);
+        }
+
         // Configuración del Editor Quill
         var quill = new Quill('#editor-container', {
             theme: 'snow',
             modules: {
+                // Módulo de redimensionamiento y alineación
+                blotFormatter: {},
                 toolbar: {
                     container: [
                         [{ 'header': [1, 2, 3, false] }],
@@ -434,6 +444,9 @@ $categorias = obtenerCategorias($conn);
 
         // Función para manejar subida de imágenes en el editor
         function imageHandler() {
+            // Capturar la instancia de Quill vinculada a este botón
+            const quillInstance = this.quill;
+            
             const input = document.createElement('input');
             input.setAttribute('type', 'file');
             input.setAttribute('accept', 'image/*');
@@ -452,24 +465,33 @@ $categorias = obtenerCategorias($conn);
                     formData.append('image', file);
 
                     try {
-                        // Subir imagen al servidor
                         const response = await fetch('subir_imagen_contenido.php', {
                             method: 'POST',
                             body: formData
                         });
                         
-                        const result = await response.json();
+                        // Verificar si la respuesta es válida antes de parsear
+                        const textResult = await response.text();
+                        let result;
+                        try {
+                            result = JSON.parse(textResult);
+                        } catch (e) {
+                            throw new Error('Respuesta del servidor inválida: ' + textResult.substring(0, 50));
+                        }
                         
                         if (result.success) {
-                            // Insertar imagen en el editor
-                            const range = quill.getSelection();
-                            quill.insertEmbed(range.index, 'image', result.url);
+                            // Recuperar foco explícitamente y obtener rango
+                            const range = quillInstance.getSelection(true);
+                            const index = range ? range.index : quillInstance.getLength();
+                            
+                            quillInstance.insertEmbed(index, 'image', result.url);
+                            quillInstance.setSelection(index + 1);
                         } else {
-                            alert('Error al subir imagen: ' + result.message);
+                            alert('Error al subir imagen: ' + (result.error || 'Error desconocido'));
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        alert('Error al subir la imagen');
+                        alert('Error crítico al subir: ' + error.message);
                     }
                 }
             };

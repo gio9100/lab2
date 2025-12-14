@@ -94,14 +94,12 @@ switch ($task) {
     case 'format_content':
         $systemPrompt = "Eres un asistente de edición web experto. Tu única tarea es convertir texto sucio o desordenado en HTML semántico PERFECTO para un editor WYSIWYG.";
         $userPrompt = "Instrucciones:
-        1. Analiza el siguiente texto y detecta su estructura (Títulos, Subtítulos, Listas, Párrafos).
-        2. NO cambies el contenido ni el redacción, solo aplica etiquetas HTML.
-        3. Usa <h2> para el tema principal, <h3> para subtemas.
-        4. Convierte listados en <ul> o <ol>.
-        5. Devuelve SOLAMENTE el código HTML crudo sin bloques de código Markdown (sin ```html ... ```).
-        6. Si el texto es muy corto, solo devuélvelo limpio en <p>.
+        1. Tu objetivo principal es LIMPIAR el formato del texto (títulos, párrafos, listas) PERO DEBES CONSERVAR TODO EL CONTENIDO MULTIMEDIA.
+        2. ¡IMPORTANTE! Si encuentras etiquetas <img>, <video>, o <iframe>, DÉJALAS EXACTAMENTE COMO ESTÁN. No las borres, no les cambies los atributos (src, alt, style, width, height).
+        3. El resto del texto conviértelo a HTML limpio (h2, h3, p, ul).
+        4. Devuelve SOLAMENTE el código HTML dentro de <body> (sin markdown, sin ```html).
 
-        Texto a formatear: 
+        Texto/HTML a procesar: 
         " . $text;
         break;
     case 'moderate_content':

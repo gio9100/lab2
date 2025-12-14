@@ -96,7 +96,8 @@ async function formatearTextoIA() {
     console.log("Iniciando formatearTextoIA..."); // Debug
     mostrarCargando('formato');
 
-    let texto = quill.getText(); // Obtenemos texto plano sucio
+    // CAMBIO CRÍTICO: Enviamos innerHTML para incluir las imágenes en el análisis
+    let texto = quill.root.innerHTML;
 
     if (texto.trim().length < 10) {
         ocultarCargando('formato');

@@ -1,77 +1,89 @@
 ﻿<?php
+// Iniciar buffer de salida inmediatamente para capturar cualquier error/warning
+ob_start();
+
+// Desactivar visualización de errores en la respuesta (rompen el JSON)
+ini_set('display_errors', 0);
+error_reporting(0);
+
 // Archivo que maneja la subida de imágenes para el contenido de publicaciones
 // Se usa desde el editor Quill cuando el publicador inserta una imagen
 
 session_start();
 require_once __DIR__ . '/config-publicadores.php';
 
+// Asegurar header JSON
+header('Content-Type: application/json');
+
 // Verificar que el publicador esté logueado
 if (!isset($_SESSION['publicador_id'])) {
-    // JSON = JavaScript Object Notation, formato de texto para intercambiar datos entre servidor y navegador
-    // json_encode() = convierte array PHP a texto JSON que JavaScript puede leer
-    // Ejemplo: ['success' => false] se convierte en {"success":false}
+    ob_end_clean(); // Limpiar lo que haya
     echo json_encode(['success' => false, 'error' => 'No autorizado']);
     exit();
 }
 
 // Verificar que se recibió un archivo
-// $_FILES = array global con información de archivos subidos
-// UPLOAD_ERR_OK = constante que indica subida exitosa (valor 0)
-if (!isset($_FILES['imagen']) || $_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
-    echo json_encode(['success' => false, 'error' => 'No se recibió ninguna imagen']);
+if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+    ob_end_clean();
+    echo json_encode(['success' => false, 'error' => 'No se recibió ninguna imagen o hubo un error en la subida']);
     exit();
 }
 
-$archivo = $_FILES['imagen'];
+$archivo = $_FILES['image'];
 
 // Validar tipo de archivo permitido
 $tipos_permitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-// in_array() = verifica si un valor existe en un array
 if (!in_array($archivo['type'], $tipos_permitidos)) {
+    ob_end_clean();
     echo json_encode(['success' => false, 'error' => 'Tipo de archivo no permitido. Solo JPG, PNG, GIF y WEBP']);
     exit();
 }
 
 // Validar tamaño máximo (5MB)
-$tamano_maximo = 5 * 1024 * 1024;  // 1024 bytes = 1KB, 1024KB = 1MB
+$tamano_maximo = 5 * 1024 * 1024;
 if ($archivo['size'] > $tamano_maximo) {
+    ob_end_clean();
     echo json_encode(['success' => false, 'error' => 'La imagen es demasiado grande. Máximo 5MB']);
     exit();
 }
 
 // Crear directorio si no existe
-// __DIR__ = directorio actual del archivo
-$directorio_destino = __DIR__ . '/../../uploads/contenido/';
-if (!file_exists($directorio_destino)) {
-    // mkdir() = crea carpeta
-    // 0755 = permisos (lectura/escritura para dueño, solo lectura para otros)
-    // true = crea carpetas intermedias si no existen
-    mkdir($directorio_destino, 0755, true);
+// Usamos ruta absoluta basada en __DIR__ para evitar problemas de "../"
+$upload_root = dirname(dirname(__DIR__)); // c:\xampp\htdocs\lab2
+$directorio_destino = $upload_root . '/uploads/contenido/';
+
+// Asegurar que la carpeta uploads base exista
+if (!file_exists($upload_root . '/uploads')) {
+    mkdir($upload_root . '/uploads', 0755, true);
 }
 
-// Generar nombre único para evitar sobrescribir archivos
-// pathinfo() = extrae información de una ruta de archivo
-// PATHINFO_EXTENSION = obtiene solo la extensión (.jpg, .png, etc)
+if (!file_exists($directorio_destino)) {
+    if (!mkdir($directorio_destino, 0755, true)) {
+        ob_end_clean();
+        echo json_encode(['success' => false, 'error' => 'No se pudo crear el directorio: ' . $directorio_destino]);
+        exit();
+    }
+}
+
+// Generar nombre único
 $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
-// time() = timestamp actual en segundos desde 1970
-// uniqid() = genera ID único basado en microsegundos
 $nombre_archivo = 'img_' . time() . '_' . uniqid() . '.' . $extension;
 $ruta_completa = $directorio_destino . $nombre_archivo;
 
-// Mover archivo temporal a ubicación final
-// move_uploaded_file() = mueve archivo subido (más seguro que copy())
+// Mover archivo
 if (move_uploaded_file($archivo['tmp_name'], $ruta_completa)) {
-    // Ruta relativa para usar en el HTML del editor
-    $ruta_relativa = 'uploads/contenido/' . $nombre_archivo;
+    // Ruta relativa para usar en el HTML del editor (debe ser accesible desde el navegador)
+    // Desde 'forms/publicadores/crear_nueva_publicacion.php', la carpeta uploads está en '../../uploads'
+    $ruta_relativa = '../../uploads/contenido/' . $nombre_archivo;
     
-    // Devolver JSON con la URL de la imagen subida
-    // El editor Quill usará esta URL para mostrar la imagen
+    ob_end_clean(); // Limpiar cualquier salida previa
     echo json_encode([
         'success' => true,
         'url' => $ruta_relativa,
         'filename' => $nombre_archivo
     ]);
 } else {
-    echo json_encode(['success' => false, 'error' => 'Error al guardar la imagen']);
+    ob_end_clean();
+    echo json_encode(['success' => false, 'error' => 'Error al mover el archivo al servidor']);
 }
 ?>
