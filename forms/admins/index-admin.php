@@ -7,6 +7,7 @@ session_start();
 
 // Incluir configuración de admin
 require_once "config-admin.php";
+require_once "../funciones_auditoria.php"; // Incluir helper logs
 
 // Verificar permisos de admin
 requerirAdmin();
@@ -27,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['aprobar_publicador'])) {
         $publicador_id = intval($_POST['publicador_id']);
         if (aprobarPublicador($publicador_id, $conn)) {
+            registrarLogAuditoria($conn, $admin_id, 'APROBAR', 'publicador', $publicador_id, 'Aprobación de cuenta de publicador');
             $mensaje = "Publicador aprobado exitosamente";
             $exito = true;
         }
@@ -38,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $motivo = trim($_POST['motivo'] ?? "");
         
         if (rechazarPublicador($publicador_id, $motivo, $conn)) {
+            registrarLogAuditoria($conn, $admin_id, 'RECHAZAR', 'publicador', $publicador_id, "Motivo: $motivo");
             $mensaje = "Publicador rechazado";
             $exito = true;
         }
@@ -49,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $motivo = trim($_POST['motivo'] ?? "");
         
         if (suspenderPublicador($publicador_id, $motivo, $conn)) {
+            registrarLogAuditoria($conn, $admin_id, 'SUSPENDER', 'publicador', $publicador_id, "Motivo: $motivo");
             $mensaje = "Publicador suspendido";
             $exito = true;
         }
@@ -59,6 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $publicador_id = intval($_POST['publicador_id']);
         
         if (activarPublicador($publicador_id, $conn)) {
+            registrarLogAuditoria($conn, $admin_id, 'ACTIVAR', 'publicador', $publicador_id, 'Reactivación de cuenta');
             $mensaje = "Publicador activado";
             $exito = true;
         }

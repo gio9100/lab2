@@ -185,15 +185,8 @@ function acortar($texto, $limite = 150) {
 
 /* Línea vacía */
 
-body {
-    /* Estilos para el body (todo el documento) */
-    font-family: 'Inter', sans-serif;
-    /* Ponemos el color de fondo usando la variable */
-    color: var(--text);
-    /* Ponemos el color del texto usando la variable */
-    line-height: 1.6;
-    /* Espaciado entre líneas de texto */
-}
+<body>
+    <!-- Header -->
 
 
 /* Cerramos los estilos del body */
@@ -1268,6 +1261,8 @@ body {
         </div>
     </header>
 
+
+
 <!-- Línea vacía -->
     <!-- Main Content -->
 <!-- Comentario HTML para el contenido principal -->
@@ -1453,7 +1448,57 @@ body {
         <?php endif; ?>
 <!-- Cerramos el if de publicaciones -->
     </main>
-<!-- (Focus Mode removido de index.php) -->
+    <!-- Announcement Modal -->
+    <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="announcementModalLabel">
+                        <i class="bi bi-megaphone-fill me-2"></i> Anuncio o Aviso
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="announcementMessage" class="fs-5 text-dark"></div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('forms/get_active_announcement.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.anuncio) {
+                        const lastSeenId = localStorage.getItem('lastSeenAnnouncementId');
+                        
+                        // Solo mostramos si el ID del anuncio es diferente al último visto
+                        if (lastSeenId != data.anuncio.id) {
+                            const messageEl = document.getElementById('announcementMessage');
+                            messageEl.innerHTML = data.anuncio.mensaje;
+                            
+                            const modalEl = document.getElementById('announcementModal');
+                            const modal = new bootstrap.Modal(modalEl);
+                            
+                            // Guardamos que ya vimos este anuncio al cerrarlo o mostrarlo
+                            modalEl.addEventListener('hidden.bs.modal', function () {
+                                localStorage.setItem('lastSeenAnnouncementId', data.anuncio.id);
+                            });
+                            
+                            // Opcional: guardarlo inmediatamente al mostrar
+                            localStorage.setItem('lastSeenAnnouncementId', data.anuncio.id);
+                            
+                            modal.show();
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching announcement:', err));
+        });
+    </script>
 
     <!-- Scripts -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

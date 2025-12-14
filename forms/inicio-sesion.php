@@ -75,6 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $mensaje = " 🧪 Bienvenido a Lab-Explora, " . $usuario["nombre"] . "!";
                 // Mensaje de bienvenida con el nombre del usuario
                 $exito = true;
+
                 // Marcamos que el login fue exitoso
                 // No redirigimos inmediatamente, primero mostramos el modal
             } else {

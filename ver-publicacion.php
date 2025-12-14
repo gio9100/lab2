@@ -2488,7 +2488,10 @@ function descargarPDF() {
         $ai_enabled = ($ai_config['enable_cognitive_tools'] == 1);
     }
     
-    if ($ai_enabled): 
+    // VERIFICACIÓN DE SESIÓN (Solo usuarios logueados pueden ver la IA)
+    $usuario_logueado = isset($_SESSION['usuario_id']) || isset($_SESSION['publicador_id']) || isset($_SESSION['admin_id']);
+
+    if ($ai_enabled && $usuario_logueado): 
     ?>
     <style>
         /* Estilos del Dock Flotante de IA */
@@ -2676,6 +2679,7 @@ function descargarPDF() {
 
     <script src="assets/js/ia-cognitiva.js"></script>
     <?php endif; ?>
+
 
 </body>
 </html>

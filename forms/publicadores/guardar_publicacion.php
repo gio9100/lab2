@@ -30,6 +30,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $estado = $_POST["estado"] ?? "borrador";  // borrador, revision, publicado
     $publicador_id = $_SESSION['publicador_id'];
     $publicador_nombre = $_SESSION['publicador_nombre'] ?? 'Un publicador';
+
+    // ==========================================
+    // MODERACIÓN AUTOMÁTICA
+    // ==========================================
+    require_once dirname(__DIR__) . '/funciones_moderacion.php';
+    
+    $texto_a_revisar = $titulo . " " . strip_tags($contenido);
+    $resultado_moderacion = moderarContenido($texto_a_revisar, $conn);
+
+    if ($resultado_moderacion['accion'] === 'rechazar') {
+        $_SESSION['publicador_mensaje'] = "Publicación rechazada automáticamente: " . $resultado_moderacion['motivo'];
+        $_SESSION['publicador_tipo_mensaje'] = "error";
+        header("Location: crear_nueva_publicacion.php");
+        exit();
+    }
+
+    if ($resultado_moderacion['accion'] === 'asteriscos') {
+        $titulo = moderarContenido($titulo, $conn)['texto'];
+        // Nota: moderar contenido HTML con regex simple puede ser riesgoso, pero aceptable para MVP
+        $contenido = moderarContenido($contenido, $conn)['texto'];
+    }
+    // ==========================================
     
     // Validar que los campos obligatorios no estén vacíos
     // El contenido puede estar vacío si se sube un archivo

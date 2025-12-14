@@ -159,6 +159,7 @@
             <li><strong>Cookies esenciales:</strong> Necesarias para el funcionamiento básico (sesión de usuario, autenticación)</li>
             <li><strong>Cookies de preferencias:</strong> Almacenan configuraciones y preferencias de usuario</li>
             <li><strong>Cookies de seguridad:</strong> Protegen contra accesos no autorizados y fraude</li>
+            <li><strong>Cookies de accesibilidad:</strong> Almacenan sus preferencias del menú de accesibilidad (contraste, tamaño de texto, animaciones) para mantenerlas entre sesiones.</li>
         </ul>
 
         <h3>4.2 Gestión de Cookies</h3>
@@ -223,7 +224,17 @@
         </ul>
         <p><strong>Sus derechos:</strong> Puede solicitar revisión manual de cualquier decisión automatizada que afecte significativamente su cuenta.</p>
 
-        <h2>9. Conservación de Datos</h2>
+        <h2>9. Uso de Inteligencia Artificial Generativa (Google Gemini)</h2>
+        <p>La Plataforma integra funciones de asistencia virtual impulsadas por la tecnología Google Gemini API. Para su funcionamiento:</p>
+        <ul>
+            <li><strong>Procesamiento de datos:</strong> Al interactuar con el asistente "Gemini Lab", el texto de sus consultas y el contexto necesario se envían a los servidores de Google para generar una respuesta.</li>
+            <li><strong>Privacidad de Google:</strong> El procesamiento de estos datos está sujeto a los <a href="https://policies.google.com/privacy" target="_blank">Términos de Privacidad de Google</a> y sus políticas de uso de API.</li>
+            <li><strong>No uso para entrenamiento:</strong> Configuramos nuestra integración para solicitar que sus datos no sean utilizados por Google para entrenar sus modelos públicos, conforme a las opciones de privacidad empresarial disponibles.</li>
+            <li><strong>Control Administrativo:</strong> La disponibilidad de estas funciones depende de la configuración establecida por los administradores de la Plataforma, quienes pueden activar, desactivar o limitar el uso del asistente desde su panel de gestión.</li>
+        </ul>
+
+
+        <h2>10. Conservación de Datos</h2>
         <p>Conservamos su información personal durante el tiempo que:</p>
         <ul>
             <li>Su cuenta permanezca activa</li>
@@ -233,7 +244,7 @@
         </ul>
         <p>Los datos de sesión y registros técnicos se conservan por períodos limitados (generalmente 90-180 días) para fines de seguridad y análisis.</p>
 
-        <h2>10. Seguridad de la Información</h2>
+        <h2>11. Seguridad de la Información</h2>
         <p>Implementamos medidas técnicas y organizativas para proteger su información personal:</p>
         
         <h3>10.1 Medidas Técnicas</h3>
@@ -256,7 +267,7 @@
 
         <p><strong>Importante:</strong> Ningún sistema es 100% seguro. Aunque implementamos medidas razonables, no podemos garantizar la seguridad absoluta de su información. Le recomendamos utilizar contraseñas fuertes y únicas, activar 2FA y no compartir sus credenciales con terceros.</p>
 
-        <h2>11. Sus Derechos (Derechos ARCO)</h2>
+        <h2>12. Sus Derechos (Derechos ARCO)</h2>
         <p>Conforme a la legislación aplicable, usted tiene los siguientes derechos respecto a sus datos personales:</p>
 
         <h3>11.1 Acceso</h3>
@@ -286,14 +297,14 @@
         </ul>
         <p>Responderemos a su solicitud en un plazo máximo de 20 días hábiles.</p>
 
-        <h2>12. Privacidad de Menores</h2>
+        <h2>13. Privacidad de Menores</h2>
         <p>Lab-Explora no está dirigida a menores de 18 años. No recopilamos intencionalmente información personal de menores. Si descubrimos que hemos recopilado información de un menor sin el consentimiento de sus padres o tutores, eliminaremos esa información inmediatamente.</p>
         <p>Si usted es padre o tutor y cree que su hijo nos ha proporcionado información personal, por favor contáctenos de inmediato.</p>
 
-        <h2>13. Transferencias Internacionales</h2>
+        <h2>14. Transferencias Internacionales</h2>
         <p>Actualmente, toda la información se almacena y procesa en servidores ubicados en [especificar ubicación]. En caso de transferencias internacionales futuras, implementaremos salvaguardas apropiadas (cláusulas contractuales estándar, certificaciones de adecuación) para proteger su información.</p>
 
-        <h2>14. Cambios a esta Política de Privacidad</h2>
+        <h2>15. Cambios a esta Política de Privacidad</h2>
         <p>Nos reservamos el derecho de actualizar esta Política de Privacidad periódicamente para reflejar cambios en nuestras prácticas, tecnología, requisitos legales u otros factores.</p>
         <p>Le notificaremos sobre cambios materiales mediante:</p>
         <ul>
@@ -303,10 +314,10 @@
         </ul>
         <p>Le recomendamos revisar esta política periódicamente. El uso continuado de la Plataforma después de la publicación de cambios constituirá su aceptación de los mismos.</p>
 
-        <h2>15. Legislación Aplicable</h2>
+        <h2>16. Legislación Aplicable</h2>
         <p>Esta Política de Privacidad se rige por las leyes de protección de datos de México, incluyendo la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) y su Reglamento.</p>
 
-        <h2>16. Contacto</h2>
+        <h2>17. Contacto</h2>
         <p>Si tiene preguntas, inquietudes o solicitudes relacionadas con esta Política de Privacidad o el tratamiento de sus datos personales, puede contactar a nuestro Departamento de Protección de Datos:</p>
         <ul>
             <li><strong>Correo electrónico:</strong> privacidad@lab-explora.com</li>

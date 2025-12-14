@@ -42,6 +42,9 @@ function isActive($link_page, $current_page) {
             <span class="badge bg-danger float-end"><?= $stats_reportes['pendientes'] ?></span>
             <?php endif; ?>
         </a>
+        <a href="<?= $path_prefix ?>admin_palabras_prohibidas.php" class="list-group-item list-group-item-action <?= isActive('admin_palabras_prohibidas.php', $current_page) ?>">
+            <i class="bi bi-shield-slash me-2"></i>Palabras Prohibidas
+        </a>
         <a href="<?= $path_prefix ?>gestionar-comentarios.php" class="list-group-item list-group-item-action <?= isActive('gestionar-comentarios.php', $current_page) ?>">
             <i class="bi bi-chat-dots me-2"></i>Gestionar Comentarios
         </a>
@@ -70,6 +73,13 @@ function isActive($link_page, $current_page) {
         <a href="<?= $path_prefix ?>perfil-admin.php" class="list-group-item list-group-item-action <?= isActive('perfil-admin.php', $current_page) ?>">
             <i class="bi bi-person-circle me-2"></i>Mi Perfil
         </a>
+        <a href="<?= $path_prefix ?>admin_logs.php" class="list-group-item list-group-item-action <?= isActive('admin_logs.php', $current_page) ?>">
+            <i class="bi bi-journal-text me-2"></i>Auditoría
+        </a>
+        <a href="<?= $path_prefix ?>admin_anuncios.php" class="list-group-item list-group-item-action <?= isActive('admin_anuncios.php', $current_page) ?>">
+            <i class="bi bi-megaphone me-2"></i>Anuncios Globales
+        </a>
+
         <?php if($admin_nivel == 'superadmin'): ?>
         <a href="<?= $path_prefix ?>admins.php" class="list-group-item list-group-item-action <?= isActive('admins.php', $current_page) ?>">
             <i class="bi bi-shield-check me-2"></i>Administradores

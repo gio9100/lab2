@@ -142,7 +142,16 @@ curl_close($ch);
 
 $decoded = json_decode($response, true);
 
-// 5. Procesar respuesta
+// 5. Registrar Métricas de Uso (Tokens)
+if (isset($decoded['usageMetadata'])) {
+    $tokens_input = $decoded['usageMetadata']['promptTokenCount'] ?? 0;
+    $tokens_output = $decoded['usageMetadata']['candidatesTokenCount'] ?? 0;
+    $modelo = "gemini-2.5-flash"; // Hardcoded por ahora o sacado de config
+    
+
+}
+
+// 6. Procesar respuesta
 if (isset($decoded['candidates'][0]['content']['parts'][0]['text'])) {
     $aiText = $decoded['candidates'][0]['content']['parts'][0]['text'];
     // Formatear Markdown básico a HTML simple si es necesario, o enviarlo raw

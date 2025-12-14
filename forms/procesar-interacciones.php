@@ -61,6 +61,18 @@ switch ($accion) {
             echo json_encode(['success' => false, 'message' => 'Máximo 500 caracteres'], JSON_UNESCAPED_UNICODE);
             break;
         }
+
+        // ==========================================
+        // MODERACION DE COMENTARIOS
+        // ==========================================
+        require_once 'funciones_moderacion.php';
+        $res = moderarContenido($contenido, $conexion);
+        if ($res['accion'] === 'rechazar') {
+            echo json_encode(['success' => false, 'message' => 'Comentario rechazado: ' . $res['motivo']], JSON_UNESCAPED_UNICODE);
+            break;
+        }
+        $contenido = $res['texto']; // Usar texto censurado si aplica
+        // ==========================================
         
         // Intentar agregar el comentario a la base de datos
         $nuevo_id = agregarComentario($publicacion_id, $usuario_id, $contenido, $conexion);

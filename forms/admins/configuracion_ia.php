@@ -23,7 +23,8 @@ if (!$result) {
     $config = [
         'gemini_api_key' => '', 'enable_cognitive_tools' => 0,
         'enable_quiz' => 0, 'enable_chat_qa' => 0,
-        'enable_writing_assistant' => 0, 'enable_auto_moderation' => 0
+        'enable_writing_assistant' => 0, 'enable_auto_moderation' => 0,
+        'enable_complexity_slider' => 0
     ];
 } else {
     $config = $result->fetch_assoc();
@@ -34,7 +35,8 @@ if (!$result) {
         $config = [
             'gemini_api_key' => '', 'enable_cognitive_tools' => 0,
             'enable_quiz' => 0, 'enable_chat_qa' => 0,
-            'enable_writing_assistant' => 0, 'enable_auto_moderation' => 0
+            'enable_writing_assistant' => 0, 'enable_auto_moderation' => 0,
+            'enable_complexity_slider' => 0
         ];
     }
 }
@@ -43,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $api_key = trim($_POST['api_key']);
     $enable_tools = isset($_POST['enable_tools']) ? 1 : 0;
     $enable_quiz = isset($_POST['enable_quiz']) ? 1 : 0;
+    $enable_chat_qa = isset($_POST['enable_chat_qa']) ? 1 : 0;
     $enable_chat_qa = isset($_POST['enable_chat_qa']) ? 1 : 0;
     $enable_writing_assistant = isset($_POST['enable_writing_assistant']) ? 1 : 0;
     
@@ -70,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['enable_quiz'] = $enable_quiz;
         $config['enable_chat_qa'] = $enable_chat_qa;
         $config['enable_writing_assistant'] = $enable_writing_assistant;
+
 
     } else {
         $mensaje = "Error al guardar: " . $conn->error;
@@ -227,7 +231,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                                id="enableWriter" name="enable_writing_assistant" 
                                                                <?php echo $config['enable_writing_assistant'] ? 'checked' : ''; ?>>
                                                     </div>
+                                                    </div>
                                                 </div>
+
+
 
 
 

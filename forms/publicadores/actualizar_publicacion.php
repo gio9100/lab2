@@ -44,6 +44,25 @@ $contenido = $_POST['contenido'] ?? '';
 // Estado siempre es 'revision' al editar
 $estado = 'revision';
 
+// ==========================================
+// MODERACIÓN AUTOMÁTICA
+// ==========================================
+require_once dirname(__DIR__) . '/funciones_moderacion.php';
+$texto_a_revisar = $titulo . " " . strip_tags($contenido);
+$resultado_moderacion = moderarContenido($texto_a_revisar, $conn);
+
+if ($resultado_moderacion['accion'] === 'rechazar') {
+    $_SESSION['error'] = "Edición rechazada: " . $resultado_moderacion['motivo'];
+    header("Location: editar_publicacion.php?id=$publicacion_id");
+    exit();
+}
+
+if ($resultado_moderacion['accion'] === 'asteriscos') {
+    $titulo = moderarContenido($titulo, $conn)['texto'];
+    $contenido = moderarContenido($contenido, $conn)['texto'];
+}
+// ==========================================
+
 // Validar campos obligatorios
 if (empty($titulo)) {
     $_SESSION['error'] = "El título es obligatorio";

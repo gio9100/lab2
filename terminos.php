@@ -94,10 +94,30 @@
             <li>Panel de gestión para publicadores y administradores</li>
             <li>Sistema de reportes y moderación de contenido</li>
             <li>Asistente virtual con inteligencia artificial</li>
+            <li>Herramientas de accesibilidad personalizables</li>
         </ul>
 
-        <h2>3. Registro y Tipos de Cuenta</h2>
-        <h3>3.1 Usuarios Lectores</h3>
+        <h2>3. Servicios de Asistencia por Inteligencia Artificial</h2>
+        <p>Lab-Explora ofrece un asistente virtual ("Gemini Lab") basado en la tecnología de Google Gemini. Al utilizar este servicio, usted acepta que:</p>
+        <ul>
+            <li><strong>Naturaleza experimental:</strong> La IA puede generar información incorrecta, inexacta o "alucinaciones". No debe considerarse como sustituto de asesoramiento profesional médico, legal o científico certificado.</li>
+            <li><strong>Responsabilidad del usuario:</strong> Usted es el único responsable de verificar cualquier información proporcionada por el asistente antes de utilizarla en investigaciones o toma de decisiones.</li>
+            <li><strong>Uso prohibido:</strong> No está permitido utilizar el asistente para generar contenido ilegal, dañino, fraudulento, o intentar "inyectar prompts" para manipular su comportamiento.</li>
+            <li><strong>Disponibilidad gestionada:</strong> El acceso a las funciones de IA no está garantizado y puede ser activado, desactivado o restringido en cualquier momento por los administradores de la Plataforma según su criterio y políticas internas.</li>
+        </ul>
+
+        <h2>4. Accesibilidad e Inclusión</h2>
+        <p>Lab-Explora se compromete a garantizar la accesibilidad digital para personas con discapacidades. Implementamos un <strong>Menú de Accesibilidad</strong> que permite:</p>
+        <ul>
+            <li>Ajustar el tamaño del texto y el espaciado.</li>
+            <li>Modificar el contraste y saturación de colores.</li>
+            <li>Utilizar fuentes aptas para dislexia.</li>
+            <li>Navegar mediante cursor grande o guías de lectura.</li>
+        </ul>
+        <p>Aunque nos esforzamos por cumplir con los estándares WCAG 2.1, es posible que algunas áreas de contenido antiguo o documentos PDF cargados por terceros no sean totalmente accesibles. Trabajamos continuamente para mejorar la experiencia de todos los usuarios.</p>
+
+        <h2>5. Registro y Tipos de Cuenta</h2>
+        <h3>5.1 Usuarios Lectores</h3>
         <p>Los usuarios lectores pueden registrarse proporcionando un correo electrónico válido y creando una contraseña segura. Al registrarse, usted declara que:</p>
         <ul>
             <li>Toda la información proporcionada es veraz, precisa y actualizada</li>
@@ -106,7 +126,7 @@
             <li>Notificará inmediatamente cualquier uso no autorizado de su cuenta</li>
         </ul>
 
-        <h3>3.2 Publicadores</h3>
+        <h3>5.2 Publicadores</h3>
         <p>Los publicadores son usuarios con privilegios especiales para crear y gestionar publicaciones científicas. El proceso de aprobación para ser publicador es competencia exclusiva de los Administradores de la Plataforma. Los publicadores deben:</p>
         <ul>
             <li>Activar y utilizar la autenticación de dos factores (2FA) obligatoriamente</li>
@@ -116,10 +136,10 @@
             <li>Abstenerse de publicar contenido plagiado, difamatorio o que infrinja derechos de terceros</li>
         </ul>
 
-        <h3>3.3 Administradores</h3>
+        <h3>5.3 Administradores</h3>
         <p>Los administradores tienen acceso completo a las funcionalidades de gestión de la Plataforma, incluyendo la moderación de contenido, gestión de usuarios y reportes. La designación de administradores es exclusiva de Lab-Explora.</p>
 
-        <h2>4. Autenticación de Dos Factores (2FA)</h2>
+        <h2>6. Autenticación de Dos Factores (2FA)</h2>
         <p>La autenticación de dos factores es <strong>Opcional</strong> para cuentas de publicadores y administradores. Este sistema de seguridad adicional protege las cuentas mediante:</p>
         <ul>
             <li>Códigos de un solo uso (OTP) de 6 dígitos</li>
@@ -127,8 +147,8 @@
         </ul>
         <p>El Usuario es responsable de mantener seguro su dispositivo de autenticación. Lab-Explora no se hace responsable de pérdidas de acceso derivadas del extravío del dispositivo de autenticación.</p>
 
-        <h2>5. Derechos y Obligaciones de los Usuarios</h2>
-        <h3>5.1 Uso Permitido</h3>
+        <h2>7. Derechos y Obligaciones de los Usuarios</h2>
+        <h3>7.1 Uso Permitido</h3>
         <p>Los usuarios pueden:</p>
         <ul>
             <li>Acceder, leer y descargar publicaciones para fines educativos y de investigación personal</li>
@@ -138,7 +158,7 @@
             <li>Actualizar su perfil y foto de perfil</li>
         </ul>
 
-        <h3>5.2 Conducta Prohibida</h3>
+        <h3>7.2 Conducta Prohibida</h3>
         <p>Queda estrictamente prohibido:</p>
         <ul>
             <li>Reproducir, redistribuir, vender o modificar contenido sin autorización expresa</li>
@@ -151,8 +171,8 @@
             <li>Realizar spam, enviar contenido no solicitado o abusar de las funciones de interacción</li>
         </ul>
 
-        <h2>6. Contenido de Usuario y Publicaciones</h2>
-        <h3>6.1 Propiedad Intelectual del Contenido</h3>
+        <h2>8. Contenido de Usuario y Publicaciones</h2>
+        <h3>8.1 Propiedad Intelectual del Contenido</h3>
         <p>Los publicadores conservan todos los derechos de autor sobre sus publicaciones. Al publicar contenido en Lab-Explora, usted otorga a la Plataforma una licencia no exclusiva, mundial, libre de regalías para:</p>
         <ul>
             <li>Alojar, almacenar y distribuir el contenido en la Plataforma</li>
@@ -160,7 +180,7 @@
             <li>Mostrar el contenido a otros usuarios registrados</li>
         </ul>
 
-        <h3>6.2 Moderación y Eliminación de Contenido</h3>
+        <h3>8.2 Moderación y Eliminación de Contenido</h3>
         <p>Lab-Explora se reserva el derecho de revisar, aprobar, rechazar o eliminar cualquier publicación que:</p>
         <ul>
             <li>Viole estos Términos o la Política de Privacidad</li>
@@ -170,7 +190,7 @@
             <li>No cumpla con los estándares científicos y académicos de la Plataforma</li>
         </ul>
 
-        <h2>7. Credenciales Digitales PDF</h2>
+        <h2>9. Credenciales Digitales PDF</h2>
         <p>Los usuarios pueden generar credenciales digitales oficiales que incluyen:</p>
         <ul>
             <li>Información personal del usuario (nombre, correo, ID único)</li>
@@ -179,7 +199,7 @@
         </ul>
         <p><strong>Importante:</strong> Estas credenciales son para uso personal, educativo o de identificación dentro del ámbito académico. Queda prohibida su falsificación, adulteración o uso fraudulento. Lab-Explora se reserva el derecho de emprender acciones legales contra quienes hagan mal uso de estas credenciales.</p>
 
-        <h2>8. Sistema de Reportes y Moderación</h2>
+        <h2>10. Sistema de Reportes y Moderación</h2>
         <p>Los usuarios pueden reportar publicaciones que consideren inapropiadas. Los reportes son revisados por administradores quienes determinarán las acciones procedentes, que pueden incluir:</p>
         <ul>
             <li>Advertencia al publicador</li>
@@ -188,10 +208,10 @@
         </ul>
         <p>El envío de reportes falsos o malintencionados puede resultar en sanciones a la cuenta reportante.</p>
 
-        <h2>9. Privacidad y Protección de Datos</h2>
+        <h2>11. Privacidad y Protección de Datos</h2>
         <p>El tratamiento de datos personales se rige por nuestra <a href="privacidad.php">Política de Privacidad</a>, que forma parte integral de estos Términos. Al utilizar Lab-Explora, usted consiente el tratamiento de sus datos conforme a dicha política.</p>
 
-        <h2>10. Propiedad Intelectual de la Plataforma</h2>
+        <h2>12. Propiedad Intelectual de la Plataforma</h2>
         <p>Todos los elementos de Lab-Explora, incluyendo pero no limitado a:</p>
         <ul>
             <li>Diseño de la interfaz, logotipos, marcas y elementos gráficos</li>
@@ -201,7 +221,7 @@
         </ul>
         <p>Son propiedad exclusiva de Lab-Explora o sus licenciantes y están protegidos por las leyes de propiedad intelectual aplicables. Ningún elemento de la Plataforma puede ser copiado, reproducido o utilizado sin autorización expresa y por escrito.</p>
 
-        <h2>11. Limitación de Responsabilidad</h2>
+        <h2>13. Limitación de Responsabilidad</h2>
         <p>Lab-Explora se proporciona "tal cual" y "según disponibilidad", sin garantías de ningún tipo. En la máxima medida permitida por la ley:</p>
         <ul>
             <li>No garantizamos la disponibilidad ininterrumpida o libre de errores de la Plataforma</li>
@@ -211,7 +231,7 @@
             <li>El uso de la información científica es bajo la responsabilidad exclusiva del usuario</li>
         </ul>
 
-        <h2>12. Indemnización</h2>
+        <h2>14. Indemnización</h2>
         <p>Usted acepta indemnizar y mantener indemne a Lab-Explora, sus directivos, empleados, colaboradores y afiliados de cualquier reclamo, pérdida, responsabilidad, daño, costo o gasto (incluyendo honorarios legales) que surjan de:</p>
         <ul>
             <li>Su uso de la Plataforma o violación de estos Términos</li>
@@ -220,7 +240,7 @@
             <li>Cualquier actividad fraudulenta o ilegal realizada desde su cuenta</li>
         </ul>
 
-        <h2>13. Terminación y Suspensión</h2>
+        <h2>15. Terminación y Suspensión</h2>
         <p>Nos reservamos el derecho de suspender o terminar su acceso a Lab-Explora, con o sin previo aviso, por:</p>
         <ul>
             <li>Violación de estos Términos o la Política de Privacidad</li>
@@ -230,10 +250,10 @@
         </ul>
         <p>Usted puede solicitar la eliminación de su cuenta en cualquier momento contactando al soporte de la Plataforma.</p>
 
-        <h2>14. Legislación Aplicable y Jurisdicción</h2>
+        <h2>16. Legislación Aplicable y Jurisdicción</h2>
         <p>Estos Términos se rigen e interpretan de conformidad con las leyes de México. Cualquier disputa relacionada con estos Términos o el uso de la Plataforma será sometida a la jurisdicción exclusiva de los tribunales competentes en Jalisco, México.</p>
 
-        <h2>15. Disposiciones Generales</h2>
+        <h2>17. Disposiciones Generales</h2>
         <ul>
             <li><strong>Divisibilidad:</strong> Si alguna disposición de estos Términos es declarada inválida o inaplicable, las demás disposiciones permanecerán en pleno vigor y efecto.</li>
             <li><strong>No renuncia:</strong> El no ejercicio de cualquier derecho bajo estos Términos no constituirá una renuncia al mismo.</li>
@@ -241,7 +261,7 @@
             <li><strong>Notificaciones:</strong> Todas las comunicaciones oficiales se realizarán a través del correo electrónico registrado en su cuenta.</li>
         </ul>
 
-        <h2>16. Contacto</h2>
+        <h2>18. Contacto</h2>
         <p>Para preguntas, comentarios o inquietudes sobre estos Términos, puede contactarnos a través de:</p>
         <ul>
             <li><strong>Correo electrónico:</strong> legal@lab-explora.com</li>

@@ -450,6 +450,8 @@ session_start();
         </div>
     </header>
 
+
+
     <!-- Hero Section -->
 <!-- Comentario HTML para la sección principal de bienvenida -->
     <section class="hero-section">
@@ -850,7 +852,72 @@ session_start();
             }
         });
     </script>
+
     <script src="assets/js/accessibility-widget.js?v=3.2"></script>
+    <!-- Announcement Modal -->
+    <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="announcementModalLabel">
+                        <i class="bi bi-megaphone-fill me-2"></i> Anuncio o Aviso
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="announcementMessage" class="fs-5 text-dark"></div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Bootstrap is loaded
+            if (typeof bootstrap === 'undefined') {
+                console.error('Bootstrap JS not loaded, cannot show announcement modal');
+                return;
+            }
+
+            // Cache buster to ensure fresh data
+            fetch('forms/get_active_announcement.php?t=' + new Date().getTime())
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.anuncio) {
+                        const lastSeenId = localStorage.getItem('lastSeenAnnouncementId');
+                        
+                        // Debugging info
+                        console.log('Announcement check:', {
+                            currentId: data.anuncio.id,
+                            lastSeenId: lastSeenId,
+                            shouldShow: lastSeenId != data.anuncio.id
+                        });
+
+                        // Solo mostramos si el ID del anuncio es diferente al último visto
+                        if (lastSeenId != data.anuncio.id) {
+                            const messageEl = document.getElementById('announcementMessage');
+                            if (messageEl) {
+                                messageEl.innerHTML = data.anuncio.mensaje;
+                                
+                                const modalEl = document.getElementById('announcementModal');
+                                if (modalEl) {
+                                    const modal = new bootstrap.Modal(modalEl);
+                                    
+                                    // Guardamos el ID para no volver a mostrar este anuncio específico
+                                    localStorage.setItem('lastSeenAnnouncementId', data.anuncio.id);
+                                    
+                                    modal.show();
+                                }
+                            }
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching announcement:', err));
+        });
+    </script>
 </body>
 <!-- Cerramos el body -->
 </html>
