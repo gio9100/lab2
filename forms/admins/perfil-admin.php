@@ -479,17 +479,40 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                                             <small style="letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem;">Acreditación Oficial</small>
                                         </div>
 
-                                        <div class="credential-body">
+                                        <div class="credential-body d-flex align-items-center">
                                             <!-- Avatar Genérico o Usuario -->
-                                            <img src="<?= !empty($admin['foto_perfil']) ? htmlspecialchars($admin['foto_perfil']) . '?v='.time() : '../../assets/img/defecto.png' ?>" 
-                                                 alt="Avatar" class="credential-avatar">
+                                            <div style="flex-shrink: 0;">
+                                                <img src="<?= !empty($admin['foto_perfil']) ? htmlspecialchars($admin['foto_perfil']) . '?v='.time() : '../../assets/img/defecto.png' ?>" 
+                                                     alt="Avatar" class="credential-avatar" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">
+                                            </div>
                                             
-                                            <div class="credential-info">
-                                                <h3><?= $admin_nombre ?></h3>
-                                                <p><?= $admin_email ?></p>
-                                                <span class="badge bg-warning text-dark mt-2 shadow-sm">
+                                            <div class="credential-info ms-3 flex-grow-1">
+                                                <h3 style="font-size: 1.1rem; margin-bottom: 2px;"><?= $admin_nombre ?></h3>
+                                                <p style="font-size: 0.85rem; word-break: break-all; opacity: 0.9;"><?= $admin_email ?></p>
+                                                <span class="badge bg-warning text-dark mt-1 shadow-sm" style="font-size: 0.75rem;">
                                                     <?= strtoupper($admin_nivel) ?>
                                                 </span>
+                                            </div>
+                                            
+                                            <!-- CODIGO QR -->
+                                            <?php
+                                                // Generamos la URL de verificacion
+                                                // En produccion cambiar 'localhost/lab2' por el dominio real
+                                                // Hash de seguridad
+                                                $data_to_hash = $admin_id . $admin_nombre . $admin_email . "LAB_EXPLORA_ADMIN_SECURE_2024";
+                                                $hash_seguro = strtoupper(substr(hash('sha256', $data_to_hash), 0, 24));
+                                                
+                                                // URL Publica (Ajustar segun entorno)
+                                                // Usamos $_SERVER['HTTP_HOST'] para detectar host actual automaticamente
+                                                $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+                                                $verification_url = "$protocol://" . $_SERVER['HTTP_HOST'] . "/lab2/verificar-credencial.php?id=$admin_id&tipo=admin&hash=$hash_seguro";
+                                                
+                                                // API QR Publica
+                                                $qr_api = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=0&data=" . urlencode($verification_url);
+                                            ?>
+                                            <div style="flex-shrink: 0; margin-left: 10px;">
+                                                <img src="<?= $qr_api ?>" alt="QR Verificacion" 
+                                                     style="width: 80px; height: 80px; border-radius: 8px; border: 2px solid white; background: white; padding: 2px; display: block;">
                                             </div>
                                         </div>
 
