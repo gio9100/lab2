@@ -1,8 +1,6 @@
 <?php
-// verificar-credencial.php
-// Página pública para validar credenciales escaneadas vía QR
 
-// require_once 'base_db/db_connection.php'; // Comentado por error de ruta
+
 
 // Configuración de DB si no existe archivo separado
 if (!isset($conn)) {

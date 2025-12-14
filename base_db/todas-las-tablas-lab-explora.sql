@@ -9,13 +9,15 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 
 -- ==============================================================================
 -- 1. TABLAS PRINCIPALES (CORE)
 -- ==============================================================================
 
 -- 1.1 CONFIGURACIÓN DEL SISTEMA
-CREATE TABLE IF NOT EXISTS `configuracion_sistema` (
+DROP TABLE IF EXISTS `configuracion_sistema`;
+CREATE TABLE `configuracion_sistema` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gemini_api_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `enable_cognitive_tools` tinyint(1) DEFAULT 0,
@@ -29,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `configuracion_sistema` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 1.2 USUARIOS (Lectores / Normales)
-CREATE TABLE IF NOT EXISTS `usuarios` (
+DROP TABLE IF EXISTS `usuarios`;
+CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `correo` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -49,7 +52,8 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 1.3 ADMINISTRADORES
-CREATE TABLE IF NOT EXISTS `admins` (
+DROP TABLE IF EXISTS `admins`;
+CREATE TABLE `admins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -67,7 +71,8 @@ CREATE TABLE IF NOT EXISTS `admins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 1.4 CATEGORÍAS
-CREATE TABLE IF NOT EXISTS `categorias` (
+DROP TABLE IF EXISTS `categorias`;
+CREATE TABLE `categorias` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -87,7 +92,8 @@ CREATE TABLE IF NOT EXISTS `categorias` (
 -- ==============================================================================
 
 -- 2.1 PUBLICADORES
-CREATE TABLE IF NOT EXISTS `publicadores` (
+DROP TABLE IF EXISTS `publicadores`;
+CREATE TABLE `publicadores` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -131,7 +137,8 @@ CREATE TABLE IF NOT EXISTS `publicadores` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 2.2 PUBLICACIONES
-CREATE TABLE IF NOT EXISTS `publicaciones` (
+DROP TABLE IF EXISTS `publicaciones`;
+CREATE TABLE `publicaciones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `publicador_id` int(11) NOT NULL,
   `categoria_id` int(11) NOT NULL,
@@ -184,7 +191,8 @@ CREATE TABLE IF NOT EXISTS `publicaciones` (
 -- ==============================================================================
 
 -- 3.1 COMENTARIOS
-CREATE TABLE IF NOT EXISTS `comentarios` (
+DROP TABLE IF EXISTS `comentarios`;
+CREATE TABLE `comentarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `publicacion_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
@@ -200,7 +208,8 @@ CREATE TABLE IF NOT EXISTS `comentarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 3.2 LIKES
-CREATE TABLE IF NOT EXISTS `likes` (
+DROP TABLE IF EXISTS `likes`;
+CREATE TABLE `likes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `publicacion_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
@@ -213,7 +222,8 @@ CREATE TABLE IF NOT EXISTS `likes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 3.3 GUARDAR PARA MÁS TARDE
-CREATE TABLE IF NOT EXISTS `leer_mas_tarde` (
+DROP TABLE IF EXISTS `leer_mas_tarde`;
+CREATE TABLE `leer_mas_tarde` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `publicacion_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
@@ -225,7 +235,8 @@ CREATE TABLE IF NOT EXISTS `leer_mas_tarde` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 3.4 REPORTES
-CREATE TABLE IF NOT EXISTS `reportes` (
+DROP TABLE IF EXISTS `reportes`;
+CREATE TABLE `reportes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tipo` enum('publicacion','comentario') COLLATE utf8mb4_unicode_ci NOT NULL,
   `referencia_id` int(11) NOT NULL,
@@ -247,7 +258,8 @@ CREATE TABLE IF NOT EXISTS `reportes` (
 -- ==============================================================================
 
 -- 4.1 LISTA NEGRA (Palabras Prohibidas)
-CREATE TABLE IF NOT EXISTS `lista_negra` (
+DROP TABLE IF EXISTS `lista_negra`;
+CREATE TABLE `lista_negra` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `palabra` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tipo_coincidencia` enum('exacta','parcial') COLLATE utf8mb4_unicode_ci DEFAULT 'parcial',
@@ -258,7 +270,8 @@ CREATE TABLE IF NOT EXISTS `lista_negra` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 4.2 LOGS DE AUDITORÍA
-CREATE TABLE IF NOT EXISTS `logs_auditoria` (
+DROP TABLE IF EXISTS `logs_auditoria`;
+CREATE TABLE `logs_auditoria` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `admin_id` int(11) NOT NULL,
   `accion` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -272,7 +285,8 @@ CREATE TABLE IF NOT EXISTS `logs_auditoria` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 4.3 ANUNCIOS DEL SISTEMA
-CREATE TABLE IF NOT EXISTS `anuncios_sistema` (
+DROP TABLE IF EXISTS `anuncios_sistema`;
+CREATE TABLE `anuncios_sistema` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mensaje` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `tipo` enum('info','warning','success','danger') COLLATE utf8mb4_unicode_ci DEFAULT 'info',
@@ -285,7 +299,8 @@ CREATE TABLE IF NOT EXISTS `anuncios_sistema` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 4.4 MÉTRICAS IA
-CREATE TABLE IF NOT EXISTS `metricas_ia` (
+DROP TABLE IF EXISTS `metricas_ia`;
+CREATE TABLE `metricas_ia` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `endpoint` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tokens_input` int(11) DEFAULT 0,
@@ -296,7 +311,8 @@ CREATE TABLE IF NOT EXISTS `metricas_ia` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 4.5 LOGS MODERACIÓN IA
-CREATE TABLE IF NOT EXISTS `moderacion_ia_logs` (
+DROP TABLE IF EXISTS `moderacion_ia_logs`;
+CREATE TABLE `moderacion_ia_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `publicacion_id` int(11) NOT NULL,
   `decision` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -316,7 +332,8 @@ CREATE TABLE IF NOT EXISTS `moderacion_ia_logs` (
 -- ==============================================================================
 
 -- 5.1 CÓDIGOS 2FA
-CREATE TABLE IF NOT EXISTS `two_factor_codes` (
+DROP TABLE IF EXISTS `two_factor_codes`;
+CREATE TABLE `two_factor_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_type` enum('usuario','publicador','admin') COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -331,7 +348,8 @@ CREATE TABLE IF NOT EXISTS `two_factor_codes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5.2 USUARIOS ONLINE
-CREATE TABLE IF NOT EXISTS `usuarios_online` (
+DROP TABLE IF EXISTS `usuarios_online`;
+CREATE TABLE `usuarios_online` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `usuario_id` int(11) NOT NULL,
   `usuario_tipo` enum('admin','superadmin','publicador') COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -340,7 +358,8 @@ CREATE TABLE IF NOT EXISTS `usuarios_online` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5.3 MENSAJERÍA
-CREATE TABLE IF NOT EXISTS `mensajes` (
+DROP TABLE IF EXISTS `mensajes`;
+CREATE TABLE `mensajes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `remitente_id` int(11) NOT NULL,
   `remitente_tipo` enum('admin','publicador') COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -355,7 +374,8 @@ CREATE TABLE IF NOT EXISTS `mensajes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5.4 CORREOS PERMITIDOS
-CREATE TABLE IF NOT EXISTS `correos_permitidos` (
+DROP TABLE IF EXISTS `correos_permitidos`;
+CREATE TABLE `correos_permitidos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `valor` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tipo_acceso` enum('usuario','publicador','ambos') COLLATE utf8mb4_unicode_ci DEFAULT 'ambos',
@@ -375,4 +395,5 @@ ON SCHEDULE EVERY 1 HOUR
 DO
   DELETE FROM two_factor_codes WHERE expires_at < NOW() OR used = 1;
 
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 COMMIT;
