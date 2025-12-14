@@ -3,7 +3,7 @@
 -- 1. Moderación por Palabras Clave
 -- 2. Logs de Auditoría
 -- 3. Anuncios del Sistema
--- 4. Dashboard de Métricas de IA
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -59,17 +59,3 @@ CREATE TABLE IF NOT EXISTS `anuncios_sistema` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- 4. Tabla: metricas_ia (Uso de API)
---
-CREATE TABLE IF NOT EXISTS `metricas_ia` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `endpoint` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Ej: rewrite, summarize, moderate',
-  `tokens_input` int(11) DEFAULT 0,
-  `tokens_output` int(11) DEFAULT 0,
-  `usuario_id` int(11) DEFAULT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `fecha` (`fecha`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-COMMIT;
