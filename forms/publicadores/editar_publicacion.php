@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Iniciar sesión para manejar variables de usuario
 session_start();
 
@@ -123,6 +123,16 @@ $categorias = obtenerCategorias($conn);
 
     <!-- Encabezado -->
     <header id="header" class="header position-relative">
+    
+    <?php
+    // Verificar si el asistente de escritura está habilitado
+    $assistant_enabled = false;
+    $check_assist = $conn->query("SELECT enable_writing_assistant FROM configuracion_sistema LIMIT 1");
+    if ($check_assist && $check_assist->num_rows > 0) {
+        $assistant_enabled = ($check_assist->fetch_assoc()['enable_writing_assistant'] == 1);
+    }
+    ?>
+    
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
@@ -316,6 +326,7 @@ $categorias = obtenerCategorias($conn);
                         <!-- Fin editor-main -->
                         
                         <!-- Parte derecha: Sidebar de IA -->
+                        <?php if ($assistant_enabled): ?>
                         <div class="ai-sidebar" id="aiSidebar" data-aos="fade-left" data-aos-delay="200">
                             <!-- Botón de cerrar (solo visible en móvil) -->
                             <button class="ai-close-btn" id="aiCloseBtn" style="display: none;">
@@ -334,30 +345,22 @@ $categorias = obtenerCategorias($conn);
                             <!-- Panel de resultado del resumen -->
                             <div id="resumen-ia-resultado"></div>
                             
-                            <!-- BOTÓN 2: Formatear Contenido -->
+                            <!-- BOTÓN 2: Formatear Texto -->
                             <div class="ai-action">
-                                <button type="button" onclick="formatearContenidoProfesional()" class="ai-btn">
-                                    <i class="bi bi-magic"></i> Formatear Contenido
+                                <button type="button" onclick="formatearTextoIA()" class="ai-btn">
+                                    <i class="bi bi-magic"></i> Formatear Texto (Limpieza)
                                 </button>
                             </div>
                             <!-- Panel de resultado del formato -->
                             <div id="formato-ia-resultado"></div>
                             
-                            <!-- BOTÓN 3: Verificar Gramática -->
-                            <div class="ai-action">
-                                <button type="button" onclick="verificarGramaticaIA()" class="ai-btn">
-                                    <i class="bi bi-check2-circle"></i> Verificar Gramática
-                                </button>
-                            </div>
-                            <!-- Panel de resultado de gramática -->
-                            <div id="gramatica-ia-resultado"></div>
-                            
                             <!-- Info adicional -->
                             <div class="alert alert-info mt-4" style="font-size: 0.85rem;">
                                 <i class="bi bi-info-circle"></i>
-                                <strong>Tip:</strong> Escribe al menos 200 caracteres para obtener mejores sugerencias de la IA.
+                                <strong>Tip:</strong> Pega tu contenido y usa "Formatear Texto" para limpiarlo.
                             </div>
                         </div>
+                        <?php endif; ?>
                         <!-- Fin ai-sidebar -->
                         
                     </div>
@@ -368,9 +371,11 @@ $categorias = obtenerCategorias($conn);
     </main>
 
     <!-- Botón flotante para abrir asistente IA (solo móvil) -->
+    <?php if ($assistant_enabled): ?>
     <button class="ai-toggle-btn" id="aiToggleBtn" title="Abrir Asistente IA">
         <i class="bi bi-stars"></i>
     </button>
+    <?php endif; ?>
 
     <!-- Overlay oscuro (solo móvil) -->
     <div class="ai-overlay" id="aiOverlay"></div>

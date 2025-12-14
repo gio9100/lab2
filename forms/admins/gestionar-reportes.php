@@ -82,7 +82,7 @@ $filtro_tipo = $_GET['tipo'] ?? null;
 $filtro_estado = $_GET['estado'] ?? null;
 
 // Obtener reportes y estadísticas
-$reportes = obtenerTodosReportes($filtro_tipo, $filtro_estado, $conn);
+$reportes = obtenerTodosReportes($conn, $filtro_tipo, $filtro_estado);
 $stats = obtenerEstadisticasReportes($conn);
 ?>
 <!DOCTYPE html>

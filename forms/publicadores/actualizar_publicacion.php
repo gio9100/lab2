@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Archivo que maneja la actualización de publicaciones existentes
 // Permite al publicador editar título, contenido, imagen, etc.
 
@@ -193,7 +193,7 @@ $types .= "ii";
 
 $stmt = $conn->prepare($query);
 $stmt->bind_param($types, ...$params);
-}
+
 
 if ($stmt->execute()) {
     $_SESSION['success'] = "✅ Publicación actualizada correctamente";

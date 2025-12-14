@@ -399,7 +399,7 @@ function activarPublicador($id, $conn) {
 }
 
 // Obtiene todos los reportes con filtros opcionales
-function obtenerTodosReportes($tipo = null, $estado = null, $conn) {
+function obtenerTodosReportes($conn, $tipo = null, $estado = null) {
     try {
         $query = "SELECT r.*, 
                   u.nombre as reportante_nombre,

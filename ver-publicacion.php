@@ -2477,5 +2477,205 @@ function descargarPDF() {
     </script>
 
     <script src="assets/js/accessibility-widget.js?v=3.2"></script>
+    <!-- 4. Sistema de IA Cognitiva (Gemini) -->
+    <?php
+    // Verificar herramientas cognitivas activas
+    $ai_enabled = false;
+    $ai_config = [];
+    $check_ai = $conexion->query("SELECT * FROM configuracion_sistema LIMIT 1");
+    if ($check_ai && $check_ai->num_rows > 0) {
+        $ai_config = $check_ai->fetch_assoc();
+        $ai_enabled = ($ai_config['enable_cognitive_tools'] == 1);
+    }
+    
+    if ($ai_enabled): 
+    ?>
+    <style>
+        /* Estilos del Dock Flotante de IA */
+        .ai-dock-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px); /* Inicialmente oculto abajo */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            gap: 15px;
+            z-index: 9999;
+            animation: slideUpDock 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        @keyframes slideUpDock {
+            to { transform: translateX(-50%) translateY(0); }
+        }
+
+        .ai-dock-btn {
+            background: transparent;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+            color: #555;
+            padding: 5px 12px;
+            border-radius: 15px;
+            min-width: 65px;
+        }
+
+        .ai-dock-btn:hover {
+            transform: translateY(-5px);
+            background: rgba(0,0,0,0.05);
+            color: #000;
+        }
+        
+        .ai-dock-btn .emoji {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+            display: block;
+        }
+        
+        .ai-dock-btn .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Drawer de Resultados */
+        .ai-drawer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80vh; /* Ocupa 80% de la pantalla */
+            background: white;
+            z-index: 10000;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 40px rgba(0,0,0,0.2);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ai-drawer.active {
+            transform: translateY(0);
+        }
+
+        .ai-drawer-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .ai-drawer-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .btn-close-white {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .ai-drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        /* Estilos Contenido IA */
+        .ai-drawer-body strong { color: #d63384; font-weight: 700; }
+        .ai-drawer-body ul { padding-left: 20px; }
+        .ai-drawer-body li { margin-bottom: 10px; }
+        
+        /* Quiz Styles */
+        .quiz-question { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #0d6efd; }
+        .quiz-options { list-style: none; padding: 0; }
+        .quiz-option { padding: 10px; margin: 5px 0; background: white; border: 1px solid #dee2e6; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { background: #e9ecef; }
+        .quiz-option.selected { border-color: #0d6efd; background: #e7f1ff; }
+        .quiz-option.correct { background: #d1e7dd; border-color: #badbcc; color: #0f5132; }
+        .quiz-option.incorrect { background: #f8d7da; border-color: #f5c2c7; color: #842029; }
+        
+        /* Chat Styles */
+        .chat-container { display: flex; flex-direction: column; height: 100%; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .chat-message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 1rem; }
+        .chat-message.user { align-self: flex-end; background: #0d6efd; color: white; border-bottom-right-radius: 2px; }
+        .chat-message.ai { align-self: flex-start; background: #f1f3f5; color: #333; border-bottom-left-radius: 2px; }
+        .chat-input-area { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+        .chat-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        @media (max-width: 576px) {
+            .ai-dock-container {
+                width: 90%;
+                justify-content: space-around;
+                bottom: 20px;
+                padding: 10px 5px;
+            }
+            .ai-dock-btn { min-width: auto; }
+        }
+    </style>
+
+    <!-- UI Dock -->
+    <div id="ai-dock-container" class="ai-dock-container">
+        <!-- Básicos -->
+        <button class="ai-dock-btn" id="btn-simplify" title="Explicar para niños">
+            <span class="emoji">🧸</span> <span class="label">Simplificar</span>
+        </button>
+        <button class="ai-dock-btn" id="btn-summarize" title="Resumir contenido">
+            <span class="emoji">📝</span> <span class="label">Resumir</span>
+        </button>
+        
+        <!-- Condicional: Quiz -->
+        <?php if (!empty($ai_config['enable_quiz'])): ?>
+        <button class="ai-dock-btn" id="btn-quiz" title="Ponme a prueba">
+            <span class="emoji">🎓</span> <span class="label">Quiz</span>
+        </button>
+        <?php endif; ?>
+
+        <!-- Condicional: Chat -->
+        <?php if (!empty($ai_config['enable_chat_qa'])): ?>
+        <button class="ai-dock-btn" id="btn-chat" title="Preguntar al artículo">
+            <span class="emoji">💬</span> <span class="label">Chat</span>
+        </button>
+        <?php endif; ?>
+    </div>
+
+    <!-- UI Drawer Results -->
+    <div id="ai-result-drawer" class="ai-drawer">
+        <div class="ai-drawer-header">
+            <h5 id="ai-drawer-title">Resultados IA</h5>
+            <button id="btn-close-drawer" class="btn-close-white">&times;</button>
+        </div>
+        <div id="ai-drawer-content" class="ai-drawer-body">
+            <!-- Content -->
+        </div>
+    </div>
+
+    <script src="assets/js/ia-cognitiva.js"></script>
+    <?php endif; ?>
+
 </body>
 </html>

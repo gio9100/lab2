@@ -64,6 +64,9 @@ function isActive($link_page, $current_page) {
             <i class="bi bi-chat-left-text me-2"></i>
             <span>Mensajes</span>
         </a>
+        <a href="<?= $path_prefix ?>configuracion_ia.php" class="list-group-item list-group-item-action <?= isActive('configuracion_ia.php', $current_page) ?>">
+            <i class="bi bi-robot me-2"></i>Configuración IA
+        </a>
         <a href="<?= $path_prefix ?>perfil-admin.php" class="list-group-item list-group-item-action <?= isActive('perfil-admin.php', $current_page) ?>">
             <i class="bi bi-person-circle me-2"></i>Mi Perfil
         </a>
