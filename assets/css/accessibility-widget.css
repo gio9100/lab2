@@ -241,17 +241,19 @@ html.contrast-mode .access-btn i {
     filter: invert(100%);
 }
 
-/* C. Fuente Dislexia */
+/* C. Fuente Dislexia (Mejorada) */
 @font-face {
     font-family: 'OpenDyslexic';
-    src: url('https://cdnjs.cloudflare.com/ajax/libs/opendyslexic/0.91.0/fonts/OpenDyslexic-Regular.woff') format('woff');
+    src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+        url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/fonts/OpenDyslexic-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 html.dyslexia-mode body,
 html.dyslexia-mode * {
-    font-family: 'OpenDyslexic', sans-serif !important;
+    /* Comic Sans MS es un fallback seguro y muy efectivo para dislexia si falla la carga web */
+    font-family: 'OpenDyslexic', 'Comic Sans MS', 'Comic Sans', 'Verdana', sans-serif !important;
     line-height: 1.6 !important;
 }
 
