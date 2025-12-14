@@ -103,6 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- Título que aparece en la pestaña del navegador -->
 <link rel="stylesheet" href="../assets/css/registro.css">
 <!-- Cargamos el CSS del registro -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<!-- Iconos para el widget de accesibilidad -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Para que se vea bien en celulares -->
 <style>
@@ -445,6 +447,7 @@ if (nombreInput) {
     });
 }
 </script>
+    <script src="../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 <!-- Cerramos el body -->
 </html>

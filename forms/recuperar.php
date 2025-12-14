@@ -318,6 +318,14 @@ if (!$token_valido && !isset($_POST['token'])):
 </div>
 <!-- Cerramos box -->
 
+    <script>
+        // Validar antes de enviar
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            // ... (validaciones)
+        });
+    </script>
+    <script src="../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 <!-- Cerramos el body -->
 </html>

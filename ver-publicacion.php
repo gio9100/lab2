@@ -1385,10 +1385,10 @@ $comentarios = obtenerComentarios($publicacion_id, $conexion);
         </div>
     </div>
     <?php else: ?>
-    <div class="alert" style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 10px; margin-bottom: 30px;">
-        <i class="bi bi-info-circle-fill" style="color: #856404;"></i>
-        <strong>Debes iniciar sesión para comentar.</strong>
-        <a href="forms/inicio-sesion.php" style="color: #7390A0; text-decoration: underline; margin-left: 10px;">Iniciar sesión</a>
+    <div class="alert alert-warning shadow-sm" style="display: block !important; padding: 20px; background: #fff3cd; border-left: 5px solid #ffc107; border-radius: 10px; margin-bottom: 30px;">
+        <i class="bi bi-lock-fill" style="color: #856404; font-size: 1.2rem; margin-right: 10px;"></i>
+        <strong style="color: #856404;">Debes iniciar sesión para comentar.</strong>
+        <a href="forms/inicio-sesion.php" class="btn btn-sm btn-warning ms-3" style="color: #212529; font-weight: 600;">Iniciar sesión</a>
     </div>
     <?php endif; ?>
     
@@ -1451,6 +1451,24 @@ $comentarios = obtenerComentarios($publicacion_id, $conexion);
     </div>
 </section>
 </main>
+
+    <!-- Focus Mode Overlay Removed (Migrated to AccessibilityWidget) -->
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const focusOverlay = document.getElementById('focusOverlay');
+        const focusBtn = document.getElementById('focusModeToggle');
+        let isFocusMode = false;
+
+        if(focusBtn && focusOverlay) {
+            focusBtn.addEventListener('click', () => {
+                isFocusMode = !isFocusMode;
+                focusOverlay.classList.toggle('active', isFocusMode);
+                focusBtn.classList.toggle('active', isFocusMode);
+    // Local scripts removed (Focus Mode migrated to AccessibilityWidget)
+    </script>
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
+</body>
 
 <!-- Botón flotante para subir al inicio -->
 <button id="scroll-to-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Subir al inicio">
@@ -1753,7 +1771,6 @@ function darLike(tipo) {
     try {
         <?php if (!isset($_SESSION['usuario_id'])): ?>
         showToast('Debes iniciar sesión para dar like', 'error');
-        setTimeout(() => window.location.href = 'forms/inicio-sesion.php', 2000);
         return;
         <?php endif; ?>
         
@@ -1967,7 +1984,6 @@ function descargarPDF() {
     // Verificar si el usuario está logueado
     <?php if (!isset($_SESSION['usuario_id'])): ?>
         showToast('Para descargar el PDF debes iniciar sesión.', 'error');
-        setTimeout(() => window.location.href = 'forms/inicio-sesion.php', 2000);
         return;
     <?php endif; ?>
 
@@ -2275,80 +2291,7 @@ function descargarPDF() {
 
     <?php include 'forms/sidebar-usuario.php'; ?>
 
-
-
-    <!-- 1. Estilos CSS para las nuevas herramientas -->
     <style>
-        /* Importar fuente OpenDyslexic desde CDN alternativo (más fiable) */
-        @font-face {
-            font-family: 'OpenDyslexic';
-            src: url('https://cdn.jsdelivr.net/npm/opendyslexic@2.1.0/open-dyslexic-regular.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        /* Clase para activar la fuente de dislexia */
-        body.dyslexia-mode, body.dyslexia-mode * {
-            font-family: 'OpenDyslexic', 'Comic Sans MS', 'Chalkboard SE', sans-serif !important;
-            line-height: 1.6 !important;
-            letter-spacing: 0.05em !important;
-        }
-
-        /* Menú Flotante de Accesibilidad */
-        .accessibility-bar {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            padding: 8px 20px;
-            border-radius: 50px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.2);
-            display: flex;
-            gap: 15px;
-            z-index: 9999; /* Z-Index alto para asegurar visibilidad */
-            border: 1px solid rgba(0,0,0,0.1);
-            align-items: center;
-        }
-        
-        .access-btn {
-            background: none;
-            border: none;
-            font-size: 1.3rem;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .access-btn:hover {
-            transform: translateY(-2px);
-            color: var(--accent-color);
-            background: rgba(0,0,0,0.05);
-        }
-
-        .access-btn.active {
-            color: white;
-            background: #e73741; /* Rojo activo */
-        }
-        
-        /* Ajuste para iconos dentro del boton */
-        .access-btn i {
-            pointer-events: none;
-        }
-
-        .toolbar-divider {
-            width: 1px;
-            height: 24px;
-            background: #ddd;
-        }
-
         /* Modal Confirmación Custom */
         .modal-overlay {
             position: fixed;
@@ -2445,31 +2388,7 @@ function descargarPDF() {
         .toast-notification.show {
             transform: translateY(0);
         }
-        
-        /* Ocultar barra si imprime */
-        @media print {
-            .accessibility-bar { display: none; }
-        }
     </style>
-
-    <!-- 2. Menú de Accesibilidad (HTML) -->
-    <div class="accessibility-bar" id="accessibilityBar">
-        <!-- Fuente Dislexia -->
-        <button class="access-btn" id="btn-dyslexia" title="Modo Dislexia (Fuente de Lectura Fácil)">
-            <i class="bi bi-type"></i>
-        </button>
-        
-        <div class="toolbar-divider"></div>
-
-        <!-- Tamaño de Letra -->
-        <button class="access-btn" id="btn-decrease-font" title="Disminuir Letra">
-            <i class="bi bi-dash-lg"></i>
-        </button>
-        <span style="font-size: 1rem; font-weight: bold; color:#555; padding: 0 5px;">Tt</span>
-        <button class="access-btn" id="btn-increase-font" title="Aumentar Letra">
-            <i class="bi bi-plus-lg"></i>
-        </button>
-    </div>
 
     <!-- Notificación Toast -->
     <div id="toast" class="toast-notification">
@@ -2492,142 +2411,71 @@ function descargarPDF() {
         </div>
     </div>
 
-    <!-- 3. Lógica JavaScript -->
+    <!-- 3. Lógica JavaScript Global -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("Iniciando herramientas de accesibilidad..."); // Debug
-
-        // --- B. FUENTE DE DISLEXIA ---
-        const btnDyslexia = document.getElementById('btn-dyslexia');
-        let isDyslexiaMode = false;
-
-        if(btnDyslexia) {
-            btnDyslexia.addEventListener('click', () => {
-                isDyslexiaMode = !isDyslexiaMode;
-                document.body.classList.toggle('dyslexia-mode');
-                btnDyslexia.classList.toggle('active');
-                
-                const status = isDyslexiaMode ? "ACTIVADA" : "DESACTIVADA";
-                showToast(`Fuente Dislexia: ${status}`);
-            });
-        }
-
-        // --- C. TAMAÑO DE LETRA DINÁMICO ---
-        const btnIncrease = document.getElementById('btn-increase-font');
-        const btnDecrease = document.getElementById('btn-decrease-font');
-        let currentFontSize = 100; // Porcentaje base
-
-        function updateFontSize() {
-            // Aplicamos al HTML para que afecte em/rem
-            document.documentElement.style.fontSize = currentFontSize + "%";
-            // Backup para body
-            document.body.style.fontSize = (currentFontSize/100) + "rem";
-        }
-
-        if(btnIncrease) {
-            btnIncrease.addEventListener('click', () => {
-                if (currentFontSize < 150) {
-                    currentFontSize += 10;
-                    updateFontSize();
-                    showToast(`Tamaño letra: ${currentFontSize}%`);
-                } else {
-                    showToast("Tamaño máximo alcanzado");
-                }
-            });
-        }
-
-        if(btnDecrease) {
-            btnDecrease.addEventListener('click', () => {
-                if (currentFontSize > 70) {
-                    currentFontSize -= 10;
-                    updateFontSize();
-                    showToast(`Tamaño letra: ${currentFontSize}%`);
-                } else {
-                    showToast("Tamaño mínimo alcanzado", "error");
-                }
-            });
-        }
-    });
-
-    /**
-     * FUNCIÓN HELPER: showToast
-     * Muestra notificaciones flotantes elegantes
-     * @param {string} msg - El mensaje
-     * @param {string} type - 'success' | 'error'
-     */
-    function showToast(msg, type = 'success') {
+    // Función global para mostrar Toast (necesaria para interacciones)
+    function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
-        const msgSpan = document.getElementById('toast-message');
-        const toastIcon = toast ? toast.querySelector('i') : null;
+        const toastMessage = document.getElementById('toast-message');
+        const icon = toast.querySelector('i');
+        
+        if (!toast || !toastMessage) return;
 
-        if(toast && msgSpan) {
-            msgSpan.textContent = msg;
-            
-            // Estilos según tipo
-            if(type === 'error') {
-                toast.style.background = '#dc3545';
-                if(toastIcon) {
-                    toastIcon.className = 'bi bi-exclamation-triangle-fill';
-                    toastIcon.style.color = 'white';
-                }
-            } else {
-                toast.style.background = '#333';
-                if(toastIcon) {
-                    toastIcon.className = 'bi bi-check-circle-fill';
-                    toastIcon.style.color = '#4ade80';
-                }
-            }
-
-            toast.classList.add('show');
-            
-            if(toast.timeoutId) clearTimeout(toast.timeoutId);
-            
-            toast.timeoutId = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        toastMessage.textContent = message;
+        
+        // Reset styles
+        toast.style.background = '#333';
+        
+        if (type === 'error') {
+            icon.className = 'bi bi-x-circle-fill';
+            icon.style.color = '#ff4444'; 
+        } else if (type === 'info') {
+             icon.className = 'bi bi-info-circle-fill';
+             icon.style.color = '#33b5e5';
         } else {
-            // Fallback
-            console.log(type.toUpperCase() + ": " + msg);
+            icon.className = 'bi bi-check-circle-fill';
+            icon.style.color = '#4ade80';
         }
+        
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
     }
-
-    /**
-     * FUNCIÓN HELPER: showConfirm
-     * Muestra modal de confirmación
-     * @param {string} message - Mensaje a mostrar
-     * @param {function} onConfirmCallback - Función a ejecutar si confirma
-     */
-    function showConfirm(message, onConfirmCallback) {
-        const overlay = document.getElementById('modalConfirmOverlay');
-        const msgDiv = document.getElementById('confirmMessage');
+    
+    // Modal Confirmación Custom Global
+    function showConfirm(message, callback) {
+        const modal = document.getElementById('modalConfirmOverlay');
+        const msgEl = document.getElementById('confirmMessage');
         const btnYes = document.getElementById('btnConfirmYes');
         
-        if(overlay && msgDiv && btnYes) {
-            msgDiv.textContent = message;
+        if(modal && msgEl && btnYes) {
+            msgEl.textContent = message;
+            modal.classList.add('show');
             
-            // Limpiamos eventos anteriores clonando el botón
+            // Limpiar eventos anteriores
             const newBtn = btnYes.cloneNode(true);
             btnYes.parentNode.replaceChild(newBtn, btnYes);
             
-            newBtn.addEventListener('click', function() {
+            newBtn.addEventListener('click', () => {
                 closeConfirm();
-                onConfirmCallback();
+                if(callback) callback();
             });
-            
-            overlay.classList.add('show');
-        } else {
-            // Fallback si algo falla
-            if(confirm(message)) {
-                onConfirmCallback();
-            }
         }
     }
-
+    
     function closeConfirm() {
-        const overlay = document.getElementById('modalConfirmOverlay');
-        if(overlay) overlay.classList.remove('show');
+        const modal = document.getElementById('modalConfirmOverlay');
+        if(modal) modal.classList.remove('show');
     }
+
+    // Inicialización de la página
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Core scripts initialized.");
+    });
     </script>
+
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
-<!-- Cerramos body (correctamente esta vez) -->
 </html>

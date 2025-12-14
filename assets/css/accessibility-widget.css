@@ -1,0 +1,377 @@
+/* =========================================
+   ACCESSIBILITY WIDGET STYLES (V2 - SUPER INCLUSIVE/RESPONSIVE)
+   ========================================= */
+
+/* 1. Botón Flotante Principal */
+#accessibility-trigger {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: #0056b3;
+    color: white;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    z-index: 20000;
+    /* Max z-index */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#accessibility-trigger:hover {
+    transform: scale(1.1);
+    background: #004494;
+}
+
+#accessibility-trigger i {
+    font-family: 'bootstrap-icons' !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    color: white !important;
+    display: block !important;
+    font-size: 2rem !important;
+}
+
+#accessibility-trigger:focus {
+    outline: 4px solid #ffc107;
+    outline-offset: 4px;
+}
+
+/* 2. Panel de Herramientas */
+#accessibility-panel {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    width: 350px;
+    /* Ancho cómodo */
+    max-height: 80vh;
+    /* Para que no se salga en pantallas chicas */
+    overflow-y: auto;
+    /* Scroll si es necesario "que se haga para abajo" */
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    z-index: 19999;
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#accessibility-panel.active {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Scrollbar bonito */
+#accessibility-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+#accessibility-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#accessibility-panel::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+#accessibility-panel::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}
+
+
+#accessibility-panel h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+/* 3. Secciones del Panel */
+.access-section {
+    margin-bottom: 10px;
+}
+
+.access-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* 4. Grid de Botones */
+.access-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columnas */
+    gap: 10px;
+}
+
+.access-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 15px 10px;
+    border: 2px solid #f0f0f0;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.access-btn i {
+    font-size: 1.6rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.access-btn span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.2;
+}
+
+.access-btn small {
+    font-size: 0.7rem;
+    color: #777;
+    margin-top: 3px;
+    line-height: 1.1;
+}
+
+.access-btn:hover {
+    background: #f8f9fa;
+    border-color: #ddd;
+    transform: translateY(-2px);
+}
+
+.access-btn.active {
+    background: #e7f1ff;
+    border-color: #0056b3;
+}
+
+.access-btn.active i {
+    color: #0056b3;
+}
+
+.access-btn.active span {
+    color: #0056b3;
+}
+
+/* 5. RESPONSIVE (Móvil) */
+@media (max-width: 480px) {
+    #accessibility-panel {
+        width: 90%;
+        /* Casi todo el ancho */
+        left: 5%;
+        bottom: 90px;
+        max-height: 70vh;
+    }
+
+    .access-grid {
+        grid-template-columns: 1fr 1fr;
+        /* Mantener 2 columnas para no hacer scroll infinito */
+    }
+
+    #accessibility-trigger {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        bottom: 15px;
+        left: 15px;
+    }
+}
+
+/* 6. MODOS DE ACCESIBILIDAD (Clases Globales - Expandido) */
+
+/* A. Escala de Grises / Saturación */
+html.gray-mode {
+    filter: grayscale(100%);
+}
+
+html.low-sat-mode {
+    filter: saturate(50%);
+}
+
+html.high-sat-mode {
+    filter: saturate(200%);
+}
+
+/* B. Alto Contraste */
+html.contrast-mode {
+    filter: invert(100%);
+    background-color: black !important;
+}
+
+html.contrast-mode img,
+html.contrast-mode video,
+html.contrast-mode .access-btn i {
+    /* Revertir iconos también */
+    filter: invert(100%);
+}
+
+/* C. Fuente Dislexia */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdnjs.cloudflare.com/ajax/libs/opendyslexic/0.91.0/fonts/OpenDyslexic-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html.dyslexia-mode body,
+html.dyslexia-mode * {
+    font-family: 'OpenDyslexic', sans-serif !important;
+    line-height: 1.6 !important;
+}
+
+/* D. Cursor Grande y Auxiliares */
+html.big-cursor-mode body,
+html.big-cursor-mode * {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewport="0 0 48 48" style="fill:rgba(0,0,0,0.9);stroke:white;stroke-width:2px;"><path d="M10 40L25 25L35 35L40 10L10 40Z"/></svg>') 10 10, auto !important;
+}
+
+/* E. Guía de Lectura */
+#reading-guide {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    /* Banda más visible */
+    background: rgba(255, 235, 59, 0.3);
+    border-top: 2px solid rgba(255, 0, 0, 0.5);
+    border-bottom: 2px solid rgba(255, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 2147483647;
+    display: none;
+    transform: translateY(-50%);
+}
+
+html.reading-guide-mode #reading-guide {
+    display: block;
+}
+
+html.reading-guide-mode * {
+    cursor: none !important;
+}
+
+/* Ocultar cursor nativo para usar la guía */
+
+/* F. Espaciado y Alineación */
+html.spacing-mode * {
+    line-height: 2 !important;
+    letter-spacing: 2px !important;
+    word-spacing: 5px !important;
+}
+
+html.align-left-mode * {
+    text-align: left !important;
+}
+
+/* G. Links */
+html.links-mode a {
+    text-decoration: underline !important;
+    background: #ffeb3b !important;
+    color: #000 !important;
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+/* H. Filtros Daltonismo */
+html.protanopia-mode {
+    filter: url('#p-filter');
+}
+
+html.deuteranopia-mode {
+    filter: url('#d-filter');
+}
+
+html.tritanopia-mode {
+    filter: url('#t-filter');
+}
+
+/* Reset */
+.reset-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #dc3545;
+    color: white;
+    border-radius: 10px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.reset-btn:hover {
+    background: #bb2d3b;
+}
+
+.svg-container {
+    position: absolute;
+    height: 0;
+    width: 0;
+    visibility: hidden;
+}
+
+/* 7. MODO FOCO GLOBAL (Integrado) */
+.focus-overlay-global {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2147483647;
+    /* MAX INT */
+    /* Usamos --focus-x y --focus-y definidos en :root por JS */
+    background: radial-gradient(circle 120px at var(--focus-x, 50vw) var(--focus-y, 50vh), transparent 0%, rgba(0, 0, 0, 0.94) 100%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    /* Removed mix-blend-mode to guarantee visibility on all backgrounds */
+}
+
+.focus-overlay-global.active {
+    opacity: 1;
+}
+
+/* Ajuste específico para botón de foco */
+.access-btn#acc-focus i {
+    transition: color 0.3s;
+}
+
+.access-btn#acc-focus:hover i {
+    color: #ffc107;
+}

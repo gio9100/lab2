@@ -404,5 +404,6 @@ $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
     <script src="../assets/vendor/aos/aos.js"></script>
     <script src="../assets/js/main.js"></script>
     <script>AOS.init();</script>
+    <script src="../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 </html>

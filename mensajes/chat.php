@@ -262,6 +262,7 @@ checkAuth();
             overlay.addEventListener('click', toggleSidebar);
         }
     </script>
+    <script src="../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 </html>
 

@@ -18,9 +18,19 @@ $sql = "SELECT p.id, p.titulo, p.contenido, p.resumen, p.fecha_publicacion, p.fe
 // Unimos la tabla categorias para saber a qué categoría pertenece cada publicación
         "LEFT JOIN publicadores pub ON p.publicador_id = pub.id " .
 // Unimos la tabla publicadores para saber quién escribió cada publicación
-        "WHERE p.estado = 'publicado' " .
-// Solo queremos las publicaciones que estén publicadas (no borradores)
-        "ORDER BY c.nombre, p.fecha_publicacion DESC";
+        "WHERE p.estado = 'publicado' ";
+
+// Lógica de Búsqueda en Base de Datos
+if (isset($_GET['busqueda']) && !empty($_GET['busqueda'])) {
+    $busqueda = $conexion->real_escape_string($_GET['busqueda']);
+    // Usamos LIKE simple (MySQL por defecto suele ser case-insensitive y accent-insensitive)
+    $sql .= "AND (p.titulo LIKE '%$busqueda%' 
+              OR p.contenido LIKE '%$busqueda%' 
+              OR p.resumen LIKE '%$busqueda%' 
+              OR c.nombre LIKE '%$busqueda%') ";
+}
+
+$sql .= "ORDER BY c.nombre, p.fecha_publicacion DESC";
 // Ordenamos primero por nombre de categoría y luego por fecha (más recientes primero)
 
 // Línea vacía
@@ -1281,13 +1291,12 @@ body {
 <!-- Contenedor de búsqueda y filtros -->
             <!-- Buscador -->
 <!-- Comentario para el buscador -->
-            <div class="search-box">
-<!-- Contenedor del buscador -->
+            <form action="" method="GET" class="search-box">
+<!-- Contenedor del buscador como formulario -->
                 <i class="bi bi-search search-icon"></i>
-<!-- Icono de lupa -->
-                <input type="text" id="searchInput" class="search-input" placeholder="Buscar publicaciones...">
+                <input type="text" name="busqueda" id="searchInput" class="search-input" placeholder="Buscar publicaciones..." value="<?= htmlspecialchars($_GET['busqueda'] ?? '') ?>">
 <!-- Campo de texto para buscar -->
-            </div>
+            </form>
 <!-- Cerramos el buscador -->
 
 <!-- Línea vacía -->
@@ -1444,210 +1453,169 @@ body {
         <?php endif; ?>
 <!-- Cerramos el if de publicaciones -->
     </main>
-<!-- Cerramos el main -->
+<!-- (Focus Mode removido de index.php) -->
 
-<!-- Línea vacía -->
-    <!-- Script de Búsqueda y Filtros -->
-<!-- Comentario para el script de búsqueda y filtros -->
+    <!-- Scripts -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Script de Búsqueda y Filtros YA RESTAURADO -->
     <script>
-// Abrimos script JavaScript
-        // Funcionalidad del buscador
-        const searchInput = document.getElementById('searchInput');
-// Obtenemos el campo de búsqueda
-        const publicationCards = document.querySelectorAll('.publication-card');
-// Obtenemos todas las tarjetas de publicación
-        const categoryHeaders = document.querySelectorAll('.category-header');
-// Obtenemos todos los encabezados de categoría
-
-// Línea vacía
-        // Evento de búsqueda en tiempo real
-        searchInput.addEventListener('input', function() {
-// Escuchamos cuando el usuario escribe
-            const searchTerm = this.value.toLowerCase();
-// Convertimos el texto de búsqueda a minúsculas
-            
-// Línea vacía
-            publicationCards.forEach(card => {
-// Recorremos cada tarjeta
-                const title = card.querySelector('.card-title').textContent.toLowerCase();
-// Obtenemos el título en minúsculas
-                const excerpt = card.querySelector('.card-excerpt').textContent.toLowerCase();
-// Obtenemos el extracto en minúsculas
-                
-// Línea vacía
-                if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
-// Si el título o extracto contienen el término de búsqueda
-                    card.style.display = 'flex';
-// Mostramos la tarjeta
-                } else {
-// Si no coincide
-                    card.style.display = 'none';
-// Ocultamos la tarjeta
-                }
-// Cerramos el if
-            });
-// Cerramos el forEach
-            
-// Línea vacía
-            // Ocultar categorías vacías
-            categoryHeaders.forEach(header => {
-// Recorremos cada encabezado de categoría
-                const section = header.closest('section');
-// Obtenemos la sección completa
-                const visibleCards = section.querySelectorAll('.publication-card[style*="display: flex"]');
-// Contamos las tarjetas visibles
-                
-// Línea vacía
-                if (visibleCards.length === 0) {
-// Si no hay tarjetas visibles
-                    section.style.display = 'none';
-// Ocultamos toda la sección
-                } else {
-// Si hay tarjetas visibles
-                    section.style.display = 'block';
-// Mostramos la sección
-                }
-// Cerramos el if
-            });
-// Cerramos el forEach
-        });
-// Cerramos el evento input
-
-// Línea vacía
-        // Funcionalidad de filtros de categoría
-        const filterButtons = document.querySelectorAll('.category-filter-btn');
-// Obtenemos todos los botones de filtro
-        
-// Línea vacía
-        filterButtons.forEach(button => {
-// Recorremos cada botón
-            button.addEventListener('click', function() {
-// Escuchamos el click
-                // Quitar clase active de todos los botones
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-// Quitamos la clase active de todos
-                
-// Línea vacía
-                // Agregar clase active al botón clickeado
-                this.classList.add('active');
-// Agregamos active al botón que se clickeó
-                
-// Línea vacía
-                const selectedCategory = this.getAttribute('data-category');
-// Obtenemos la categoría seleccionada
-                
-// Línea vacía
-                // Limpiar búsqueda
-                searchInput.value = '';
-// Limpiamos el campo de búsqueda
-                
-// Línea vacía
-                if (selectedCategory === 'todas') {
-// Si seleccionaron "Todas"
-                    // Mostrar todas las secciones y tarjetas
-                    categoryHeaders.forEach(header => {
-// Recorremos cada sección
-                        header.closest('section').style.display = 'block';
-// Mostramos la sección
-                    });
-// Cerramos el forEach
-                    publicationCards.forEach(card => {
-// Recorremos cada tarjeta
-                        card.style.display = 'flex';
-// Mostramos la tarjeta
-                    });
-// Cerramos el forEach
-                } else {
-// Si seleccionaron una categoría específica
-                    // Mostrar solo la categoría seleccionada
-                    categoryHeaders.forEach(header => {
-// Recorremos cada sección
-                        const section = header.closest('section');
-// Obtenemos la sección
-                        const categoryName = header.querySelector('h2').textContent.toLowerCase();
-// Obtenemos el nombre de la categoría
-                        
-// Línea vacía
-                        if (categoryName === selectedCategory) {
-// Si es la categoría seleccionada
-                            section.style.display = 'block';
-// Mostramos la sección
-                            section.querySelectorAll('.publication-card').forEach(card => {
-// Mostramos todas sus tarjetas
-                                card.style.display = 'flex';
-// Mostramos cada tarjeta
-                            });
-// Cerramos el forEach
-                        } else {
-// Si no es la categoría seleccionada
-                            section.style.display = 'none';
-// Ocultamos la sección
-                        }
-// Cerramos el if
-                    });
-// Cerramos el forEach
-                }
-// Cerramos el if
-            });
-// Cerramos el evento click
-        });
-// Cerramos el forEach de botones
-    </script>
-<!-- Cerramos el script -->
-    <script>
-        // Configuración del Tour de la Página de Publicaciones
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar si venimos de la página principal (opcional, para dar continuidad) o si ya se vio este tour específico
-            if (!localStorage.getItem('tour_explorar_visto')) {
-                const driver = window.driver.js.driver;
-                
-                const driverObj = driver({
-                    showProgress: true,
-                    animate: true,
-                    doneBtnText: '¡Entendido!',
-                    nextBtnText: 'Siguiente',
-                    prevBtnText: 'Anterior',
-                    steps: [
-                        { 
-                            element: '.search-box', 
-                            popover: { 
-                                title: '🔍 Busca lo que necesitas', 
-                                description: 'Utiliza nuestro buscador inteligente para encontrar publicaciones por título o contenido.', 
-                                side: "bottom", 
-                                align: 'start' 
-                            } 
-                        },
-                        { 
-                            element: '.category-filters', 
-                            popover: { 
-                                title: '📂 Filtra por Categoría', 
-                                description: 'Selecciona una categoría específica para ver solo el contenido de tu interés.', 
-                                side: "bottom", 
-                                align: 'start' 
-                            } 
-                        },
-                        { 
-                            element: '.publications-grid', 
-                            popover: { 
-                                title: '📚 Explora el Contenido', 
-                                description: 'Aquí encontrarás todas las publicaciones. Haz clic en "Leer más" para ver el detalle completo.', 
-                                side: "top", 
-                                align: 'start' 
-                            } 
-                        }
-                    ]
-                });
+            // -- LÓGICA DE BÚSQUEDA Y FILTROS --
+            const searchInput = document.getElementById('searchInput');
+            const publicationCards = document.querySelectorAll('.publication-card');
+            const categoryHeaders = document.querySelectorAll('.category-header');
+            const filterButtons = document.querySelectorAll('.category-filter-btn');
 
-                // Pequeño retraso para asegurar que todo esté cargado
+            // 1. Buscador en tiempo real
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                // Filtrar tarjetas
+                publicationCards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const excerpt = card.querySelector('.card-excerpt').textContent.toLowerCase();
+                    const category = card.querySelector('.category-badge').textContent.toLowerCase(); // Incluimos la categoría
+                    
+                    if (title.includes(searchTerm) || excerpt.includes(searchTerm) || category.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Ocultar secciones vacías
+                categoryHeaders.forEach(header => {
+                    const section = header.closest('section');
+                    const visibleCards = section.querySelectorAll('.publication-card[style*="display: flex"]'); // Nota: el estilo inline puede variar, mejor checkear computed o simplemente si no tiene display:none explícito
+                    
+                    // Mejor lógica: chequear si hay alguna visible
+                    let hasVisible = false;
+                    section.querySelectorAll('.publication-card').forEach(c => {
+                        if (c.style.display !== 'none') hasVisible = true;
+                    });
+
+                    if (!hasVisible) {
+                        section.style.display = 'none';
+                    } else {
+                        section.style.display = 'block';
+                    }
+                });
+            });
+
+            // 2. Filtros de Categoría
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // UI Activa
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const selectedCategory = this.getAttribute('data-category');
+                    
+                    // Resetear búsqueda visualmente
+                    searchInput.value = '';
+
+                    if (selectedCategory === 'todas') {
+                        // Mostrar todo
+                        categoryHeaders.forEach(h => h.closest('section').style.display = 'block');
+                        publicationCards.forEach(c => c.style.display = 'flex');
+                    } else {
+                        // Filtrar por categoría
+                        categoryHeaders.forEach(header => {
+                            const section = header.closest('section');
+                            const categoryName = header.querySelector('h2').textContent.toLowerCase(); // Asumiendo que coincide
+                            // Mejor usamos un atributo data en la sección si es posible, pero por ahora texto
+                            // Ojo: data-category en el botón es clave (slug), el h2 es texto visible.
+                            // Vamos a intentar comparar de forma laxa
+                            
+                            // Hack: Comparar si el texto del h2 contiene la categoría o viceversa
+                             const sectionCat = section.getAttribute('id'); // Si las secciones tienen ID igual a la categoría
+
+                            // Como no tenemos IDs seguros en secciones, usamos la lógica anterior restaurada:
+                            // La lógica anterior comparaba categoryName con selectedCategory.
+                            
+                            if (categoryName.includes(selectedCategory) || selectedCategory === 'todas') {
+                                section.style.display = 'block';
+                                section.querySelectorAll('.publication-card').forEach(c => c.style.display = 'flex');
+                            } else {
+                                section.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <script>
+        // (Scripts de voz y foco removidos de index.php)
+    </script>
+    </script>
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.driver === 'undefined') return;
+            
+            const driver = window.driver.js.driver;
+            const driverObj = driver({
+                showProgress: true,
+                animate: true,
+                allowClose: true,
+                doneBtnText: 'Finalizar',
+                nextBtnText: 'Siguiente',
+                prevBtnText: 'Atrás',
+                steps: [
+                    { 
+                        element: '.search-box', 
+                        popover: { 
+                            title: '🔍 Busca lo que necesitas', 
+                            description: 'Utiliza nuestro buscador inteligente para encontrar publicaciones por título o contenido.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.category-filters', 
+                        popover: { 
+                            title: '📂 Filtra por Categoría', 
+                            description: 'Selecciona una categoría específica para ver solo el contenido de tu interés.', 
+                            side: "bottom", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '.publications-grid', 
+                        popover: { 
+                            title: '📚 Explora el Contenido', 
+                            description: 'Aquí encontrarás todas las publicaciones. Haz clic en "Leer más" para ver el detalle completo.', 
+                            side: "top", 
+                            align: 'start' 
+                        } 
+                    },
+                    { 
+                        element: '#accessibility-trigger', 
+                        popover: { 
+                            title: '🦾 Accesibilidad', 
+                            description: 'Herramientas inclusivas para mejorar tu experiencia de lectura.', 
+                            side: "left", 
+                            align: 'start' 
+                        } 
+                    }
+                ]
+            });
+
+            // Reseteamos el tour si se quiere probar de nuevo (opcional para debug, pero mantenemos la lógica de una vez)
+            // Para "resetear" manualmente en desarrollo: localStorage.removeItem('tour_index_v3');
+            
+            if (!localStorage.getItem('tour_index_v3')) {
                 setTimeout(() => {
                     driverObj.drive();
-                    localStorage.setItem('tour_explorar_visto', 'true');
-                }, 1000);
+                    localStorage.setItem('tour_index_v3', 'true');
+                }, 1500);
             }
         });
     </script>
-    <?php include "forms/sidebar-usuario.php"; ?>
 </body>
-<!-- Cerramos el body -->
 </html>
-<!-- Cerramos el HTML -->
+

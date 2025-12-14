@@ -199,6 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Cerramos el script -->
     <?php endif; ?>
     <!-- Cerramos el if de mostrar modal -->
+    <script src="../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 <!-- Cerramos el body -->
 </html>

@@ -324,6 +324,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- JavaScript de Bootstrap para componentes interactivos -->
+    <script src="../../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 <!-- Cerramos body -->
 </html>

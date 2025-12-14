@@ -124,6 +124,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     <link rel="stylesheet" href="../../assets/css/registro.css">
     <!-- Cargamos el CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Iconos para el widget de accesibilidad -->
     <style>
         .mensaje-validacion {
             font-size: 0.95rem;
@@ -451,6 +453,14 @@ if (nombreInputPub) {
     <!-- Script de validaciones frontend adicional (capa extra de seguridad) -->
     <script src="../../assets/js/validaciones-frontend.js"></script>
     <!-- Cargamos el archivo de validaciones como medida de seguridad adicional -->
+    <script>
+        // Validar antes de enviar
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            // ... (validaciones)
+        });
+    </script>
+    <script src="../../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 <!-- Cerramos body -->
 </html>

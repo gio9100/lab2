@@ -828,6 +828,15 @@ session_start();
                             side: "bottom", 
                             align: 'start' 
                         } 
+                    },
+                    { 
+                        element: '#accessibility-trigger', 
+                        popover: { 
+                            title: '🦾 Accesibilidad Total', 
+                            description: 'Nueva barra de herramientas inclusiva: Dislexia, Daltonismo, Contraste y más.', 
+                            side: "left", 
+                            align: 'start' 
+                        } 
                     }
                 ]
             });
@@ -841,6 +850,7 @@ session_start();
             }
         });
     </script>
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 <!-- Cerramos el body -->
 </html>
