@@ -1,5 +1,5 @@
 CREATE TABLE `publicadores` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -23,23 +23,31 @@ CREATE TABLE `publicadores` (
   `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `foto_perfil` varchar(255) DEFAULT NULL,
   `two_factor_enabled` tinyint(1) DEFAULT 0 COMMENT 'Si el publicador tiene 2FA activado',
-  `blocked_until` datetime DEFAULT NULL COMMENT 'Bloqueado hasta esta fecha'
+  `blocked_until` datetime DEFAULT NULL COMMENT 'Bloqueado hasta esta fecha',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 ALTER TABLE publicadores 
 ADD COLUMN motivo_rechazo TEXT NULL AFTER estado;
 
 
 
 CREATE TABLE `publicaciones` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `titulo` varchar(200) NOT NULL,
   `slug` varchar(220) NOT NULL,
   `contenido` longtext NOT NULL,
   `resumen` text DEFAULT NULL,
   `imagen_principal` varchar(255) DEFAULT NULL,
+  `archivo_url` varchar(255) DEFAULT NULL,
+  `tipo_archivo` varchar(50) DEFAULT NULL,
+  `pdf_adjunto` varchar(255) DEFAULT NULL COMMENT 'Ruta del archivo PDF adjunto',
+  `archivos_adjuntos` text DEFAULT NULL COMMENT 'JSON con array de archivos adjuntos',
+  `usar_imagen_completa` tinyint(1) DEFAULT 0 COMMENT '1 = usar solo imagen principal como contenido',
   `publicador_id` int(11) NOT NULL,
   `categoria_id` int(11) NOT NULL,
   `estado` enum('publicado','borrador','revision','rechazado','rechazada') DEFAULT NULL,
+  `motivo_rechazo` text DEFAULT NULL,
   `mensaje_rechazo` text DEFAULT NULL,
   `tipo` enum('articulo','noticia','tutorial','investigacion') DEFAULT 'articulo',
   `fecha_publicacion` timestamp NULL DEFAULT NULL,
@@ -48,7 +56,10 @@ CREATE TABLE `publicaciones` (
   `vistas` int(11) DEFAULT 0,
   `likes` int(11) DEFAULT 0,
   `meta_descripcion` varchar(300) DEFAULT NULL,
-  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`))
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`)),
+  PRIMARY KEY (`id`),
+  KEY `publicador_id` (`publicador_id`),
+  KEY `categoria_id` (`categoria_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
