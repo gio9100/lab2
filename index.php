@@ -1661,6 +1661,8 @@ function acortar($texto, $limite = 150) {
             }
         });
     </script>
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
+    <?php include 'forms/sidebar-usuario.php'; ?>
 </body>
 </html>
 

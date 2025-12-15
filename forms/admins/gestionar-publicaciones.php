@@ -1,10 +1,10 @@
-Ôªø<?php
-// Gesti√≥n de publicaciones (Admin)
+<?php
+// GestiÛn de publicaciones (Admin)
 
-// Iniciar sesi√≥n
+// Iniciar sesiÛn
 session_start();
 
-// Incluir configuraci√≥n y notificaciones
+// Incluir configuraciÛn y notificaciones
 require_once "config-admin.php";
 require_once "notificar_publicador.php";
 
@@ -16,15 +16,15 @@ $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
 
-// Conexi√≥n a base de datos
+// ConexiÛn a base de datos
 $conn = new mysqli("localhost", "root", "", "lab_exp_db");
 
-// Verificar conexi√≥n
+// Verificar conexiÛn
 if ($conn->connect_error) {
-    die("ERROR DE CONEXI√ìN: " . $conn->connect_error);
+    die("ERROR DE CONEXI”N: " . $conn->connect_error);
 }
 
-// Obtener estad√≠sticas generales
+// Obtener estadÌsticas generales
 $stats = obtenerEstadisticasAdmin($conn);
 
 // Procesar cambio de estado
@@ -39,7 +39,7 @@ if (isset($_POST['cambiar_estado'])) {
     $stmt->bind_param("si", $nuevo_estado, $publicacion_id);
     
     if ($stmt->execute()) {
-        $_SESSION['mensaje'] = "‚úÖ Estado actualizado a " . ucfirst($nuevo_estado);
+        $_SESSION['mensaje'] = "? Estado actualizado a " . ucfirst($nuevo_estado);
         $_SESSION['tipo_mensaje'] = "success";
         
         // Si es rechazo, pedir motivo antes de notificar
@@ -75,7 +75,7 @@ if (isset($_POST['cambiar_estado'])) {
             $conn->query("UPDATE publicaciones SET mensaje_rechazo = NULL WHERE id = $publicacion_id");
         }
     } else {
-        $_SESSION['mensaje'] = "‚ùå Error al actualizar estado";
+        $_SESSION['mensaje'] = "? Error al actualizar estado";
         $_SESSION['tipo_mensaje'] = "danger";
     }
     $stmt->close();
@@ -96,7 +96,7 @@ if (isset($_POST['guardar_motivo'])) {
     $stmt->bind_param("si", $mensaje, $publicacion_id);
     
     if ($stmt->execute()) {
-        $_SESSION['mensaje'] = "‚úÖ Motivo de rechazo guardado y notificado correctamente";
+        $_SESSION['mensaje'] = "? Motivo de rechazo guardado y notificado correctamente";
         $_SESSION['tipo_mensaje'] = "success";
 
         // Notificar rechazo con motivo
@@ -125,7 +125,7 @@ if (isset($_POST['guardar_motivo'])) {
         $stmt_pub->close();
 
     } else {
-        $_SESSION['mensaje'] = "‚ùå Error al guardar motivo";
+        $_SESSION['mensaje'] = "? Error al guardar motivo";
         $_SESSION['tipo_mensaje'] = "danger";
     }
     $stmt->close();
@@ -134,7 +134,7 @@ if (isset($_POST['guardar_motivo'])) {
     exit;
 }
 
-// Eliminar publicaci√≥n
+// Eliminar publicaciÛn
 if (isset($_GET['eliminar'])) {
     $publicacion_id = intval($_GET['eliminar']);
     
@@ -145,10 +145,10 @@ if (isset($_GET['eliminar'])) {
         $stmt->bind_param("i", $publicacion_id);
         
         if ($stmt->execute()) {
-            $_SESSION['mensaje'] = "‚úÖ Publicaci√≥n eliminada correctamente";
+            $_SESSION['mensaje'] = "? PublicaciÛn eliminada correctamente";
             $_SESSION['tipo_mensaje'] = "success";
         } else {
-            $_SESSION['mensaje'] = "‚ùå Error al eliminar publicaci√≥n";
+            $_SESSION['mensaje'] = "? Error al eliminar publicaciÛn";
             $_SESSION['tipo_mensaje'] = "danger";
         }
         $stmt->close();
@@ -162,10 +162,10 @@ if (isset($_GET['eliminar_todas'])) {
     $query = "DELETE FROM publicaciones";
     
     if ($conn->query($query)) {
-        $_SESSION['mensaje'] = "‚úÖ Todas las publicaciones han sido eliminadas correctamente";
+        $_SESSION['mensaje'] = "? Todas las publicaciones han sido eliminadas correctamente";
         $_SESSION['tipo_mensaje'] = "success";
     } else {
-        $_SESSION['mensaje'] = "‚ùå Error al eliminar todas las publicaciones: " . $conn->error;
+        $_SESSION['mensaje'] = "? Error al eliminar todas las publicaciones: " . $conn->error;
         $_SESSION['tipo_mensaje'] = "danger";
     }
     
@@ -240,8 +240,8 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
-                        <a href="logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
+                        <a href="logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
                     </div>
                 </div>
             </div>
@@ -253,7 +253,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
             <div class="row">
 
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -271,11 +271,11 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                     endif; ?>
 
                     <div class="section-title" data-aos="fade-up">
-                        <h2>Gesti√≥n de Publicaciones</h2>
+                        <h2>GestiÛn de Publicaciones</h2>
                         <p>Administra todas las publicaciones del sistema</p>
                     </div>
 
-                    <!-- Estad√≠sticas -->
+                    <!-- EstadÌsticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up" data-aos-delay="100">
                         <div class="col-md-3 col-6 mb-3">
                             <div class="stat-card primary">
@@ -305,7 +305,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                             <div class="stat-card info">
                                 <div class="stat-content text-center">
                                     <h4><?= count(array_filter($publicaciones, fn($p) => $p['estado'] == 'revision')) ?></h4>
-                                    <small>En Revisi√≥n</small>
+                                    <small>En RevisiÛn</small>
                                 </div>
                             </div>
                         </div>
@@ -315,13 +315,13 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                     <div class="admin-card mb-4" data-aos="fade-up">
                         <div class="card-header">
                             <h5 class="card-title mb-0">
-                                <i class="bi bi-funnel me-2"></i>Filtros y B√∫squeda
+                                <i class="bi bi-funnel me-2"></i>Filtros y B˙squeda
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control" placeholder="Buscar publicaci√≥n..." 
+                                    <input type="text" class="form-control" placeholder="Buscar publicaciÛn..." 
                                            onkeyup="filtrarPublicaciones(this.value)">
                                 </div>
                                 <div class="col-md-3">
@@ -329,12 +329,12 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                         <option value="">Todos los estados</option>
                                         <option value="publicado">Publicado</option>
                                         <option value="borrador">Borrador</option>
-                                        <option value="revision">En Revisi√≥n</option>
+                                        <option value="revision">En RevisiÛn</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
                                     <select class="form-select" onchange="filtrarPorCategoria(this.value)">
-                                        <option value="">Todas las categor√≠as</option>
+                                        <option value="">Todas las categorÌas</option>
                                         <?php
                                         $categorias_query = "SELECT id, nombre FROM categorias";
                                         $categorias_result = $conn->query($categorias_query);
@@ -363,7 +363,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                 Todas las Publicaciones
                                 <span class="badge bg-primary"><?= count($publicaciones) ?></span>
                             </h5>
-                            <a href="gestionar-publicaciones.php?eliminar_todas=1" class="btn btn-danger btn-sm" onclick="return confirm('¬øEst√°s SEGURO de que quieres eliminar TODAS las publicaciones del sistema? Esta acci√≥n no se puede deshacer.')">
+                            <a href="gestionar-publicaciones.php?eliminar_todas=1" class="btn btn-danger btn-sm" onclick="return confirm('øEst·s SEGURO de que quieres eliminar TODAS las publicaciones del sistema? Esta acciÛn no se puede deshacer.')">
                                 <i class="bi bi-trash"></i> Eliminar Todo
                             </a>
                         </div>
@@ -372,16 +372,16 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                 <div class="text-center py-5">
                                     <i class="bi bi-inbox display-4 text-muted"></i>
                                     <h5 class="text-muted mt-3">No hay publicaciones</h5>
-                                    <p class="text-muted">Los publicadores a√∫n no han creado contenido</p>
+                                    <p class="text-muted">Los publicadores a˙n no han creado contenido</p>
                                 </div>
                             <?php else: ?>
                                 <div class="table-responsive">
                                     <table class="admin-table">
                                         <thead>
                                             <tr>
-                                                <th>T√≠tulo</th>
+                                                <th>TÌtulo</th>
                                                 <th>Publicador</th>
-                                                <th>Categor√≠a</th>
+                                                <th>CategorÌa</th>
                                                 <th>Estado</th>
                                                 <th>Fecha</th>
                                                 <th>Vistas</th>
@@ -398,7 +398,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                                     <strong><?= htmlspecialchars($publicacion['titulo']) ?></strong>
                                                     <br>
                                                     <small class="text-muted">
-                                                        <?= htmlspecialchars($publicacion['tipo']) ?> ‚Ä¢ 
+                                                        <?= htmlspecialchars($publicacion['tipo']) ?> ï 
                                                         <?php 
                                                         $contenido_preview = $publicacion['contenido'] ?? '';
                                                         if (!empty($contenido_preview)) {
@@ -415,7 +415,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                                     <br>
                                                     <small class="text-muted"><?= $publicacion['publicador_email'] ?></small>
                                                 </td>
-                                                <td><?= htmlspecialchars($publicacion['categoria_nombre'] ?? 'Sin categor√≠a') ?></td>
+                                                <td><?= htmlspecialchars($publicacion['categoria_nombre'] ?? 'Sin categorÌa') ?></td>
                                                 <td>
                                                     <form method="POST" class="d-inline" id="form-estado-<?= $publicacion['id'] ?>">
                                                         <input type="hidden" name="publicacion_id" value="<?= $publicacion['id'] ?>">
@@ -424,7 +424,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                                                 onchange="cambiarEstado(this, <?= $publicacion['id'] ?>)" style="width: 140px;">
                                                             <option value="publicado" <?= $publicacion['estado'] == 'publicado' ? 'selected' : '' ?>>Publicado</option>
                                                             <option value="borrador" <?= $publicacion['estado'] == 'borrador' ? 'selected' : '' ?>>Borrador</option>
-                                                            <option value="revision" <?= $publicacion['estado'] == 'revision' ? 'selected' : '' ?>>En Revisi√≥n</option>
+                                                            <option value="revision" <?= $publicacion['estado'] == 'revision' ? 'selected' : '' ?>>En RevisiÛn</option>
                                                             <option value="rechazada" <?= $publicacion['estado'] == 'rechazada' ? 'selected' : '' ?>>Rechazada</option>
                                                         </select>
                                                         <input type="hidden" name="cambiar_estado" value="1">
@@ -451,7 +451,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                                         </a>
                                                         <a href="gestionar-publicaciones.php?eliminar=<?= $publicacion['id'] ?>" 
                                                            class="btn btn-outline-danger btn-sm" title="Eliminar"
-                                                           onclick="return confirm('¬øEst√°s seguro de eliminar esta publicaci√≥n?')">
+                                                           onclick="return confirm('øEst·s seguro de eliminar esta publicaciÛn?')">
                                                             <i class="bi bi-trash"></i>
                                                         </a>
                                                     </div>
@@ -539,7 +539,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
         let publicacionActual = null;
         let selectActual = null;
 
-        // Inicializar cuando el DOM est√© listo
+        // Inicializar cuando el DOM estÈ listo
         document.addEventListener('DOMContentLoaded', function() {
             const modalEl = document.getElementById('modalRechazo');
             if (modalEl) {
@@ -562,7 +562,7 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
             }
         });
         
-        // Funci√≥n para cambiar estado
+        // FunciÛn para cambiar estado
         function cambiarEstado(selectElement, publicacionId) {
             const form = document.getElementById('form-estado-' + publicacionId);
             if (form) form.submit();
@@ -604,15 +604,15 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                     
                     <div class="modal-body">
                         <div class="alert alert-warning">
-                            <small><i class="bi bi-info-circle me-1"></i> La publicaci√≥n ya ha sido marcada como <strong>Rechazada</strong>. Por favor indica el motivo.</small>
+                            <small><i class="bi bi-info-circle me-1"></i> La publicaciÛn ya ha sido marcada como <strong>Rechazada</strong>. Por favor indica el motivo.</small>
                         </div>
                         <div class="mb-3">
                             <label for="mensajeRechazo" class="form-label">
                                 <strong>Motivo del rechazo:</strong>
                             </label>
                             <textarea class="form-control" name="mensaje_rechazo" id="mensajeRechazo" rows="4" 
-                                      placeholder="Explica por qu√© se rechaza esta publicaci√≥n..." required></textarea>
-                            <small class="text-muted">Este mensaje ser√° visible para el publicador</small>
+                                      placeholder="Explica por quÈ se rechaza esta publicaciÛn..." required></textarea>
+                            <small class="text-muted">Este mensaje ser· visible para el publicador</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -631,3 +631,4 @@ $publicaciones = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 <?php 
 $conn->close();
 ?>
+

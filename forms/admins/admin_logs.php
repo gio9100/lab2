@@ -30,7 +30,7 @@ $logs = $conn->query($sql);
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css-admins/admin.css?v=2.0">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.cssív=2.0">
 </head>
 <body class="admin-page">
     
@@ -59,7 +59,7 @@ $logs = $conn->query($sql);
 
     <div class="container-fluid mt-4">
         <div class="row">
-            <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+            <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                 <?php include 'sidebar-admin.php'; ?>
             </div>
 
@@ -145,3 +145,4 @@ $logs = $conn->query($sql);
     </script>
 </body>
 </html>
+

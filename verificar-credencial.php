@@ -190,5 +190,6 @@ if ($id && $tipo && $hash) {
     <!-- Vendor JS Files -->
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 </html>

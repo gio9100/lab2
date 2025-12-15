@@ -348,23 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto_perfil'])) {
     <?php include "sidebar-usuario.php"; ?>
 
     <script>
-    // Mobile sidebar toggle
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebarWrapper = document.querySelector('.sidebar-wrapper');
-    const overlay = document.querySelector('.sidebar-overlay');
-    
-    if (sidebarToggle && sidebarWrapper) {
-        sidebarToggle.addEventListener('click', function() {
-            sidebarWrapper.classList.add('active');
-        });
-        
-        if (overlay) {
-            overlay.addEventListener('click', function() {
-                sidebarWrapper.classList.remove('active');
-            });
-        }
-    }
-    
+    // Mobile sidebar toggle logic is handled in sidebar-usuario.php
     
     // Función simple para descargar PDF (copiada de perfil-admin que funciona)
     function descargarCredencialConQR() {

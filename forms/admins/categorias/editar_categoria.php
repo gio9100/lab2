@@ -1,11 +1,11 @@
-Ôªø<?php
-// Editar Categor√≠a (Admin)
-// Permite a los administradores modificar categor√≠as existentes
+<?php
+// Editar CategorÌa (Admin)
+// Permite a los administradores modificar categorÌas existentes
 
-// Iniciar sesi√≥n
+// Iniciar sesiÛn
 session_start();
 
-// Incluir configuraci√≥n y funciones de admin
+// Incluir configuraciÛn y funciones de admin
 require_once '../config-admin.php';
 requerirAdmin();
 
@@ -14,22 +14,22 @@ $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 $stats = obtenerEstadisticasAdmin($conn);
 
-// Incluir clases de categor√≠as
+// Incluir clases de categorÌas
 include_once 'config-categorias.php';
 include_once 'categoria.php';
 
-// Inicializar conexi√≥n y objeto categor√≠a
+// Inicializar conexiÛn y objeto categorÌa
 $database = new Database();
 $db = $database->getConnection();
 $categoria = new Categoria($db);
 
-// Obtener ID de la categor√≠a
+// Obtener ID de la categorÌa
 $categoria->id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: ID no especificado.');
 
 $mensaje = "";
 $exito = false;
 
-// Cargar datos de la categor√≠a
+// Cargar datos de la categorÌa
 if ($categoria->leerUna()) {
     
     // Procesar formulario POST
@@ -43,15 +43,15 @@ if ($categoria->leerUna()) {
         
         // Intentar actualizar
         if ($categoria->actualizar()) {
-            $mensaje = 'Categor√≠a actualizada exitosamente';
+            $mensaje = 'CategorÌa actualizada exitosamente';
             $exito = true;
         } else {
-            $mensaje = 'Error al actualizar la categor√≠a';
+            $mensaje = 'Error al actualizar la categorÌa';
             $exito = false;
         }
     }
 } else {
-    die('ERROR: Categor√≠a no encontrada.');
+    die('ERROR: CategorÌa no encontrada.');
 }
 ?>
 
@@ -60,7 +60,7 @@ if ($categoria->leerUna()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Categor√≠a - Lab-Explora</title>
+    <title>Editar CategorÌa - Lab-Explora</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -104,8 +104,8 @@ if ($categoria->leerUna()) {
                 </a>
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
-                        <a href="../logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
+                        <span class="saludo">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="../logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
                     </div>
                 </div>
             </div>
@@ -122,7 +122,7 @@ if ($categoria->leerUna()) {
                     <div class="sidebar-nav">
                         <div class="list-group">
                             <a href="../../../pagina-principal.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-house-door me-2"></i>P√°gina Principal
+                                <i class="bi bi-house-door me-2"></i>P·gina Principal
                             </a>
                             <a href="../index-admin.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-speedometer2 me-2"></i>Panel Principal
@@ -134,10 +134,10 @@ if ($categoria->leerUna()) {
                                 <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
                             </a>
                             <a href="listar_categorias.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-tags me-2"></i>Ver Categor√≠as
+                                <i class="bi bi-tags me-2"></i>Ver CategorÌas
                             </a>
                             <a href="crear_categoria.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-plus-circle me-2"></i>Crear Categor√≠a
+                                <i class="bi bi-plus-circle me-2"></i>Crear CategorÌa
                             </a>
                             <?php if($admin_nivel == 'superadmin'): ?>
                             <a href="../admins.php" class="list-group-item list-group-item-action">
@@ -146,7 +146,7 @@ if ($categoria->leerUna()) {
                             <?php endif; ?>
                         </div>
                         
-                        <!-- Resumen r√°pido -->
+                        <!-- Resumen r·pido -->
                         <div class="quick-stats-card mt-4">
                             <div class="card-header">
                                 <h6 class="card-title mb-0">Resumen del Sistema</h6>
@@ -181,21 +181,21 @@ if ($categoria->leerUna()) {
                     <?php endif; ?>
 
                     <div class="section-title" data-aos="fade-up">
-                        <h2>Editar Categor√≠a</h2>
-                        <p>Modifica los datos de la categor√≠a <strong><?= htmlspecialchars($categoria->nombre) ?></strong></p>
+                        <h2>Editar CategorÌa</h2>
+                        <p>Modifica los datos de la categorÌa <strong><?= htmlspecialchars($categoria->nombre) ?></strong></p>
                     </div>
                     
-                    <!-- Formulario de Edici√≥n -->
+                    <!-- Formulario de EdiciÛn -->
                     <div class="card" data-aos="fade-up" data-aos-delay="100">
                         <div class="card-body">
                             <form method="POST" id="formCategoria">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="nombre" class="form-label">Nombre de la Categor√≠a *</label>
+                                        <label for="nombre" class="form-label">Nombre de la CategorÌa *</label>
                                         <input type="text" class="form-control" id="nombre" name="nombre" required 
                                                value="<?= htmlspecialchars($categoria->nombre) ?>"
-                                               placeholder="Ej: Hematolog√≠a, Parasitolog√≠a...">
-                                        <small class="text-muted">El slug se actualizar√° autom√°ticamente</small>
+                                               placeholder="Ej: HematologÌa, ParasitologÌa...">
+                                        <small class="text-muted">El slug se actualizar· autom·ticamente</small>
                                     </div>
                                     
                                     <div class="col-md-6 mb-3">
@@ -208,21 +208,21 @@ if ($categoria->leerUna()) {
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="descripcion" class="form-label">Descripci√≥n</label>
+                                    <label for="descripcion" class="form-label">DescripciÛn</label>
                                     <textarea class="form-control" id="descripcion" name="descripcion" rows="3" 
-                                              placeholder="Descripci√≥n breve de la categor√≠a..."><?= htmlspecialchars($categoria->descripcion) ?></textarea>
+                                              placeholder="DescripciÛn breve de la categorÌa..."><?= htmlspecialchars($categoria->descripcion) ?></textarea>
                                 </div>
                                 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="color" class="form-label">Color de la Categor√≠a</label>
+                                        <label for="color" class="form-label">Color de la CategorÌa</label>
                                         <div class="d-flex align-items-center">
                                             <input type="color" class="form-control form-control-color" id="color" name="color" 
                                                    value="<?= htmlspecialchars($categoria->color) ?>">
                                             <span class="color-preview ms-2" id="colorPreview" 
                                                   style="background-color: <?= htmlspecialchars($categoria->color) ?>;"></span>
                                         </div>
-                                        <small class="text-muted">Este color identifica la categor√≠a</small>
+                                        <small class="text-muted">Este color identifica la categorÌa</small>
                                     </div>
                                     
                                     <div class="col-md-6 mb-3">
@@ -238,7 +238,7 @@ if ($categoria->leerUna()) {
                                 </div>
                                 
                                 <div class="alert alert-info">
-                                    <strong>Informaci√≥n:</strong><br>
+                                    <strong>InformaciÛn:</strong><br>
                                     <small>Slug actual: <code><?= htmlspecialchars($categoria->slug) ?></code></small><br>
                                     <small>Creado: <?= date('d/m/Y H:i', strtotime($categoria->fecha_creacion)) ?></small>
                                 </div>
@@ -248,7 +248,7 @@ if ($categoria->leerUna()) {
                                         <i class="bi bi-arrow-left me-1"></i>Cancelar
                                     </a>
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check-circle me-1"></i>Actualizar Categor√≠a
+                                        <i class="bi bi-check-circle me-1"></i>Actualizar CategorÌa
                                     </button>
                                 </div>
                             </form>
@@ -269,12 +269,12 @@ if ($categoria->leerUna()) {
             once: true
         });
 
-        // Previsualizaci√≥n de color
+        // PrevisualizaciÛn de color
         document.getElementById('color').addEventListener('input', function() {
             document.getElementById('colorPreview').style.backgroundColor = this.value;
         });
 
-        // Previsualizaci√≥n de icono
+        // PrevisualizaciÛn de icono
         document.getElementById('icono').addEventListener('input', function() {
             const iconPreview = document.getElementById('iconPreview');
             iconPreview.className = 'bi ' + this.value + ' icon-preview';

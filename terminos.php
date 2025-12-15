@@ -272,5 +272,6 @@
         <p class="text-center text-muted"><small><strong>Última actualización:</strong> 7 de diciembre de 2025</small></p>
         <p class="text-center text-muted"><small>Al continuar utilizando Lab-Explora, usted acepta estar sujeto a la versión más reciente de estos Términos y Condiciones.</small></p>
     </div>
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 </html>

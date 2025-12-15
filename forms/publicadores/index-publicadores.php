@@ -133,7 +133,7 @@ $stmt_recientes->close();
             <div class="top-row d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <!-- Hamburger Button -->
-                    <button class="btn btn-outline-primary d-md-none me-2" id="sidebarToggle">
+                    <button class="btn btn-outline-primary d-md-none me-2" id="sidebar-toggle">
                         <i class="bi bi-list"></i>
                     </button>
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
@@ -157,10 +157,10 @@ $stmt_recientes->close();
             <div class="row">
 
                 <!-- Sidebar (Desktop & Mobile Overlay) -->
-                <div class="col-md-3 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 sidebar-wrapper" id="sidebar-wrapper">
                      <!-- Mobile Close Button -->
                     <div class="d-flex justify-content-end d-md-none p-2">
-                        <button class="btn-close" id="sidebarClose"></button>
+                        <button class="btn-close" id="sidebar-close"></button>
                     </div>
                     <?php include 'sidebar-publicador.php'; ?>
                 </div>
@@ -326,28 +326,6 @@ $stmt_recientes->close();
                 this.parentElement.style.display = 'none';
             });
         });
-
-        // Sidebar Toggle Logic
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarWrapper = document.getElementById('sidebarWrapper');
-        const sidebarClose = document.getElementById('sidebarClose');
-
-        if(sidebarToggle && sidebarWrapper) {
-            // Create overlay
-            const overlay = document.createElement('div');
-            overlay.className = 'sidebar-overlay';
-            document.body.appendChild(overlay);
-
-            function toggleSidebar() {
-                sidebarWrapper.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.classList.toggle('sidebar-open');
-            }
-
-            sidebarToggle.addEventListener('click', toggleSidebar);
-            if(sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
-            overlay.addEventListener('click', toggleSidebar);
-        }
     </script>
 
     <!-- Script del Tour Onboarding -->

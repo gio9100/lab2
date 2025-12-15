@@ -329,5 +329,6 @@
         <p class="text-center text-muted"><small><strong>Última actualización:</strong> 7 de diciembre de 2025</small></p>
         <p class="text-center text-muted"><small>Su privacidad es importante para nosotros. Nos comprometemos a proteger su información personal y utilizarla de manera transparente y responsable.</small></p>
     </div>
+    <script src="assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 </html>

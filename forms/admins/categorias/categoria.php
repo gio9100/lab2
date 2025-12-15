@@ -1,13 +1,13 @@
-ï»¿<?php
+<?php
 // Clase Categoria (Admin)
-// Maneja operaciones CRUD para categorÃ­as usando PDO
+// Maneja operaciones CRUD para categorías usando PDO
 
 class Categoria {
     // Propiedades privadas
     private $conn;
     private $table_name = "categorias";
     
-    // Propiedades pÃºblicas (columnas de la tabla)
+    // Propiedades públicas (columnas de la tabla)
     public $id;
     public $nombre;
     public $slug;
@@ -17,18 +17,18 @@ class Categoria {
     public $estado;
     public $fecha_creacion;
     
-    // Constructor: Inicializa la conexiÃ³n a la base de datos
+    // Constructor: Inicializa la conexión a la base de datos
     public function __construct($db) {
         $this->conn = $db;
     }
     
-    // MÃ©todo privado: Crear slug URL-friendly
+    // Método privado: Crear slug URL-friendly
     // Convierte texto a formato slug (ej: "Hola Mundo" -> "hola-mundo")
     private function crearSlug($text) {
-        // Reemplazar caracteres no alfanumÃ©ricos por guiones (Unicode)
+        // Reemplazar caracteres no alfanuméricos por guiones (Unicode)
         $text = preg_replace('~[^\pL\d]+~u', '-', $text);
         
-        // Transliterar caracteres (ej: Ã¡ -> a)
+        // Transliterar caracteres (ej: á -> a)
         $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
         
         // Eliminar caracteres no deseados
@@ -40,10 +40,10 @@ class Categoria {
         // Reemplazar guiones duplicados
         $text = preg_replace('~-+~', '-', $text);
         
-        // Convertir a minÃºsculas
+        // Convertir a minúsculas
         $text = strtolower($text);
         
-        // Retornar 'n-a' si el string estÃ¡ vacÃ­o
+        // Retornar 'n-a' si el string está vacío
         if (empty($text)) {
             return 'n-a';
         }
@@ -51,7 +51,7 @@ class Categoria {
         return $text;
     }
 
-    // MÃ©todo: Crear nueva categorÃ­a
+    // Método: Crear nueva categoría
     public function crear() {
         $query = "INSERT INTO " . $this->table_name . " 
                  SET nombre=:nombre, slug=:slug, descripcion=:descripcion, 
@@ -69,7 +69,7 @@ class Categoria {
         // Generar slug
         $this->slug = $this->crearSlug($this->nombre);
         
-        // Vincular parÃ¡metros
+        // Vincular parámetros
         $stmt->bindParam(":nombre", $this->nombre);
         $stmt->bindParam(":slug", $this->slug);
         $stmt->bindParam(":descripcion", $this->descripcion);
@@ -84,7 +84,7 @@ class Categoria {
         return false;
     }
 
-    // MÃ©todo: Leer todas las categorÃ­as
+    // Método: Leer todas las categorías
     public function leer() {
         $query = "SELECT * FROM " . $this->table_name . " ORDER BY fecha_creacion DESC";
         $stmt = $this->conn->prepare($query);
@@ -92,7 +92,7 @@ class Categoria {
         return $stmt;
     }
 
-    // MÃ©todo: Leer una categorÃ­a especÃ­fica por ID
+    // Método: Leer una categoría específica por ID
     public function leerUna() {
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
@@ -114,7 +114,7 @@ class Categoria {
         return false;
     }
 
-    // MÃ©todo: Actualizar categorÃ­a existente
+    // Método: Actualizar categoría existente
     public function actualizar() {
         $query = "UPDATE " . $this->table_name . " 
                  SET nombre=:nombre, slug=:slug, descripcion=:descripcion, 
@@ -134,7 +134,7 @@ class Categoria {
         // Regenerar slug
         $this->slug = $this->crearSlug($this->nombre);
         
-        // Vincular parÃ¡metros
+        // Vincular parámetros
         $stmt->bindParam(":nombre", $this->nombre);
         $stmt->bindParam(":slug", $this->slug);
         $stmt->bindParam(":descripcion", $this->descripcion);
@@ -143,14 +143,14 @@ class Categoria {
         $stmt->bindParam(":estado", $this->estado);
         $stmt->bindParam(":id", $this->id);
         
-        // Ejecutar actualizaciÃ³n
+        // Ejecutar actualización
         if ($stmt->execute()) {
             return true;
         }
         return false;
     }
 
-    // MÃ©todo: Eliminar categorÃ­a
+    // Método: Eliminar categoría
     public function eliminar() {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);

@@ -1,11 +1,11 @@
-Ôªø<?php
+<?php
 // Gestionar Comentarios (Admin)
 // Permite a los administradores moderar y eliminar comentarios de usuarios
 
-// Iniciar sesi√≥n
+// Iniciar sesiÛn
 session_start();
 
-// Incluir configuraci√≥n y funciones de admin
+// Incluir configuraciÛn y funciones de admin
 require_once "config-admin.php";
 
 // Verificar permisos de administrador
@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['eliminar_comentario'])) {
         $id = intval($_POST['comentario_id']);
         
-        // Llamar a funci√≥n de eliminaci√≥n
+        // Llamar a funciÛn de eliminaciÛn
         if (eliminarComentarioAdmin($id, $conn)) {
             $mensaje = "Comentario eliminado correctamente.";
             $exito = true;
@@ -78,8 +78,8 @@ $comentarios = obtenerTodosComentarios($conn);
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
-                        <a href="logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
+                        <a href="logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@ $comentarios = obtenerTodosComentarios($conn);
                 
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -122,7 +122,7 @@ $comentarios = obtenerTodosComentarios($conn);
                                             <tr>
                                                 <th>Fecha</th>
                                                 <th>Usuario</th>
-                                                <th>Publicaci√≥n</th>
+                                                <th>PublicaciÛn</th>
                                                 <th>Contenido</th>
                                                 <th>Acciones</th>
                                             </tr>
@@ -140,11 +140,11 @@ $comentarios = obtenerTodosComentarios($conn);
                                                 </td>
                                                 <td>
                                                     <div class="action-buttons">
-                                                        <a href="../../ver-publicacion.php?id=<?= $com['publicacion_id'] ?>" target="_blank" class="btn btn-info btn-sm" title="Ver Publicaci√≥n">
+                                                        <a href="../../ver-publicacion.php?id=<?= $com['publicacion_id'] ?>" target="_blank" class="btn btn-info btn-sm" title="Ver PublicaciÛn">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
                                                         
-                                                        <form method="POST" class="d-inline" onsubmit="return confirm('¬øEliminar este comentario?');">
+                                                        <form method="POST" class="d-inline" onsubmit="return confirm('øEliminar este comentario?');">
                                                             <input type="hidden" name="comentario_id" value="<?= $com['id'] ?>">
                                                             <button type="submit" name="eliminar_comentario" class="btn btn-danger btn-sm" title="Eliminar Comentario">
                                                                 <i class="bi bi-trash"></i>
@@ -205,7 +205,7 @@ $comentarios = obtenerTodosComentarios($conn);
             btn.addEventListener('click', e => e.target.parentElement.style.display = 'none');
         });
         
-        // Funci√≥n para mostrar comentario completo en modal
+        // FunciÛn para mostrar comentario completo en modal
         window.verComentarioCompleto = function(contenido, usuario) {
             document.getElementById('modalUsuarioNombre').textContent = usuario;
             document.getElementById('modalComentarioContenido').textContent = contenido;
@@ -215,3 +215,4 @@ $comentarios = obtenerTodosComentarios($conn);
     </script>
 </body>
 </html>
+

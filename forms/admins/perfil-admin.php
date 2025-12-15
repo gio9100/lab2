@@ -334,7 +334,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
             <div class="row">
 
                 <!-- Sidebar (Menú lateral) -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -624,7 +624,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
         const btn = document.getElementById('toggle-2fa-btn');
         const esActivar = btn.classList.contains('btn-success');
         const accion = esActivar ? 'activar' : 'desactivar';
-        const mensaje = esActivar ? '¿Activar verificación en 2 pasos?' : '¿Desactivar 2FA?';
+        const mensaje = esActivar ? '¿Activar verificación en 2 pasosí' : '¿Desactivar 2FA?';
         
         if (!confirm(mensaje)) return;
         
@@ -651,3 +651,4 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
 
 </body>
 </html>
+

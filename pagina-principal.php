@@ -918,6 +918,7 @@ session_start();
                 .catch(err => console.error('Error fetching announcement:', err));
         });
     </script>
+    <?php include 'forms/sidebar-usuario.php'; ?>
 </body>
 <!-- Cerramos el body -->
 </html>

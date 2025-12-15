@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Gestionar Reportes (Admin)
 // Permite a los administradores revisar y procesar reportes de contenido inapropiado
 
@@ -141,7 +141,7 @@ $stats = obtenerEstadisticasReportes($conn);
 
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 

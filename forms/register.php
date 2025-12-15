@@ -103,8 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- Título que aparece en la pestaña del navegador -->
 <link rel="stylesheet" href="../assets/css/registro.css">
 <!-- Cargamos el CSS del registro -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<!-- Iconos para el widget de accesibilidad -->
+<link rel="stylesheet" href="../assets/vendor/bootstrap-icons/bootstrap-icons.css">
+<!-- Iconos para el widget de accesibilidad (Local) -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Para que se vea bien en celulares -->
 <style>
@@ -194,7 +194,7 @@ input.success {
                value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
                required>
         <!-- Input de correo -->
-        <div id="mensaje-correo" class="mensaje-validacion"></div>
+        <div id="mensaje-correo" class="mensaje-validacion" role="alert" aria-live="polite"></div>
         <!-- Div vacío donde JavaScript mostrará mensajes de validación -->
 
         <label>Contraseña</label>
@@ -207,7 +207,7 @@ input.success {
                minlength="6">
         <!-- Input de contraseña -->
         <!-- minlength="6" requiere mínimo 6 caracteres -->
-        <div id="mensaje-contrasena" class="mensaje-validacion"></div>
+        <div id="mensaje-contrasena" class="mensaje-validacion" role="alert" aria-live="polite"></div>
         <!-- Div vacío donde JavaScript mostrará mensajes de validación -->
     </section>
     <!-- Cerramos seccion-informacion -->
@@ -428,22 +428,23 @@ contrasenaInput.addEventListener('input', function() {
 </script>
 <!-- Cerramos el script -->
 <!-- Script de validaciones frontend adicional (capa extra de seguridad) -->
-<script src="../../assets/js/validaciones-frontend.js"></script>
+<script src="../assets/js/validaciones-frontend.js"></script>
 <!-- Cargamos el archivo de validaciones como medida de seguridad adicional -->
 <script>
 // Validación del nombre en tiempo real (bloquea números mientras escribes)
 const nombreInput = document.getElementById('nombre');
 
 if (nombreInput) {
+    // Usamos la función global de validaciones-frontend.js
     nombreInput.addEventListener('input', function() {
-        // Removemos números mientras el usuario escribe
-        this.value = this.value.replace(/[0-9]/g, '');
-        
-        // Removemos caracteres especiales (excepto espacios, tildes, ñ, apóstrofes y guiones)
-        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'\-]/g, '');
-        
-        // Removemos espacios múltiples
-        this.value = this.value.replace(/\s{2,}/g, ' ');
+        if (typeof validarNombreEnTiempoReal === 'function') {
+            validarNombreEnTiempoReal(this);
+        } else {
+            // Fallback por si no cargó el script
+             this.value = this.value.replace(/[0-9]/g, '');
+             this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'\-]/g, '');
+             this.value = this.value.replace(/\s{2,}/g, ' ');
+        }
     });
 }
 </script>

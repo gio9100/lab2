@@ -113,9 +113,9 @@ function isActive($link_page, $current_page) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Funcionalidad del toggle del sidebar
+    // Standardized IDs
     const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebar = document.getElementById('sidebarWrapper');
+    const sidebar = document.getElementById('sidebar-wrapper');
     const overlay = document.getElementById('sidebar-overlay');
 
     // Mover overlay al body para evitar problemas de z-index y stacking context

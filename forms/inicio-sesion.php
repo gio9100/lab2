@@ -108,6 +108,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- Título que aparece en la pestaña del navegador -->
     <link href="../assets/css/inicio-sesion.css" rel="stylesheet">
     <!-- Cargamos el CSS del login -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .mensaje-validacion { margin-top: 5px; font-size: 0.9rem; font-weight: 500; display: none; }
+        .mensaje-validacion.error { color: #dc3545; display: block; }
+        .mensaje-validacion.success { color: #28a745; display: block; }
+        input.error { border-color: #dc3545 !important; }
+        input.success { border-color: #28a745 !important; }
+    </style>
+
 </head>
 <!-- Cerramos el head -->
 <body>
@@ -128,16 +137,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <section class="seccion-informacion">
         <!-- Sección donde van los inputs -->
             <label>Correo</label>
-            <!-- Etiqueta para el input de correo -->
-            <input type="email" name="correo" value="<?php echo htmlspecialchars($_POST['correo'] ?? ''); ?>" required>
+            <!-- Input de correo -->
+            <input type="email" id="correo" name="correo" value="<?php echo htmlspecialchars($_POST['correo'] ?? ''); ?>" required>
             <!-- Input de correo -->
             <!-- value mantiene el correo escrito si hubo error -->
             <!-- required hace que sea obligatorio -->
+            <div id="mensaje-correo" class="mensaje-validacion" role="alert" aria-live="polite"></div>
             <label>Contraseña</label>
             <!-- Etiqueta para el input de contraseña -->
-            <input type="password" name="contrasena" required minlength="6">
+            <input type="password" id="contrasena" name="contrasena" required minlength="6">
             <!-- Input de contraseña -->
             <!-- minlength="6" requiere mínimo 6 caracteres -->
+            <div id="mensaje-contrasena" class="mensaje-validacion" role="alert" aria-live="polite"></div>
         </section>
         <!-- Cerramos seccion-informacion -->
         <section class="seccion-botones">
@@ -200,6 +211,48 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Cerramos el script -->
     <?php endif; ?>
     <!-- Cerramos el if de mostrar modal -->
+    <script src="../assets/js/validaciones-frontend.js"></script>
+    <script>
+        const correoInput = document.getElementById('correo');
+        const passInput = document.getElementById('contrasena');
+        const form = document.querySelector('form');
+
+        if (correoInput) {
+            correoInput.addEventListener('input', function() {
+                if (typeof validarEmailEnTiempoReal === 'function') {
+                    validarEmailEnTiempoReal(this);
+                }
+                const val = this.value.trim();
+                const msg = document.getElementById('mensaje-correo');
+                if (val && !val.includes('@')) {
+                    msg.textContent = 'Ingrese un correo válido';
+                    msg.className = 'mensaje-validacion error';
+                    this.classList.add('error');
+                } else {
+                    msg.textContent = '';
+                    msg.className = 'mensaje-validacion';
+                    this.classList.remove('error');
+                }
+            });
+        }
+
+        form.addEventListener('submit', function(e) {
+            let nvalid = true;
+            if (correoInput && !correoInput.value.includes('@')) {
+                nvalid = false;
+                correoInput.classList.add('error');
+            }
+            if (passInput && passInput.value.length < 6) {
+                nvalid = false;
+               passInput.classList.add('error');
+               const msg = document.getElementById('mensaje-contrasena');
+               msg.textContent = 'Mínimo 6 caracteres';
+               msg.className = 'mensaje-validacion error';
+            }
+            if (!nvalid) e.preventDefault();
+        });
+    </script>
+
     <script src="../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
 <!-- Cerramos el body -->

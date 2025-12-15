@@ -1,25 +1,25 @@
-Ôªø<?php
-// Gesti√≥n completa de publicadores (Admin)
+<?php
+// GestiÛn completa de publicadores (Admin)
 // Permite crear, editar, aprobar, rechazar, suspender y eliminar publicadores
 
-// Iniciar sesi√≥n
+// Iniciar sesiÛn
 session_start();
 
 // Incluir notificaciones por correo
 require_once 'enviar_correo_publicador.php';
 
-// Configuraci√≥n de la base de datos
+// ConfiguraciÛn de la base de datos
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "lab_exp_db";
 
-// Crear conexi√≥n
+// Crear conexiÛn
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificar conexi√≥n
+// Verificar conexiÛn
 if ($conn->connect_error) {
-    die("Error de conexi√≥n: " . $conn->connect_error);
+    die("Error de conexiÛn: " . $conn->connect_error);
 }
 
 // Establecer charset a UTF-8
@@ -36,7 +36,7 @@ $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 
-// Funci√≥n para obtener estad√≠sticas
+// FunciÛn para obtener estadÌsticas
 function obtenerEstadisticasPublicadores($conn) {
     $stats = [
         'total' => 0,
@@ -120,20 +120,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['tipo_mensaje'] = "danger";
         } else {
             $stmt->bind_param("si", $motivo, $publicador_id);
-            error_log("Par√°metros bind: motivo='$motivo', id=$publicador_id");
+            error_log("Par·metros bind: motivo='$motivo', id=$publicador_id");
             
             if ($stmt->execute()) {
                 $filas_afectadas = $stmt->affected_rows;
                 error_log("SUCCESS: Filas afectadas = " . $filas_afectadas);
                 
-                // Verificar que realmente se guard√≥
+                // Verificar que realmente se guardÛ
                 $verify_query = "SELECT estado, motivo_rechazo FROM publicadores WHERE id = ?";
                 $verify_stmt = $conn->prepare($verify_query);
                 $verify_stmt->bind_param("i", $publicador_id);
                 $verify_stmt->execute();
                 $verify_result = $verify_stmt->get_result();
                 $verify_data = $verify_result->fetch_assoc();
-                error_log("Verificaci√≥n - Estado guardado: '" . $verify_data['estado'] . "', Motivo: '" . $verify_data['motivo_rechazo'] . "'");
+                error_log("VerificaciÛn - Estado guardado: '" . $verify_data['estado'] . "', Motivo: '" . $verify_data['motivo_rechazo'] . "'");
                 
                 enviarCorreoRechazo($publicador_datos['email'], $publicador_datos['nombre'], $motivo);
                 $_SESSION['mensaje'] = "Publicador rechazado correctamente. Estado: " . $verify_data['estado'] . ", Motivo: " . $verify_data['motivo_rechazo'];
@@ -220,13 +220,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $titulo_academico = trim($_POST['titulo_academico'] ?? '');
         $institucion = trim($_POST['institucion'] ?? '');
         $biografia = trim($_POST['biografia'] ?? '');
-        $experiencia_a√±os = intval($_POST['experiencia_a√±os'] ?? 0);
+        $experiencia_aÒos = intval($_POST['experiencia_aÒos'] ?? 0);
         $limite_publicaciones_mes = intval($_POST['limite_publicaciones_mes'] ?? 5);
         $notificaciones_email = isset($_POST['notificaciones_email']) ? 1 : 0;
         
         // Validar email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $_SESSION['mensaje'] = "El formato del email no es v√°lido";
+            $_SESSION['mensaje'] = "El formato del email no es v·lido";
             $_SESSION['tipo_mensaje'] = "danger";
             header("Location: gestionar_publicadores.php");
             exit;
@@ -235,7 +235,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Validar dominio
         $dominio = substr(strrchr($email, "@"), 1);
         if (!checkdnsrr($dominio, 'MX')) {
-            $_SESSION['mensaje'] = "El dominio del email ($dominio) no es v√°lido o no puede recibir correos";
+            $_SESSION['mensaje'] = "El dominio del email ($dominio) no es v·lido o no puede recibir correos";
             $_SESSION['tipo_mensaje'] = "danger";
             header("Location: gestionar_publicadores.php");
             exit;
@@ -248,14 +248,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $query = "UPDATE publicadores SET 
                      nombre=?, email=?, especialidad=?, estado=?, telefono=?,
                      titulo_academico=?, institucion=?, biografia=?,
-                     experiencia_a√±os=?, limite_publicaciones_mes=?, notificaciones_email=?
+                     experiencia_aÒos=?, limite_publicaciones_mes=?, notificaciones_email=?
                      WHERE id=?";
             
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ssssssssiiii", 
                 $nombre, $email, $especialidad, $estado, $telefono,
                 $titulo_academico, $institucion, $biografia,
-                $experiencia_a√±os, $limite_publicaciones_mes, $notificaciones_email,
+                $experiencia_aÒos, $limite_publicaciones_mes, $notificaciones_email,
                 $id_publicador
             );
             
@@ -272,7 +272,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $password = trim($_POST['password'] ?? '');
             
             if ($password == '') {
-                $_SESSION['mensaje'] = "La contrase√±a es obligatoria para crear un publicador";
+                $_SESSION['mensaje'] = "La contraseÒa es obligatoria para crear un publicador";
                 $_SESSION['tipo_mensaje'] = "danger";
                 header("Location: gestionar_publicadores.php");
                 exit;
@@ -283,7 +283,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $query = "INSERT INTO publicadores (
                      nombre, email, password, especialidad, estado, telefono,
                      titulo_academico, institucion, biografia,
-                     experiencia_a√±os, limite_publicaciones_mes, notificaciones_email,
+                     experiencia_aÒos, limite_publicaciones_mes, notificaciones_email,
                      fecha_registro
                      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
             
@@ -291,7 +291,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->bind_param("sssssssssiii", 
                 $nombre, $email, $password_hash, $especialidad, $estado, $telefono,
                 $titulo_academico, $institucion, $biografia,
-                $experiencia_a√±os, $limite_publicaciones_mes, $notificaciones_email
+                $experiencia_aÒos, $limite_publicaciones_mes, $notificaciones_email
             );
             
             if ($stmt->execute()) {
@@ -308,14 +308,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Obtener estad√≠sticas y lista de publicadores
+// Obtener estadÌsticas y lista de publicadores
 $stats = obtenerEstadisticasPublicadores($conn);
 
 $query_publicadores = "SELECT * FROM publicadores ORDER BY fecha_registro DESC";
 $result_publicadores = $conn->query($query_publicadores);
 $publicadores = $result_publicadores->fetch_all(MYSQLI_ASSOC);
 
-// Cargar datos para edici√≥n si es necesario
+// Cargar datos para ediciÛn si es necesario
 $publicador_editar = null;
 if (isset($_GET['editar'])) {
     $id_editar = intval($_GET['editar']);
@@ -347,7 +347,7 @@ if (isset($_GET['editar'])) {
 
     <!-- CSS Principal -->
     <link href="../../assets/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css-admins/admin.css?v=2.0">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.css√≠v=2.0">
     
     <!-- Estilos inline para badges de estado (fallback) -->
     <style>
@@ -401,8 +401,8 @@ if (isset($_GET['editar'])) {
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
-                        <a href="logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
+                        <a href="logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
                     </div>
                 </div>
             </div>
@@ -415,7 +415,7 @@ if (isset($_GET['editar'])) {
 
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -434,11 +434,11 @@ if (isset($_GET['editar'])) {
                     endif; ?>
 
                     <div class="section-title" data-aos="fade-up">
-                        <h2>Gesti√≥n de Publicadores</h2>
+                        <h2>GestiÛn de Publicadores</h2>
                         <p>Administra los publicadores del sistema</p>
                     </div>
 
-                    <!-- Tarjetas de Estad√≠sticas -->
+                    <!-- Tarjetas de EstadÌsticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up">
                         <div class="col-md-3 col-6 mb-3">
                             <div class="stat-card primary">
@@ -506,7 +506,7 @@ if (isset($_GET['editar'])) {
                                             <input type="email" name="email" class="form-control" 
                                                    value="<?= $publicador_editar ? htmlspecialchars($publicador_editar['email']) : '' ?>" 
                                                    required>
-                                            <small class="text-muted">Se verificar√° que el dominio pueda recibir correos</small>
+                                            <small class="text-muted">Se verificar· que el dominio pueda recibir correos</small>
                                         </div>
                                     </div>
                                 </div>
@@ -515,9 +515,9 @@ if (isset($_GET['editar'])) {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Contrase√±a *</label>
+                                            <label class="form-label">ContraseÒa *</label>
                                             <input type="password" name="password" class="form-control" required>
-                                            <small class="text-muted">M√≠nimo 6 caracteres</small>
+                                            <small class="text-muted">MÌnimo 6 caracteres</small>
                                         </div>
                                     </div>
                                 </div>
@@ -548,14 +548,14 @@ if (isset($_GET['editar'])) {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Tel√©fono</label>
+                                            <label class="form-label">TelÈfono</label>
                                             <input type="tel" name="telefono" class="form-control" 
                                                    value="<?= $publicador_editar ? htmlspecialchars($publicador_editar['telefono'] ?? '') : '' ?>">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">T√≠tulo Acad√©mico</label>
+                                            <label class="form-label">TÌtulo AcadÈmico</label>
                                             <input type="text" name="titulo_academico" class="form-control" 
                                                    value="<?= $publicador_editar ? htmlspecialchars($publicador_editar['titulo_academico'] ?? '') : '' ?>">
                                         </div>
@@ -565,21 +565,21 @@ if (isset($_GET['editar'])) {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Instituci√≥n</label>
+                                            <label class="form-label">InstituciÛn</label>
                                             <input type="text" name="institucion" class="form-control" 
                                                    value="<?= $publicador_editar ? htmlspecialchars($publicador_editar['institucion'] ?? '') : '' ?>">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label class="form-label">A√±os Experiencia</label>
-                                            <input type="number" name="experiencia_a√±os" class="form-control" 
-                                                   value="<?= $publicador_editar ? intval($publicador_editar['experiencia_a√±os']) : 0 ?>">
+                                            <label class="form-label">AÒos Experiencia</label>
+                                            <input type="number" name="experiencia_aÒos" class="form-control" 
+                                                   value="<?= $publicador_editar ? intval($publicador_editar['experiencia_aÒos']) : 0 ?>">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label class="form-label">L√≠mite Publicaciones/Mes</label>
+                                            <label class="form-label">LÌmite Publicaciones/Mes</label>
                                             <input type="number" name="limite_publicaciones_mes" class="form-control" 
                                                    value="<?= $publicador_editar ? intval($publicador_editar['limite_publicaciones_mes']) : 5 ?>">
                                         </div>
@@ -587,7 +587,7 @@ if (isset($_GET['editar'])) {
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">Biograf√≠a</label>
+                                    <label class="form-label">BiografÌa</label>
                                     <textarea name="biografia" class="form-control" rows="3"><?= $publicador_editar ? htmlspecialchars($publicador_editar['biografia'] ?? '') : '' ?></textarea>
                                 </div>
 
@@ -643,7 +643,7 @@ if (isset($_GET['editar'])) {
                                                 $estado_valor = $pub['estado'] ?? 'NULL';
                                                 $estado_texto = $estado_valor === 'NULL' ? 'SIN ESTADO' : ucfirst($estado_valor);
                                                 
-                                                // Determinar color seg√∫n estado
+                                                // Determinar color seg˙n estado
                                                 $bg_color = '#cccccc'; // gris por defecto
                                                 $text_color = '#000';
                                                 
@@ -668,23 +668,23 @@ if (isset($_GET['editar'])) {
                                             </td>
                                             <td>
                                                 <?php 
-                                                // Generar firma digital √∫nica para el publicador
+                                                // Generar firma digital ˙nica para el publicador
                                                 $data_to_hash = $pub['id'] . $pub['nombre'] . $pub['email'] . "LAB_EXPLORA_PUB_SECURE_KEY";
                                                 $firma = strtoupper(substr(hash('sha256', $data_to_hash), 0, 16));
                                                 ?>
-                                                <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital √önica">
+                                                <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital ⁄nica">
                                                     <?= $firma ?>
                                                 </code>
                                             </td>
                                             <td><?= date('d/m/Y', strtotime($pub['fecha_registro'])) ?></td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <!-- Bot√≥n Editar -->
+                                                    <!-- BotÛn Editar -->
                                                     <a href="?editar=<?= $pub['id'] ?>" class="btn btn-sm btn-outline-primary" title="Editar">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
 
-                                                    <!-- Acciones seg√∫n estado -->
+                                                    <!-- Acciones seg˙n estado -->
                                                     <?php if($pub['estado'] == 'pendiente'): ?>
                                                         <!-- Aprobar -->
                                                         <form method="POST" class="d-inline">
@@ -745,7 +745,7 @@ if (isset($_GET['editar'])) {
                                                     <form method="POST">
                                                         <input type="hidden" name="publicador_id" value="<?= $pub['id'] ?>">
                                                         <div class="modal-body">
-                                                            <p>¬øPor qu√© rechazas a <strong><?= htmlspecialchars($pub['nombre']) ?></strong>?</p>
+                                                            <p>øPor quÈ rechazas a <strong><?= htmlspecialchars($pub['nombre']) ?></strong>?</p>
                                                             <textarea name="motivo" class="form-control" rows="3" required placeholder="Motivo del rechazo..."></textarea>
                                                         </div>
                                                         <div class="modal-footer">
@@ -768,8 +768,8 @@ if (isset($_GET['editar'])) {
                                                     <form method="POST">
                                                         <input type="hidden" name="publicador_id" value="<?= $pub['id'] ?>">
                                                         <div class="modal-body">
-                                                            <p>¬øPor qu√© suspendes a <strong><?= htmlspecialchars($pub['nombre']) ?></strong>?</p>
-                                                            <textarea name="motivo" class="form-control" rows="3" required placeholder="Motivo de la suspensi√≥n..."></textarea>
+                                                            <p>øPor quÈ suspendes a <strong><?= htmlspecialchars($pub['nombre']) ?></strong>?</p>
+                                                            <textarea name="motivo" class="form-control" rows="3" required placeholder="Motivo de la suspensiÛn..."></textarea>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -791,8 +791,8 @@ if (isset($_GET['editar'])) {
                                                     <form method="POST">
                                                         <input type="hidden" name="publicador_id" value="<?= $pub['id'] ?>">
                                                         <div class="modal-body">
-                                                            <p>¬øEst√°s seguro de eliminar a <strong><?= htmlspecialchars($pub['nombre']) ?></strong>?</p>
-                                                            <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> Esta acci√≥n es irreversible y borrar√° todas sus publicaciones.</p>
+                                                            <p>øEst·s seguro de eliminar a <strong><?= htmlspecialchars($pub['nombre']) ?></strong>?</p>
+                                                            <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> Esta acciÛn es irreversible y borrar· todas sus publicaciones.</p>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -832,6 +832,6 @@ if (isset($_GET['editar'])) {
 </body>
 </html>
 <?php
-// Cerrar conexi√≥n
+// Cerrar conexiÛn
 $conn->close();
 ?>

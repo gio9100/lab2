@@ -1,12 +1,12 @@
-ï»¿<?php
-// Eliminar CategorÃ­a (Admin)
-// Maneja la eliminaciÃ³n de categorÃ­as con confirmaciÃ³n
+<?php
+// Eliminar Categoría (Admin)
+// Maneja la eliminación de categorías con confirmación
 
-// Incluir configuraciÃ³n y clases
+// Incluir configuración y clases
 include_once 'config-categorias.php';
 include_once 'categoria.php';
 
-// Inicializar conexiÃ³n y objeto
+// Inicializar conexión y objeto
 $database = new Database();
 $db = $database->getConnection();
 $categoria = new Categoria($db);
@@ -14,19 +14,19 @@ $categoria = new Categoria($db);
 // Obtener ID de la URL
 $categoria->id = isset($_GET['id']) ? $_GET['id'] : die('ERROR: ID no especificado.');
 
-// Procesar eliminaciÃ³n si es POST
+// Procesar eliminación si es POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($categoria->eliminar()) {
-        // Redirigir con mensaje de Ã©xito
+        // Redirigir con mensaje de éxito
         header("Location: listar_categorias.php?mensaje=eliminado");
         exit();
     } else {
-        die('ERROR: No se pudo eliminar la categorÃ­a.');
+        die('ERROR: No se pudo eliminar la categoría.');
     }
 } else {
-    // Si es GET, cargar datos para confirmaciÃ³n
+    // Si es GET, cargar datos para confirmación
     if (!$categoria->leerUna()) {
-        die('ERROR: CategorÃ­a no encontrada.');
+        die('ERROR: Categoría no encontrada.');
     }
 }
 ?>
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eliminar CategorÃ­a - Laboratorio ClÃ­nico</title>
+    <title>Eliminar Categoría - Laboratorio Clínico</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -44,20 +44,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-6 offset-md-3">
-                <!-- Card de confirmaciÃ³n -->
+                <!-- Card de confirmación -->
                 <div class="card">
                     <div class="card-header bg-danger text-white">
-                        <h4 class="mb-0">Confirmar EliminaciÃ³n</h4>
+                        <h4 class="mb-0">Confirmar Eliminación</h4>
                     </div>
                     <div class="card-body">
-                        <p>Â¿EstÃ¡s seguro de que deseas eliminar la categorÃ­a:</p>
+                        <p>¿Estás seguro de que deseas eliminar la categoría:</p>
                         <h5 class="text-danger">"<?php echo htmlspecialchars($categoria->nombre); ?>"?</h5>
-                        <p class="text-muted">Esta acciÃ³n no se puede deshacer.</p>
+                        <p class="text-muted">Esta acción no se puede deshacer.</p>
                         
-                        <!-- Formulario de confirmaciÃ³n -->
+                        <!-- Formulario de confirmación -->
                         <form method="POST">
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-danger">SÃ­, Eliminar</button>
+                                <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
                                 <a href="listar_categorias.php" class="btn btn-secondary">Cancelar</a>
                             </div>
                         </form>

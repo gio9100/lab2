@@ -52,7 +52,7 @@ $palabras = $conn->query("SELECT * FROM lista_negra ORDER BY creado_en DESC");
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css-admins/admin.css?v=2.0">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.cssív=2.0">
 </head>
 <body class="admin-page">
     <!-- Header -->
@@ -170,3 +170,4 @@ $palabras = $conn->query("SELECT * FROM lista_negra ORDER BY creado_en DESC");
     <script src="../../assets/js/main.js"></script>
 </body>
 </html>
+

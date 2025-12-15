@@ -1,11 +1,11 @@
-Ôªø<?php
-// Listar Categor√≠as (Admin)
-// Muestra todas las categor√≠as existentes y permite gestionarlas
+<?php
+// Listar CategorÌas (Admin)
+// Muestra todas las categorÌas existentes y permite gestionarlas
 
-// Iniciar sesi√≥n
+// Iniciar sesiÛn
 session_start();
 
-// Incluir configuraci√≥n y funciones de admin
+// Incluir configuraciÛn y funciones de admin
 require_once '../config-admin.php';
 requerirAdmin();
 
@@ -14,16 +14,16 @@ $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 $stats = obtenerEstadisticasAdmin($conn);
 
-// Incluir clases de categor√≠as
+// Incluir clases de categorÌas
 include_once 'config-categorias.php';
 include_once 'categoria.php';
 
-// Inicializar conexi√≥n y objeto categor√≠a
+// Inicializar conexiÛn y objeto categorÌa
 $database = new Database();
 $db = $database->getConnection();
 $categoria = new Categoria($db);
 
-// Obtener todas las categor√≠as
+// Obtener todas las categorÌas
 $stmt = $categoria->leer();
 ?>
 
@@ -32,7 +32,7 @@ $stmt = $categoria->leer();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categor√≠as - Lab-Explora</title>
+    <title>CategorÌas - Lab-Explora</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -66,8 +66,8 @@ $stmt = $categoria->leer();
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <a href="../perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
-                        <a href="../logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
+                        <a href="../perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
+                        <a href="../logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@ $stmt = $categoria->leer();
                 
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                     <?php 
                     $path_prefix = '../'; 
                     include '../sidebar-admin.php'; 
@@ -92,18 +92,18 @@ $stmt = $categoria->leer();
                 <div class="col-md-9">
                     
                     <div class="section-title" data-aos="fade-up">
-                        <h2>Categor√≠as de Laboratorio Cl√≠nico</h2>
-                        <p>Gestiona las categor√≠as para organizar las publicaciones</p>
+                        <h2>CategorÌas de Laboratorio ClÌnico</h2>
+                        <p>Gestiona las categorÌas para organizar las publicaciones</p>
                     </div>
                     
-                    <!-- Bot√≥n Nueva Categor√≠a -->
+                    <!-- BotÛn Nueva CategorÌa -->
                     <div class="d-flex justify-content-between mb-4" data-aos="fade-up" data-aos-delay="100">
                         <a href="crear_categoria.php" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-1"></i> Nueva Categor√≠a
+                            <i class="bi bi-plus-circle me-1"></i> Nueva CategorÌa
                         </a>
                     </div>
                     
-                    <!-- Grid de Categor√≠as -->
+                    <!-- Grid de CategorÌas -->
                     <div class="row">
                         <?php
                         if ($stmt->rowCount() > 0) {
@@ -125,7 +125,7 @@ $stmt = $categoria->leer();
                                                 </span>
                                             </div>
                                             <p class="card-text text-muted">
-                                                <?php echo htmlspecialchars($row['descripcion'] ?? 'Sin descripci√≥n'); ?>
+                                                <?php echo htmlspecialchars($row['descripcion'] ?? 'Sin descripciÛn'); ?>
                                             </p>
                                             <div class="mt-3">
                                                 <small class="text-muted">
@@ -142,7 +142,7 @@ $stmt = $categoria->leer();
                                                     <i class="bi bi-pencil-square me-1"></i> Editar
                                                 </a>
                                                 <a href="eliminar_categoria.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" 
-                                                   onclick="return confirm('¬øEst√°s seguro de eliminar esta categor√≠a?')">
+                                                   onclick="return confirm('øEst·s seguro de eliminar esta categorÌa?')">
                                                     <i class="bi bi-trash me-1"></i> Eliminar
                                                 </a>
                                             </div>
@@ -157,8 +157,8 @@ $stmt = $categoria->leer();
                             <div class="col-12" data-aos="fade-up">
                                 <div class="alert alert-info text-center">
                                     <i class="bi bi-info-circle me-2"></i>
-                                    No hay categor√≠as registradas. 
-                                    <a href="crear_categoria.php" class="alert-link">Crear la primera categor√≠a</a>
+                                    No hay categorÌas registradas. 
+                                    <a href="crear_categoria.php" class="alert-link">Crear la primera categorÌa</a>
                                 </div>
                             </div>
                             <?php

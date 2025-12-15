@@ -136,7 +136,7 @@ $resultado_lista = $conn->query($query_lista);
             <div class="row">
 
                 <!-- Sidebar (Columna Izquierda idéntica) -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -283,3 +283,4 @@ $resultado_lista = $conn->query($query_lista);
     </script>
 </body>
 </html>
+

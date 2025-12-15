@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Iniciar sesión
 session_start();
 // Incluir configuración

@@ -48,27 +48,41 @@ if (!isset($path_prefix)) {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const closeSidebarBtn = document.getElementById('closeSidebar');
+        // Standardized IDs
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarWrapper = document.getElementById('sidebar-wrapper');
+        const sidebarClose = document.getElementById('sidebar-close');
+        
+        // Create or get overlay
+        let sidebarOverlay = document.getElementById('sidebar-overlay');
+        if (!sidebarOverlay) {
+            sidebarOverlay = document.createElement('div');
+            sidebarOverlay.id = 'sidebar-overlay';
+            sidebarOverlay.className = 'sidebar-overlay';
+            document.body.appendChild(sidebarOverlay);
+        }
 
         function toggleSidebar() {
-            sidebar.classList.toggle('active');
+            sidebarWrapper.classList.toggle('active');
             sidebarOverlay.classList.toggle('active');
+            document.body.classList.toggle('sidebar-open');
         }
 
         function closeSidebar() {
-            sidebar.classList.remove('active');
+            sidebarWrapper.classList.remove('active');
             sidebarOverlay.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
         }
 
         if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleSidebar();
+            });
         }
 
-        if (closeSidebarBtn) {
-            closeSidebarBtn.addEventListener('click', closeSidebar);
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', closeSidebar);
         }
 
         if (sidebarOverlay) {

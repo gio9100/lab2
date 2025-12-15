@@ -124,8 +124,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     <link rel="stylesheet" href="../../assets/css/registro.css">
     <!-- Cargamos el CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Iconos para el widget de accesibilidad -->
+    <link rel="stylesheet" href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css">
+    <!-- Iconos para el widget de accesibilidad (Local) -->
     <style>
         .mensaje-validacion {
             font-size: 0.95rem;
