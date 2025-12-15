@@ -38,8 +38,8 @@ body {
 /* Caja del formulario de registro */
 
 .formulario {
-    background: rgba(255, 255, 255, 0.0);
-    /* Fondo completamente transparente */
+    background: rgba(255, 255, 255, 0.9);
+    /* Fondo blanco semi-transparente aesthetic */
     backdrop-filter: blur(5px);
     /* Desenfoque del fondo, se ve aesthetic */
     -webkit-backdrop-filter: blur(5px);

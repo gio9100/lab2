@@ -52,7 +52,7 @@ $palabras = $conn->query("SELECT * FROM lista_negra ORDER BY creado_en DESC");
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css-admins/admin.cssív=2.0">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.css?v=2.0">
 </head>
 <body class="admin-page">
     <!-- Header -->
@@ -64,7 +64,7 @@ $palabras = $conn->query("SELECT * FROM lista_negra ORDER BY creado_en DESC");
                         <i class="bi bi-list"></i>
                     </button>
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                         <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
@@ -80,7 +80,7 @@ $palabras = $conn->query("SELECT * FROM lista_negra ORDER BY creado_en DESC");
 
     <div class="container-fluid mt-4">
         <div class="row">
-            <div class="col-md-3 mb-4 sidebar-wrapper">
+            <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
                 <?php include 'sidebar-admin.php'; ?>
             </div>
 
@@ -170,4 +170,3 @@ $palabras = $conn->query("SELECT * FROM lista_negra ORDER BY creado_en DESC");
     <script src="../../assets/js/main.js"></script>
 </body>
 </html>
-

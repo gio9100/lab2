@@ -197,7 +197,7 @@ function enviarNotificacionAdmin($titulo_publicacion, $nombre_publicador, $tipo_
     // htmlspecialchars() = convierte caracteres especiales a HTML seguro
     // ucfirst() = primera letra en mayúscula
     $mensaje_html = "
-        <p>Se ha enviado una nueva publicación para revisión en Lab Explorer.</p>
+        <p>Se ha enviado una nueva publicación para revisión en Lab Explora.</p>
         <h3>📋 Detalles de la Publicación:</h3>
         <ul>
             <li><strong>Título:</strong> " . htmlspecialchars($titulo_publicacion) . "</li>

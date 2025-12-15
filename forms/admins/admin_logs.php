@@ -30,7 +30,7 @@ $logs = $conn->query($sql);
     <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css-admins/admin.cssív=2.0">
+    <link rel="stylesheet" href="../../assets/css-admins/admin.css?v=2.0">
 </head>
 <body class="admin-page">
     
@@ -43,7 +43,7 @@ $logs = $conn->query($sql);
                         <i class="bi bi-list"></i>
                     </button>
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                         <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
@@ -59,7 +59,7 @@ $logs = $conn->query($sql);
 
     <div class="container-fluid mt-4">
         <div class="row">
-            <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
+            <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
                 <?php include 'sidebar-admin.php'; ?>
             </div>
 
@@ -114,7 +114,13 @@ $logs = $conn->query($sql);
                                             <span class="text-muted">-</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="text-break" style="max-width: 200px;"><?= htmlspecialchars($log['detalles']) ?></td>
+                                        <td class="text-break" style="max-width: 200px;">
+                                            <?php 
+                                            // Fix visual para acentos rotos en logs antiguos
+                                            $detalles = str_replace('Aprobaci?n', 'Aprobación', $log['detalles']); 
+                                            echo htmlspecialchars($detalles);
+                                            ?>
+                                        </td>
                                         <td class="small font-monospace"><?= htmlspecialchars($log['ip_origen']) ?></td>
                                     </tr>
                                     <?php endwhile; ?>
@@ -133,16 +139,7 @@ $logs = $conn->query($sql);
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/js/main.js"></script>
     <script>
-        // Sidebar logic repeated for standalone page (or include main.js if it has it)
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebar = document.getElementById('sidebarWrapper');
-        if (sidebarToggle && sidebar) {
-            sidebarToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                sidebar.classList.toggle('active');
-            });
-        }
+        // AOS.init();
     </script>
 </body>
 </html>
-

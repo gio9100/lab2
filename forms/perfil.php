@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto_perfil'])) {
                 <div class="d-flex align-items-center">
                     <i class="bi bi-list sidebar-toggle me-3" id="sidebar-toggle"></i>
                     <a href="../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                         <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
@@ -268,7 +268,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto_perfil'])) {
                 <div class="profile-card">
                     <h5 class="text-center mb-3">Credencial Digital</h5>
                     <div id="credencial-content" class="credential-card">
-                        <div class="credential-header">
+                        <div class="credential-header text-center">
+                            <img src="../assets/img/logo/logo-labexplora.png" class="mb-2" style="width: 40px; filter: invert(1);">
+                            <br>
                             <strong>Lab-Explora</strong><br>
                             <small style="letter-spacing: 1px;">MIEMBRO OFICIAL</small>
                         </div>

@@ -343,7 +343,7 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                     </button>
                     <!-- Logo -->
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                         <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
@@ -522,7 +522,7 @@ $publicador_nombre = $_SESSION['publicador_nombre'];
                                         <div class="credential-header">
                                             <!-- Logo y Título -->
                                             <div class="d-flex align-items-center justify-content-center mb-2">
-                                                <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo" style="width: 40px; margin-right: 10px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));">
+                                                <img src="../../assets/img/logo/logo-labexplora.png" alt="Logo" style="width: 40px; margin-right: 10px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));">
                                                 <h4 style="margin:0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Lab-Explora</h4>
                                             </div>
                                             <small style="letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem;">Acreditación Oficial</small>

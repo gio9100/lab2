@@ -315,7 +315,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                         <i class="bi bi-list"></i>
                     </button>
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                         <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
@@ -334,7 +334,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
             <div class="row">
 
                 <!-- Sidebar (Menú lateral) -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -473,7 +473,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
                                             <!-- Logo y Título -->
                                             <div class="d-flex align-items-center justify-content-center mb-2">
                                                 <!-- LOGO AGREGADO -->
-                                                <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo" style="width: 40px; margin-right: 10px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));">
+                                                <img src="../../assets/img/logo/logo-labexplora.png" alt="Logo" style="width: 40px; margin-right: 10px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));">
                                                 <h4 style="margin:0; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Lab-Explora</h4>
                                             </div>
                                             <small style="letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem;">Acreditación Oficial</small>
@@ -568,7 +568,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
             // 2. Configuramos las opciones para html2pdf
             const opciones = {
                 margin:       [10, 10, 10, 10],
-                filename:     'Credencial_LabExplorer_<?= $admin_nombre ?>.pdf',
+                filename:     'Credencial_LabExplora_<?= $admin_nombre ?>.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
                     scale: 2, 
@@ -624,7 +624,7 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
         const btn = document.getElementById('toggle-2fa-btn');
         const esActivar = btn.classList.contains('btn-success');
         const accion = esActivar ? 'activar' : 'desactivar';
-        const mensaje = esActivar ? '¿Activar verificación en 2 pasosí' : '¿Desactivar 2FA?';
+        const mensaje = esActivar ? '¿Activar verificación en 2 pasos?' : '¿Desactivar 2FA?';
         
         if (!confirm(mensaje)) return;
         
@@ -651,4 +651,3 @@ $fecha_registro = date("d/m/Y", strtotime($admin['fecha_registro'])); // Formate
 
 </body>
 </html>
-

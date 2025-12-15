@@ -126,11 +126,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- novalidate desactiva la validación automática del navegador -->
         <div class="logo-lab">
         <!-- Contenedor del logo y título -->
-            <img src="../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
+            <img src="../assets/img/logo/logo-labexplora.png" alt="Logo Lab">
             <!-- Logo del laboratorio -->
             <h1>Inicio de Sesión Lab-Explora</h1>
             <!-- Título principal -->
-            <p class="subtitulo">Lab explorer (cbtis52)</p>
+            <p class="subtitulo">Lab Explora (cbtis52)</p>
             <!-- Subtítulo con el nombre de la escuela -->
         </div>
         <!-- Cerramos logo-lab -->
@@ -171,7 +171,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Modal que cambia de clase según si fue éxito o error -->
             <div class="modal-contenido">
             <!-- Contenido del modal -->
-                <h2><?= $exito ? '🧪 Bienvenido A Lab Explorer!' : 'Error' ?></h2>
+                <h2><?= $exito ? '🧪 Bienvenido A Lab Explora!' : 'Error' ?></h2>
                 <!-- Título del modal (cambia según éxito o error) -->
                 <p><?= htmlspecialchars($mensaje) ?></p>
                 <!-- Mostramos el mensaje -->

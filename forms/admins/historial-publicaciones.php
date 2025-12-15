@@ -1,11 +1,11 @@
-<?php
+Ôªø<?php
 // Historial de Publicaciones (Admin)
 // Muestra un historial completo de todas las publicaciones con filtros
 
-// Iniciar sesiÛn
+// Iniciar sesi√≥n
 session_start();
 
-// Incluir configuraciÛn y funciones de admin
+// Incluir configuraci√≥n y funciones de admin
 require_once "config-admin.php";
 
 // Verificar permisos de administrador
@@ -16,12 +16,12 @@ $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'] ?? 'admin';
 
-// ConexiÛn a la base de datos
+// Conexi√≥n a la base de datos
 $conn = new mysqli("localhost", "root", "", "lab_exp_db");
 
-// Verificar conexiÛn
+// Verificar conexi√≥n
 if ($conn->connect_error) {
-    die("ERROR DE CONEXI”N: " . $conn->connect_error);
+    die("ERROR DE CONEXI√ìN: " . $conn->connect_error);
 }
 
 // Obtener filtros de la URL
@@ -49,11 +49,11 @@ LEFT JOIN publicadores pub ON p.publicador_id = pub.id
 LEFT JOIN categorias c ON p.categoria_id = c.id
 WHERE 1=1";
 
-// Par·metros para la consulta preparada
+// Par√°metros para la consulta preparada
 $params = [];
 $types = "";
 
-// Aplicar filtros din·micamente
+// Aplicar filtros din√°micamente
 if (!empty($filtro_estado)) {
     $query .= " AND p.estado = ?";
     $params[] = $filtro_estado;
@@ -98,14 +98,14 @@ $stmt->execute();
 $result = $stmt->get_result();
 $publicaciones = $result->fetch_all(MYSQLI_ASSOC);
 
-// Calcular estadÌsticas
+// Calcular estad√≠sticas
 $total_publicaciones = count($publicaciones);
 $total_publicadas = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'publicado'));
 $total_borradores = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'borrador'));
 $total_revision = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'revision'));
 $total_rechazadas = count(array_filter($publicaciones, fn($p) => $p['estado'] == 'rechazada'));
 
-// Obtener listas para filtros (publicadores y categorÌas)
+// Obtener listas para filtros (publicadores y categor√≠as)
 $publicadores_query = "SELECT id, nombre FROM publicadores ORDER BY nombre";
 $publicadores_result = $conn->query($publicadores_query);
 $lista_publicadores = $publicadores_result->fetch_all(MYSQLI_ASSOC);
@@ -148,13 +148,13 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
                 <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                    <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                     <h1 class="sitename">Lab-Explora</h1><span></span>
                 </a>
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
-                        <a href="logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
+                        <span class="saludo">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
                     </div>
                 </div>
             </div>
@@ -171,7 +171,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                     <div class="sidebar-nav">
                         <div class="list-group">
                             <a href="../../pagina-principal.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>P·gina principal
+                                <i class="bi bi-speedometer2 me-2"></i>P√°gina principal
                             </a>
                             <a href="index-admin.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-house me-2"></i>Panel Principal
@@ -189,7 +189,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                 <i class="bi bi-clock-history me-2"></i>Historial de Publicaciones
                             </a>
                             <a href="./categorias/crear_categoria.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-tags me-2"></i>CategorÌas
+                                <i class="bi bi-tags me-2"></i>Categor√≠as
                             </a>
                             <?php if($admin_nivel == 'superadmin'): ?>
                             <a href="admins.php" class="list-group-item list-group-item-action">
@@ -207,7 +207,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                         <p>Visualiza el historial completo de todas las publicaciones del sistema</p>
                     </div>
 
-                    <!-- EstadÌsticas -->
+                    <!-- Estad√≠sticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up" data-aos-delay="100">
                         <div class="col-md-2 col-6 mb-3">
                             <div class="stat-card primary">
@@ -237,7 +237,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                             <div class="stat-card info">
                                 <div class="stat-content text-center">
                                     <h4><?= $total_revision ?></h4>
-                                    <small>En RevisiÛn</small>
+                                    <small>En Revisi√≥n</small>
                                 </div>
                             </div>
                         </div>
@@ -254,7 +254,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                     <!-- Filtros -->
                     <div class="admin-card mb-4" data-aos="fade-up">
                         <div class="card-header">
-                            <h5 class="card-title mb-0"><i class="bi bi-funnel me-2"></i>Filtros de B˙squeda</h5>
+                            <h5 class="card-title mb-0"><i class="bi bi-funnel me-2"></i>Filtros de B√∫squeda</h5>
                         </div>
                         <div class="card-body">
                             <form method="GET" action="historial-publicaciones.php">
@@ -265,7 +265,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                             <option value="">Todos los estados</option>
                                             <option value="publicado" <?= $filtro_estado == 'publicado' ? 'selected' : '' ?>>Publicado</option>
                                             <option value="borrador" <?= $filtro_estado == 'borrador' ? 'selected' : '' ?>>Borrador</option>
-                                            <option value="revision" <?= $filtro_estado == 'revision' ? 'selected' : '' ?>>En RevisiÛn</option>
+                                            <option value="revision" <?= $filtro_estado == 'revision' ? 'selected' : '' ?>>En Revisi√≥n</option>
                                             <option value="rechazada" <?= $filtro_estado == 'rechazada' ? 'selected' : '' ?>>Rechazada</option>
                                         </select>
                                     </div>
@@ -283,9 +283,9 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                     </div>
 
                                     <div class="col-md-3">
-                                        <label class="form-label">CategorÌa</label>
+                                        <label class="form-label">Categor√≠a</label>
                                         <select name="categoria" class="form-select">
-                                            <option value="">Todas las categorÌas</option>
+                                            <option value="">Todas las categor√≠as</option>
                                             <?php foreach($lista_categorias as $cat): ?>
                                             <option value="<?= $cat['id'] ?>" <?= $filtro_categoria == $cat['id'] ? 'selected' : '' ?>>
                                                 <?= htmlspecialchars($cat['nombre']) ?>
@@ -337,9 +337,9 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                         <thead>
                                             <tr>
                                                 <th style="width: 60px;">ID</th>
-                                                <th style="width: 25%;">TÌtulo</th>
+                                                <th style="width: 25%;">T√≠tulo</th>
                                                 <th style="width: 15%;">Publicador</th>
-                                                <th style="width: 12%;">CategorÌa</th>
+                                                <th style="width: 12%;">Categor√≠a</th>
                                                 <th style="width: 10%;">Estado</th>
                                                 <th style="width: 12%;">Fecha</th>
                                                 <th style="width: 8%;">Vistas</th>
@@ -360,7 +360,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                                     <br>
                                                     <small class="text-muted"><?= $pub['publicador_email'] ?></small>
                                                 </td>
-                                                <td><?= htmlspecialchars($pub['categoria_nombre'] ?? 'Sin categorÌa') ?></td>
+                                                <td><?= htmlspecialchars($pub['categoria_nombre'] ?? 'Sin categor√≠a') ?></td>
                                                 <td>
                                                     <?php
                                                     $badge_class = match($pub['estado']) {
@@ -405,7 +405,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                                     </table>
                                 </div>
                                 
-                                <!-- Vista MÛvil -->
+                                <!-- Vista M√≥vil -->
                                 <div class="d-lg-none">
                                     <?php foreach($publicaciones as $pub): ?>
                                     <div class="card mb-3 shadow-sm">
@@ -440,7 +440,7 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>PublicaciÛn:</strong> <span id="modalTitulo"></span></p>
+                    <p><strong>Publicaci√≥n:</strong> <span id="modalTitulo"></span></p>
                     <hr>
                     <p><strong>Motivo:</strong></p>
                     <div class="alert alert-danger" id="modalMensaje"></div>
@@ -470,4 +470,3 @@ $lista_categorias = $categorias_result->fetch_all(MYSQLI_ASSOC);
 </body>
 </html>
 <?php $conn->close(); ?>
-

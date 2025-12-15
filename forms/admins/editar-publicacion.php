@@ -1,22 +1,22 @@
-<?php
-// Editar publicaciÛn (Admin)
-// Permite a los administradores modificar el contenido y estado de una publicaciÛn
+Ôªø<?php
+// Editar publicaci√≥n (Admin)
+// Permite a los administradores modificar el contenido y estado de una publicaci√≥n
 
-// Iniciar sesiÛn
+// Iniciar sesi√≥n
 session_start();
 
-// ConfiguraciÛn de la base de datos
+// Configuraci√≥n de la base de datos
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "lab_exp_db";
 
-// Crear conexiÛn
+// Crear conexi√≥n
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificar conexiÛn
+// Verificar conexi√≥n
 if ($conn->connect_error) {
-    die("Error de conexiÛn: " . $conn->connect_error);
+    die("Error de conexi√≥n: " . $conn->connect_error);
 }
 
 // Establecer charset a UTF-8
@@ -33,18 +33,18 @@ $admin_id = $_SESSION['admin_id'];
 $admin_nombre = $_SESSION['admin_nombre'];
 $admin_nivel = $_SESSION['admin_nivel'];
 
-// Verificar si se proporcionÛ un ID
+// Verificar si se proporcion√≥ un ID
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    $_SESSION['mensaje'] = "No se especificÛ una publicaciÛn para editar";
+    $_SESSION['mensaje'] = "No se especific√≥ una publicaci√≥n para editar";
     $_SESSION['tipo_mensaje'] = "danger";
     header("Location: gestionar-publicaciones.php");
     exit;
 }
 
-// Obtener ID de la publicaciÛn
+// Obtener ID de la publicaci√≥n
 $publicacion_id = intval($_GET['id']);
 
-// Procesar formulario de actualizaciÛn
+// Procesar formulario de actualizaci√≥n
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['actualizar_publicacion'])) {
     
     // Obtener y limpiar datos
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['actualizar_publicacio
     $categoria_id = intval($_POST['categoria_id']);
     $estado = $_POST['estado'];
     
-    // Actualizar publicaciÛn
+    // Actualizar publicaci√≥n
     $query = "UPDATE publicaciones SET 
               titulo = ?, 
               contenido = ?, 
@@ -66,17 +66,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['actualizar_publicacio
     $stmt->bind_param("ssisi", $titulo, $contenido, $categoria_id, $estado, $publicacion_id);
     
     if ($stmt->execute()) {
-        $_SESSION['mensaje'] = "PublicaciÛn actualizada correctamente";
+        $_SESSION['mensaje'] = "Publicaci√≥n actualizada correctamente";
         $_SESSION['tipo_mensaje'] = "success";
         header("Location: gestionar-publicaciones.php");
         exit;
     } else {
-        $_SESSION['mensaje'] = "Error al actualizar la publicaciÛn: " . $conn->error;
+        $_SESSION['mensaje'] = "Error al actualizar la publicaci√≥n: " . $conn->error;
         $_SESSION['tipo_mensaje'] = "danger";
     }
 }
 
-// Obtener datos de la publicaciÛn
+// Obtener datos de la publicaci√≥n
 $query = "SELECT p.*, 
           pub.nombre as publicador_nombre,
           c.nombre as categoria_nombre
@@ -90,9 +90,9 @@ $stmt->bind_param("i", $publicacion_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Verificar si existe la publicaciÛn
+// Verificar si existe la publicaci√≥n
 if ($result->num_rows === 0) {
-    $_SESSION['mensaje'] = "La publicaciÛn no existe";
+    $_SESSION['mensaje'] = "La publicaci√≥n no existe";
     $_SESSION['tipo_mensaje'] = "danger";
     header("Location: gestionar-publicaciones.php");
     exit;
@@ -100,7 +100,7 @@ if ($result->num_rows === 0) {
 
 $publicacion = $result->fetch_assoc();
 
-// Obtener categorÌas activas para el select
+// Obtener categor√≠as activas para el select
 $query_categorias = "SELECT id, nombre FROM categorias WHERE (estado = 'activa' OR estado = 'activo' OR estado IS NULL OR estado = '') ORDER BY nombre";
 $result_categorias = $conn->query($query_categorias);
 $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
@@ -110,7 +110,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar PublicaciÛn - Lab-Explora</title>
+    <title>Editar Publicaci√≥n - Lab-Explora</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -150,14 +150,14 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
         <div class="container-fluid container-xl position-relative">
             <div class="top-row d-flex align-items-center justify-content-between">
                 <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                    <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                     <h1 class="sitename">Lab-Explora</h1><span></span>
                 </a>
                 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <span class="saludo">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
-                        <a href="logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
+                        <span class="saludo">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</span>
+                        <a href="logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
                     </div>
                 </div>
             </div>
@@ -172,7 +172,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                     <div class="sidebar-nav">
                         <div class="list-group">
                             <a href="../../pagina-principal.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-speedometer2 me-2"></i>P·gina principal
+                                <i class="bi bi-speedometer2 me-2"></i>P√°gina principal
                             </a>
                             <a href="index-admin.php" class="list-group-item list-group-item-action">
                                 <i class="bi bi-house me-2"></i>Panel Principal
@@ -187,7 +187,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                                 <i class="bi bi-file-text me-2"></i>Gestionar Publicaciones
                             </a>
                             <a href="./categorias/listar_categorias.php" class="list-group-item list-group-item-action">
-                                <i class="bi bi-tags me-2"></i>CategorÌas
+                                <i class="bi bi-tags me-2"></i>Categor√≠as
                             </a>
                             <?php if($admin_nivel == 'superadmin'): ?>
                             <a href="admins.php" class="list-group-item list-group-item-action">
@@ -212,8 +212,8 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                     endif; ?>
 
                     <div class="section-title" data-aos="fade-up">
-                        <h2>Editar PublicaciÛn</h2>
-                        <p>Modifica los datos de la publicaciÛn</p>
+                        <h2>Editar Publicaci√≥n</h2>
+                        <p>Modifica los datos de la publicaci√≥n</p>
                     </div>
 
                     <!-- Formulario -->
@@ -228,13 +228,13 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                             <form method="POST" action="">
                                 
                                 <div class="mb-3">
-                                    <label class="form-label">TÌtulo *</label>
+                                    <label class="form-label">T√≠tulo *</label>
                                     <input type="text" 
                                            name="titulo" 
                                            class="form-control" 
                                            value="<?= htmlspecialchars($publicacion['titulo']) ?>" 
                                            required>
-                                    <small class="text-muted">El tÌtulo de la publicaciÛn</small>
+                                    <small class="text-muted">El t√≠tulo de la publicaci√≥n</small>
                                 </div>
 
                                 <div class="mb-3">
@@ -243,15 +243,15 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                                               class="form-control" 
                                               rows="10" 
                                               required><?= htmlspecialchars($publicacion['contenido']) ?></textarea>
-                                    <small class="text-muted">El contenido completo de la publicaciÛn</small>
+                                    <small class="text-muted">El contenido completo de la publicaci√≥n</small>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">CategorÌa *</label>
+                                            <label class="form-label">Categor√≠a *</label>
                                             <select name="categoria_id" class="form-select" required>
-                                                <option value="">Selecciona una categorÌa</option>
+                                                <option value="">Selecciona una categor√≠a</option>
                                                 <?php foreach($categorias as $cat): ?>
                                                 <option value="<?= $cat['id'] ?>" 
                                                         <?= $publicacion['categoria_id'] == $cat['id'] ? 'selected' : '' ?>>
@@ -268,7 +268,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                                             <select name="estado" class="form-select" required>
                                                 <option value="publicada" <?= $publicacion['estado'] == 'publicada' ? 'selected' : '' ?>>Publicada</option>
                                                 <option value="borrador" <?= $publicacion['estado'] == 'borrador' ? 'selected' : '' ?>>Borrador</option>
-                                                <option value="revision" <?= $publicacion['estado'] == 'revision' ? 'selected' : '' ?>>En RevisiÛn</option>
+                                                <option value="revision" <?= $publicacion['estado'] == 'revision' ? 'selected' : '' ?>>En Revisi√≥n</option>
                                                 <option value="rechazada" <?= $publicacion['estado'] == 'rechazada' ? 'selected' : '' ?>>Rechazada</option>
                                             </select>
                                         </div>
@@ -276,9 +276,9 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                                 </div>
 
                                 <div class="alert alert-info">
-                                    <strong>InformaciÛn:</strong><br>
+                                    <strong>Informaci√≥n:</strong><br>
                                     Publicador: <?= htmlspecialchars($publicacion['publicador_nombre']) ?><br>
-                                    Fecha de creaciÛn: <?= date('d/m/Y H:i', strtotime($publicacion['fecha_publicacion'])) ?><br>
+                                    Fecha de creaci√≥n: <?= date('d/m/Y H:i', strtotime($publicacion['fecha_publicacion'])) ?><br>
                                     Vistas: <?= $publicacion['vistas'] ?>
                                 </div>
 
@@ -287,7 +287,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
                                         <i class="bi bi-x-circle me-1"></i>Cancelar
                                     </a>
                                     <button type="submit" name="actualizar_publicacion" class="btn btn-primary">
-                                        <i class="bi bi-check-circle me-1"></i>Actualizar PublicaciÛn
+                                        <i class="bi bi-check-circle me-1"></i>Actualizar Publicaci√≥n
                                     </button>
                                 </div>
                             </form>
@@ -302,7 +302,7 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
     <footer id="footer" class="footer dark-background">
         <div class="container">
             <h3 class="sitename">Lab-Explora</h3>
-            <p>Panel de AdministraciÛn</p>
+            <p>Panel de Administraci√≥n</p>
             <div class="copyright">
                 <span>Copyright</span> <strong class="px-1 sitename">Lab-Explora</strong> <span>Todos los derechos reservados</span>
             </div>
@@ -327,7 +327,6 @@ $categorias = $result_categorias->fetch_all(MYSQLI_ASSOC);
 </body>
 </html>
 <?php
-// Cerrar conexiÛn
+// Cerrar conexi√≥n
 $conn->close();
 ?>
-

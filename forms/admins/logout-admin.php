@@ -1,11 +1,11 @@
-<?php
+ï»¿<?php
 // Abrimos PHP
 session_start();
-// Iniciamos la sesión
+// Iniciamos la sesiÃ³n
 
-// Incluir conexión a BD para actualizar estado
+// Incluir conexiÃ³n a BD para actualizar estado
 require_once '../../mensajes/db.php';
-// Verificar si hay sesión de admin
+// Verificar si hay sesiÃ³n de admin
 if (isset($_SESSION['admin_id'])) {
     $admin_id = $_SESSION['admin_id'];
     // Actualizar ultimo_acceso a NULL para desconectar
@@ -17,39 +17,39 @@ if (isset($_SESSION['admin_id'])) {
     }
 }
 
-// Destruimos todas las variables de sesión
+// Destruimos todas las variables de sesiÃ³n
 $_SESSION = array();
-// array() crea un array vacío, esto borra todas las variables de sesión
+// array() crea un array vacÃ­o, esto borra todas las variables de sesiÃ³n
 
-// Ahora vamos a borrar también la cookie de sesión del navegador
+// Ahora vamos a borrar tambiÃ©n la cookie de sesiÃ³n del navegador
 if (ini_get("session.use_cookies")) {
     // ini_get() lee configuraciones de PHP
     // "session.use_cookies" nos dice si PHP usa cookies para las sesiones
     
     $params = session_get_cookie_params();
-    // session_get_cookie_params() obtiene los parámetros de la cookie de sesión
+    // session_get_cookie_params() obtiene los parÃ¡metros de la cookie de sesiÃ³n
     // Devuelve un array con: path, domain, secure, httponly
     
     setcookie(session_name(), '', time() - 42000,
         // setcookie() crea o modifica una cookie
-        // session_name() devuelve el nombre de la cookie de sesión (normalmente "PHPSESSID")
-        // '' = valor vacío
+        // session_name() devuelve el nombre de la cookie de sesiÃ³n (normalmente "PHPSESSID")
+        // '' = valor vacÃ­o
         // time() - 42000 = fecha en el pasado (hace 42000 segundos)
         // Poner una fecha pasada hace que el navegador borre la cookie
         $params["path"], $params["domain"],
-        // path y domain definen dónde es válida la cookie
+        // path y domain definen dÃ³nde es vÃ¡lida la cookie
         $params["secure"], $params["httponly"]
         // secure = solo HTTPS, httponly = no accesible desde JavaScript
     );
 }
 
-// Finalmente, destruimos la sesión del servidor
+// Finalmente, destruimos la sesiÃ³n del servidor
 session_destroy();
-// Esto borra el archivo de sesión del servidor
+// Esto borra el archivo de sesiÃ³n del servidor
 
-// Redirigimos al login de administración
+// Redirigimos al login de administraciÃ³n
 header("Location: login-admin.php");
 // Mandamos al admin de vuelta al login
 exit();
-// Detenemos el código
+// Detenemos el cÃ³digo
 ?>

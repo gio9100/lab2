@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Panel principal de administración
 // Muestra estadísticas y tablas de gestión
 
@@ -7,7 +7,7 @@ session_start();
 
 // Incluir configuración de admin
 require_once "config-admin.php";
-// require_once "../funciones_auditoria.php"; // Comentado por seguridad si no existe, ya incluido en config
+require_once "../funciones_auditoria.php"; // Incluir helper logs
 
 // Verificar permisos de admin
 requerirAdmin();
@@ -28,9 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['aprobar_publicador'])) {
         $publicador_id = intval($_POST['publicador_id']);
         if (aprobarPublicador($publicador_id, $conn)) {
-            if (function_exists('registrarLogAuditoria')) {
-                 registrarLogAuditoria($conn, $admin_id, 'APROBAR', 'publicador', $publicador_id, 'Aprobación de cuenta de publicador');
-            }
+            registrarLogAuditoria($conn, $admin_id, 'APROBAR', 'publicador', $publicador_id, 'Aprobacion de cuenta de publicador');
             $mensaje = "Publicador aprobado exitosamente";
             $exito = true;
         }
@@ -42,9 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $motivo = trim($_POST['motivo'] ?? "");
         
         if (rechazarPublicador($publicador_id, $motivo, $conn)) {
-             if (function_exists('registrarLogAuditoria')) {
-                registrarLogAuditoria($conn, $admin_id, 'RECHAZAR', 'publicador', $publicador_id, "Motivo: $motivo");
-             }
+            registrarLogAuditoria($conn, $admin_id, 'RECHAZAR', 'publicador', $publicador_id, "Motivo: $motivo");
             $mensaje = "Publicador rechazado";
             $exito = true;
         }
@@ -56,9 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $motivo = trim($_POST['motivo'] ?? "");
         
         if (suspenderPublicador($publicador_id, $motivo, $conn)) {
-             if (function_exists('registrarLogAuditoria')) {
-                registrarLogAuditoria($conn, $admin_id, 'SUSPENDER', 'publicador', $publicador_id, "Motivo: $motivo");
-             }
+            registrarLogAuditoria($conn, $admin_id, 'SUSPENDER', 'publicador', $publicador_id, "Motivo: $motivo");
             $mensaje = "Publicador suspendido";
             $exito = true;
         }
@@ -69,9 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $publicador_id = intval($_POST['publicador_id']);
         
         if (activarPublicador($publicador_id, $conn)) {
-             if (function_exists('registrarLogAuditoria')) {
-                registrarLogAuditoria($conn, $admin_id, 'ACTIVAR', 'publicador', $publicador_id, 'Reactivación de cuenta');
-             }
+            registrarLogAuditoria($conn, $admin_id, 'ACTIVAR', 'publicador', $publicador_id, 'Reactivacion de cuenta');
             $mensaje = "Publicador activado";
             $exito = true;
         }
@@ -172,7 +164,7 @@ $usuarios_normales = obtenerUsuariosNormales($conn);
 
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 

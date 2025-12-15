@@ -38,8 +38,8 @@ body {
 /* Formulario de inicio de sesión */
 
 .formulario {
-    background: rgba(255, 255, 255, 0.0);
-    /* Fondo transparente (0.0 = completamente transparente) */
+    background: rgba(255, 255, 255, 0.9);
+    /* Fondo blanco semi-transparente aesthetic */
     backdrop-filter: blur(5px);
     /* Efecto de desenfoque del fondo, se ve bien aesthetic */
     -webkit-backdrop-filter: blur(5px);

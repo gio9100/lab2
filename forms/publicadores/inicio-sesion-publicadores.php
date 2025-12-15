@@ -183,7 +183,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
                     <div class="logo-lab text-center mb-4">
                     <!-- text-center = texto centrado -->
                     <!-- mb-4 = margin-bottom de 4 unidades -->
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo Lab" class="mb-3">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="Logo Lab" class="mb-3">
                         <!-- Logo -->
                         <h1 class="h3">Inicio de Sesión Publicadores</h1>
                         <!-- h3 = tamaño de encabezado 3 -->
@@ -284,7 +284,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Contenido del modal -->
             
             <!-- Título dinámico -->
-            <h2><?= $exito ? "🧪 Bienvenido A Lab Explorer!" : "Información" ?></h2>
+            <h2><?= $exito ? "🧪 Bienvenido A Lab Explora!" : "Información" ?></h2>
             
             <!-- Mensaje -->
             <p style="white-space: pre-line;"><?= nl2br(htmlspecialchars($mensaje)) ?></p>

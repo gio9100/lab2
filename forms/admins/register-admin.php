@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Iniciar sesión
 session_start();
 // Incluir configuración
@@ -11,8 +11,8 @@ if (isset($_SESSION['admin_id'])) {
 }
 
 // Claves secretas para registro
-define('CLAVE_ADMIN', 'labexplorer2025');
-define('CLAVE_SUPERADMIN', 'superlabexplorer2025');
+define('CLAVE_ADMIN', 'labexplora2025');
+define('CLAVE_SUPERADMIN', 'superlabexplora2025');
 
 $mensaje = "";
 $exito = false;
@@ -114,6 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Administrador - Lab-Explora</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../assets/css/registro.css">
 </head>
 <body>
@@ -121,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <form method="post" class="formulario" novalidate>
             
             <div class="logo-Lab">
-                <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                 <h1>Registro Administrador</h1>
                 <p class="subtitulo">Panel de Administración Lab-Explora</p>
             </div>
@@ -138,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <label>Email</label>
                 <input type="email" 
                        name="email" 
-                       placeholder="admin@labexplorer.com"
+                       placeholder="admin@labexplora.com"
                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                        required>
 

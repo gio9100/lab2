@@ -176,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             <!-- Logo y título -->
             <div class="logo-Lab">
-                <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                 <!-- Logo -->
                 <h1>Registro Publicadores Lab-Explora</h1>
                 <!-- Título -->

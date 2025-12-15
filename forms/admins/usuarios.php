@@ -1,10 +1,10 @@
-<?php
-// GestiÛn de usuarios registrados (no publicadores ni admins)
+Ôªø<?php
+// Gesti√≥n de usuarios registrados (no publicadores ni admins)
 
-// Iniciar sesiÛn
+// Iniciar sesi√≥n
 session_start();
 
-// Incluir configuraciÛn
+// Incluir configuraci√≥n
 require_once "config-admin.php";
 
 // Verificar permisos de administrador
@@ -32,15 +32,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $exito = false;
         }
         elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-            $mensaje = "El formato del correo electrÛnico no es v·lido";
+            $mensaje = "El formato del correo electr√≥nico no es v√°lido";
             $exito = false;
         }
         elseif (usuarioExiste($correo, $conn)) {
-            $mensaje = "El correo electrÛnico ya est· registrado";
+            $mensaje = "El correo electr√≥nico ya est√° registrado";
             $exito = false;
         }
         else {
-            // Datos para creaciÛn
+            // Datos para creaci√≥n
             $datos = [
                 'nombre' => $nombre,
                 'correo' => $correo,
@@ -72,21 +72,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $exito = false;
         }
         elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-            $mensaje = "El formato del correo electrÛnico no es v·lido";
+            $mensaje = "El formato del correo electr√≥nico no es v√°lido";
             $exito = false;
         }
         elseif (usuarioExiste($correo, $conn, $usuario_id)) {
-            $mensaje = "El correo electrÛnico ya est· registrado por otro usuario";
+            $mensaje = "El correo electr√≥nico ya est√° registrado por otro usuario";
             $exito = false;
         }
         else {
-            // Datos para actualizaciÛn
+            // Datos para actualizaci√≥n
             $datos = [
                 'nombre' => $nombre,
                 'correo' => $correo
             ];
             
-            // Actualizar contraseÒa solo si se proporciona
+            // Actualizar contrase√±a solo si se proporciona
             if (!empty($password)) {
                 $datos['password'] = $password;
             }
@@ -118,13 +118,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Obtener estadÌsticas generales
+// Obtener estad√≠sticas generales
 $stats = obtenerEstadisticasAdmin($conn);
 
 // Obtener lista de usuarios normales
 $usuarios_normales = obtenerUsuariosNormales($conn);
 
-// Calcular estadÌsticas adicionales
+// Calcular estad√≠sticas adicionales
 $total_usuarios = count($usuarios_normales);
 $usuarios_mes_actual = 0;
 $usuarios_hoy = 0;
@@ -139,7 +139,7 @@ foreach($usuarios_normales as $usuario) {
         $usuarios_mes_actual++;
     }
     
-    // Verificar dÌa de registro
+    // Verificar d√≠a de registro
     $fecha_registro_dia = substr($usuario['fecha_registro'], 0, 10);
     if($fecha_registro_dia == $fecha_hoy) {
         $usuarios_hoy++;
@@ -168,7 +168,7 @@ foreach($usuarios_normales as $usuario) {
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
     <link rel="stylesheet" href="../../assets/css-admins/admin.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <!-- LIBRERÕA para generar PDF (Reportes) -->
+    <!-- LIBRER√çA para generar PDF (Reportes) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="admin-page">
@@ -183,15 +183,15 @@ foreach($usuarios_normales as $usuario) {
                         <i class="bi bi-list"></i>
                     </button>
                 <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                    <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                    <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                     <h1 class="sitename">Lab-Explora</h1><span></span>
                 </a>
                 </div>
 
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
-                        <a href="logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
+                        <a href="logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
                     </div>
                 </div>
             </div>
@@ -204,7 +204,7 @@ foreach($usuarios_normales as $usuario) {
 
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -220,11 +220,11 @@ foreach($usuarios_normales as $usuario) {
                     <?php endif; ?>
                     
                     <div class="section-title" data-aos="fade-up">
-                        <h2>GestiÛn de Usuarios Registrados</h2>
-                        <p>AquÌ puedes ver todos los usuarios normales que se han registrado en el sistema</p>
+                        <h2>Gesti√≥n de Usuarios Registrados</h2>
+                        <p>Aqu√≠ puedes ver todos los usuarios normales que se han registrado en el sistema</p>
                     </div>
                     
-                    <!-- EstadÌsticas -->
+                    <!-- Estad√≠sticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up" data-aos-delay="100">
                         <div class="col-md-3 col-6 mb-3">
                             <div class="stat-card primary">
@@ -281,7 +281,7 @@ foreach($usuarios_normales as $usuario) {
                             <?php if(empty($usuarios_normales)): ?>
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
-                                    No hay usuarios registrados en el sistema todavÌa.
+                                    No hay usuarios registrados en el sistema todav√≠a.
                                 </div>
                             <?php else: ?>
                                 <div class="table-responsive">
@@ -305,11 +305,11 @@ foreach($usuarios_normales as $usuario) {
                                                 <td><?= htmlspecialchars($usuario['correo']) ?></td>
                                                 <td>
                                                     <?php 
-                                                    // Generar firma digital ˙nica para el usuario
+                                                    // Generar firma digital √∫nica para el usuario
                                                     $data_to_hash = $usuario['id'] . $usuario['nombre'] . $usuario['correo'] . "LAB_EXPLORA_2024";
                                                     $firma = strtoupper(substr(hash('sha256', $data_to_hash), 0, 16));
                                                     ?>
-                                                    <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital ⁄nica">
+                                                    <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital √önica">
                                                         <?= $firma ?>
                                                     </code>
                                                 </td>
@@ -353,16 +353,16 @@ foreach($usuarios_normales as $usuario) {
                                                                 </div>
                                                                 
                                                                 <div class="mb-3">
-                                                                    <label for="correo" class="form-label">Correo ElectrÛnico</label>
+                                                                    <label for="correo" class="form-label">Correo Electr√≥nico</label>
                                                                     <input type="email" class="form-control" name="correo" 
                                                                            value="<?= htmlspecialchars($usuario['correo']) ?>" required>
                                                                 </div>
                                                                 
                                                                 <div class="mb-3">
-                                                                    <label for="password" class="form-label">Nueva ContraseÒa (dejar en blanco para no cambiar)</label>
+                                                                    <label for="password" class="form-label">Nueva Contrase√±a (dejar en blanco para no cambiar)</label>
                                                                     <input type="password" class="form-control" name="password" 
-                                                                           placeholder="Dejar vacÌo para mantener la actual">
-                                                                    <small class="text-muted">Solo completa este campo si deseas cambiar la contraseÒa</small>
+                                                                           placeholder="Dejar vac√≠o para mantener la actual">
+                                                                    <small class="text-muted">Solo completa este campo si deseas cambiar la contrase√±a</small>
                                                                 </div>
                                                             </div>
                                                             
@@ -380,7 +380,7 @@ foreach($usuarios_normales as $usuario) {
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header bg-danger text-white">
-                                                            <h5 class="modal-title">Confirmar EliminaciÛn</h5>
+                                                            <h5 class="modal-title">Confirmar Eliminaci√≥n</h5>
                                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <form method="POST">
@@ -389,15 +389,15 @@ foreach($usuarios_normales as $usuario) {
                                                             <div class="modal-body">
                                                                 <div class="alert alert-warning">
                                                                     <i class="bi bi-exclamation-triangle me-2"></i>
-                                                                    <strong>°AtenciÛn!</strong> Esta acciÛn no se puede deshacer.
+                                                                    <strong>¬°Atenci√≥n!</strong> Esta acci√≥n no se puede deshacer.
                                                                 </div>
-                                                                <p>øEst·s seguro de que deseas eliminar al usuario <strong><?= htmlspecialchars($usuario['nombre']) ?></strong>?</p>
+                                                                <p>¬øEst√°s seguro de que deseas eliminar al usuario <strong><?= htmlspecialchars($usuario['nombre']) ?></strong>?</p>
                                                                 <p class="text-muted">Email: <?= htmlspecialchars($usuario['correo']) ?></p>
                                                             </div>
                                                             
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                <button type="submit" name="eliminar_usuario" class="btn btn-danger">SÌ, Eliminar</button>
+                                                                <button type="submit" name="eliminar_usuario" class="btn btn-danger">S√≠, Eliminar</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -438,14 +438,14 @@ foreach($usuarios_normales as $usuario) {
                         
                         <div class="mb-3">
                             <label for="correo" class="form-label">
-                                Correo ElectrÛnico <span class="text-danger">*</span>
+                                Correo Electr√≥nico <span class="text-danger">*</span>
                             </label>
                             <input type="email" class="form-control" name="correo" required>
                         </div>
                         
                         <div class="mb-3">
                             <label for="password" class="form-label">
-                                ContraseÒa <span class="text-danger">*</span>
+                                Contrase√±a <span class="text-danger">*</span>
                             </label>
                             <input type="password" class="form-control" name="password" required>
                         </div>
@@ -476,7 +476,7 @@ foreach($usuarios_normales as $usuario) {
                             </h5>
                             
                             <div>
-                                <!-- BotÛn PDF eliminado -->
+                                <!-- Bot√≥n PDF eliminado -->
                             </div>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearUsuario">
                                     <i class="bi bi-plus-circle me-1"></i> Crear Nuevo Usuario
@@ -487,7 +487,7 @@ foreach($usuarios_normales as $usuario) {
                             <?php if(empty($usuarios_normales)): ?>
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
-                                    No hay usuarios registrados en el sistema todavÌa.
+                                    No hay usuarios registrados en el sistema todav√≠a.
                                 </div>
                             <?php else: ?>
                                 <div class="table-responsive">
@@ -548,16 +548,16 @@ foreach($usuarios_normales as $usuario) {
                                                                 </div>
                                                                 
                                                                 <div class="mb-3">
-                                                                    <label for="correo" class="form-label">Correo ElectrÛnico</label>
+                                                                    <label for="correo" class="form-label">Correo Electr√≥nico</label>
                                                                     <input type="email" class="form-control" name="correo" 
                                                                            value="<?= htmlspecialchars($usuario['correo']) ?>" required>
                                                                 </div>
                                                                 
                                                                 <div class="mb-3">
-                                                                    <label for="password" class="form-label">Nueva ContraseÒa (dejar en blanco para no cambiar)</label>
+                                                                    <label for="password" class="form-label">Nueva Contrase√±a (dejar en blanco para no cambiar)</label>
                                                                     <input type="password" class="form-control" name="password" 
-                                                                           placeholder="Dejar vacÌo para mantener la actual">
-                                                                    <small class="text-muted">Solo completa este campo si deseas cambiar la contraseÒa</small>
+                                                                           placeholder="Dejar vac√≠o para mantener la actual">
+                                                                    <small class="text-muted">Solo completa este campo si deseas cambiar la contrase√±a</small>
                                                                 </div>
                                                             </div>
                                                             
@@ -575,7 +575,7 @@ foreach($usuarios_normales as $usuario) {
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header bg-danger text-white">
-                                                            <h5 class="modal-title">Confirmar EliminaciÛn</h5>
+                                                            <h5 class="modal-title">Confirmar Eliminaci√≥n</h5>
                                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <form method="POST">
@@ -584,15 +584,15 @@ foreach($usuarios_normales as $usuario) {
                                                             <div class="modal-body">
                                                                 <div class="alert alert-warning">
                                                                     <i class="bi bi-exclamation-triangle me-2"></i>
-                                                                    <strong>°AtenciÛn!</strong> Esta acciÛn no se puede deshacer.
+                                                                    <strong>¬°Atenci√≥n!</strong> Esta acci√≥n no se puede deshacer.
                                                                 </div>
-                                                                <p>øEst·s seguro de que deseas eliminar al usuario <strong><?= htmlspecialchars($usuario['nombre']) ?></strong>?</p>
+                                                                <p>¬øEst√°s seguro de que deseas eliminar al usuario <strong><?= htmlspecialchars($usuario['nombre']) ?></strong>?</p>
                                                                 <p class="text-muted">Email: <?= htmlspecialchars($usuario['correo']) ?></p>
                                                             </div>
                                                             
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                                <button type="submit" name="eliminar_usuario" class="btn btn-danger">SÌ, Eliminar</button>
+                                                                <button type="submit" name="eliminar_usuario" class="btn btn-danger">S√≠, Eliminar</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -633,14 +633,14 @@ foreach($usuarios_normales as $usuario) {
                         
                         <div class="mb-3">
                             <label for="correo" class="form-label">
-                                Correo ElectrÛnico <span class="text-danger">*</span>
+                                Correo Electr√≥nico <span class="text-danger">*</span>
                             </label>
                             <input type="email" class="form-control" name="correo" required>
                         </div>
                         
                         <div class="mb-3">
                             <label for="password" class="form-label">
-                                ContraseÒa <span class="text-danger">*</span>
+                                Contrase√±a <span class="text-danger">*</span>
                             </label>
                             <input type="password" class="form-control" name="password" required>
                         </div>
@@ -655,13 +655,13 @@ foreach($usuarios_normales as $usuario) {
         </div>
     </div>
 
-    <!-- BotÛn volver arriba -->
+    <!-- Bot√≥n volver arriba -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Scripts Vendor -->
     <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/vendor/aos/aos.js"></script>
-    <!-- LIBRERÕA PDF -->
+    <!-- LIBRER√çA PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <script>
@@ -689,4 +689,3 @@ foreach($usuarios_normales as $usuario) {
 </body>
 </html>
 ```
-

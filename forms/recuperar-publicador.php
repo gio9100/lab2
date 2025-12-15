@@ -82,7 +82,7 @@ if (isset($_POST['email']) && !isset($_POST['nueva_password'])) {
             
             $exito = EmailHelper::enviarCorreo(
                 $email,
-                "Restablecer contraseña - Publicador Lab Explorer",
+                "Restablecer contraseña - Publicador Lab Explora",
                 $mensaje_html,
                 'Restablecer contraseña',
                 $enlace
@@ -177,154 +177,120 @@ if (isset($_POST['nueva_password']) && isset($_POST['token'])) {
 ?>
 <!-- Cerramos PHP -->
 <!DOCTYPE html>
-<!-- Le decimos al navegador que esto es HTML5 -->
 <html lang="es">
-<!-- Abrimos el HTML en español -->
-    <head>
-    <!-- Aquí van los metadatos -->
-    <meta charset="utf-8">
-    <!-- Para que se vean bien los acentos -->
-    <title>Recuperar contraseña - Publicador Lab-Explora</title>
-    <!-- Título de la pestaña -->
-    <link rel="stylesheet" href="../assets/css/registro.css">
-    <!-- Cargamos el CSS -->
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Para que se vea bien en celulares -->
-    <style>
-        /* Estilos para los mensajes */
-        .message {
-            /* Estilos base para todos los mensajes */
-            padding: 15px;
-            /* Espaciado interno */
-            margin-bottom: 20px;
-            /* Espacio abajo del mensaje */
-            border-radius: 8px;
-            /* Esquinas redondeadas */
-            font-weight: bold;
-            /* Texto en negrita */
-            text-align: center;
-            /* Texto centrado */
-        }
-        
-        .message.error {
-            /* Estilos para mensajes de error */
-            background-color: #f8d7da;
-            /* Fondo rojo claro */
-            color: #721c24;
-            /* Texto rojo oscuro */
-            border: 2px solid #f5c6cb;
-            /* Borde rojo */
-        }
-        
-        .message.success {
-            /* Estilos para mensajes de éxito */
-            background-color: #d4edda;
-            /* Fondo verde claro */
-            color: #155724;
-            /* Texto verde oscuro */
-            border: 2px solid #c3e6cb;
-            /* Borde verde */
-        }
-    </style>
-    <!-- Cerramos los estilos -->
-    </head>
-    <!-- Cerramos el head -->
-<body>
-<!-- Abrimos el body -->
-
-<div class="box">
-<!-- Contenedor principal -->
-<div class="formulario">
-<!-- Contenedor del formulario -->
-
-
-<?php if ($mensaje): ?>
-<!-- Si hay un mensaje, lo mostramos -->
-    <div class="message <?= $tipo_mensaje ?>"><?= $mensaje ?></div>
-    <!-- Div con el mensaje (cambia de color según el tipo) -->
-<?php endif; ?>
-<!-- Cerramos el if -->
-
-<?php 
-// Si el token NO es válido, mostramos el formulario para pedir el email
-if (!$token_valido && !isset($_POST['token'])): 
-?>
-    <!-- Formulario para pedir el email -->
-    <div class="logo-lab">
-    <!-- Contenedor del logo -->
-       
-      <img src="../assets/img/logo/logobrayan2.ico" alt="logo Lab">
-      <!-- Logo -->
-      <h1>Lab Explorer - Publicadores</h1>
-      <!-- Título -->
-      <p class="subtitulo">Recuperar Tu contraseña</p>
-      <!-- Subtítulo -->
-     <p>Ingresa tu correo de publicador para enviarte un enlace de recuperación.</p>
-     <!-- Instrucciones -->
-     <style>
-         p {
-             color: yellow;
-             /* Color amarillo para el texto */
-         }
-     </style>
-     <!-- CSS inline para el párrafo -->
-      </div>
-      <!-- Cerramos logo-lab -->
-    <form method="POST">
-    <!-- Formulario que se envía por POST -->
-        <input type="email" name="email" placeholder="Tu correo de publicador" required>
-        <!-- Input de email (nota: usamos "email" porque así está en la tabla publicadores) -->
-        <button type="submit">Enviar enlace</button>
-        <!-- Botón para enviar -->
-        <a href="publicadores/inicio-sesion-publicadores.php">Regresar al inicio de sesión</a>
-        <!-- Link para volver al login de publicadores -->
-    </form>
-    <!-- Cerramos el formulario -->
-</div>
-<!-- Cerramos formulario -->
-
-<?php else: ?>
-<!-- Si el token SÍ es válido, mostramos el formulario para cambiar la contraseña -->
+    <title>Recuperar contraseña - Publicador Lab-Explora</title>
     
-    <form method="POST">
-    <!-- Formulario que se envía por POST -->
-        <div class="logo-lab">
-        <!-- Contenedor del logo -->
-            <img src="../assets/img/logo/logobrayan2.ico" alt="logo lab">
-            <!-- Logo -->
-            <p class="subtitulo">Escribe tu nueva contraseña (minimo 6 caracteres)</p>
-            <!-- Instrucciones -->
-        
-        <!-- Input oculto con el token -->
-        <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? $_POST['token']) ?>">
-        <!-- type="hidden" hace que no se vea pero se envía con el formulario -->
-        
-        <input type="password" name="nueva_password" placeholder="Nueva contraseña" minlength="6" required>
-        <!-- Input para la nueva contraseña -->
-        <input type="password" name="confirmar_password" placeholder="Confirmar contraseña" minlength="6" required>
-        <!-- Input para confirmar la contraseña -->
-        <button type="submit">Cambiar contraseña</button>
-        <!-- Botón para enviar -->
-        <a href="publicadores/inicio-sesion-publicadores.php">Regresar al inicio de sesión</a>
-        <!-- Link para volver al login de publicadores -->
-    </form>
-    <!-- Cerramos el formulario -->
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- CSS personalizado (mismo que inicio de sesión para estilo blanco) -->
+    <link href="../assets/css/inicio-sesion.css" rel="stylesheet">
+    
+    <style>
+        .mensaje-validacion { margin-top: 5px; font-size: 0.9rem; font-weight: 500; display: none; }
+        .mensaje-validacion.error { color: #dc3545; display: block; }
+        .mensaje-validacion.success { color: #28a745; display: block; }
+    </style>
+</head>
+<body>
 
-<?php endif; ?>
-<!-- Cerramos el if/else -->
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+            
+                <?php if (!$token_valido && !isset($_POST['token'])): ?>
+                <!-- CASO 1: SOLICITAR ENLACE (Token no presente o inválido) -->
+                <form method="POST" class="formulario" novalidate>
+                    <div class="logo-lab text-center mb-4">
+                        <img src="../assets/img/logo/logo-labexplora.png" alt="logo-lab" class="mb-3">
+                        <h1 class="h3">Lab Explora</h1>
+                        <p class="subtitulo text-muted">Recuperar Contraseña Publicador</p>
+                    </div>
 
-</div>
-<!-- Cerramos box -->
+                    <section class="seccion-informacion mb-4">
+                        <p class="text-center text-muted small mb-3">Ingresa tu correo de publicador para recibir el enlace.</p>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" name="email" class="form-control" placeholder="Tu correo de publicador" required>
+                        </div>
+                    </section>
 
-    <script>
-        // Validar antes de enviar
-        const form = document.querySelector('form');
-        form.addEventListener('submit', function(e) {
-            // ... (validaciones)
-        });
-    </script>
+                    <section class="seccion-botones text-center">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Enviar enlace</button>
+                        <p class="mb-0"><a href="publicadores/inicio-sesion-publicadores.php" class="text-decoration-none">Regresar al inicio de sesión</a></p>
+                    </section>
+                </form>
+
+                <?php else: ?>
+                <!-- CASO 2: CAMBIAR CONTRASEÑA (Token válido) -->
+                <form method="POST" class="formulario" novalidate>
+                    <div class="logo-lab text-center mb-4">
+                        <img src="../assets/img/logo/logo-labexplora.png" alt="logo-lab" class="mb-3">
+                        <h1 class="h3">Lab Explora</h1>
+                        <p class="subtitulo text-muted">Nueva Contraseña</p>
+                    </div>
+
+                    <section class="seccion-informacion mb-4">
+                        <p class="text-center text-muted small mb-3">Escribe tu nueva contraseña (mínimo 6 caracteres)</p>
+                        
+                        <!-- Input oculto con el token -->
+                        <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? $_POST['token']) ?>">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nueva Contraseña</label>
+                            <input type="password" name="nueva_password" class="form-control" placeholder="Nueva contraseña" minlength="6" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Confirmar Contraseña</label>
+                            <input type="password" name="confirmar_password" class="form-control" placeholder="Confirmar contraseña" minlength="6" required>
+                        </div>
+                    </section>
+
+                    <section class="seccion-botones text-center">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Cambiar contraseña</button>
+                        <p class="mb-0"><a href="publicadores/inicio-sesion-publicadores.php" class="text-decoration-none">Regresar al inicio de sesión</a></p>
+                    </section>
+                </form>
+                <?php endif; ?>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mensajes -->
+    <?php if ($mensaje): ?>
+        <div class="modal-mensaje <?= $tipo_mensaje ?>">
+            <div class="modal-contenido">
+                <h2><?= $tipo_mensaje === 'success' ? '¡Éxito!' : 'Información' ?></h2>
+                <p><?= htmlspecialchars($mensaje) ?></p>
+                
+                <?php if ($tipo_mensaje === 'success' && isset($_POST['nueva_password'])): ?>
+                    <p style="font-style: italic; margin-top: 15px;">Redirigiendo al inicio de sesión...</p>
+                    <script>
+                        setTimeout(function() {
+                            window.location.href = 'publicadores/inicio-sesion-publicadores.php';
+                        }, 2000);
+                    </script>
+                <?php else: ?>
+                    <button onclick="cerrarmodal()" class="btn btn-secondary mt-3">Cerrar</button>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <script>
+            function cerrarmodal() {
+                document.querySelector('.modal-mensaje').style.display='none';
+            }
+        </script>
+    <?php endif; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/accessibility-widget.js?v=3.2"></script>
 </body>
-<!-- Cerramos el body -->
 </html>
-<!-- Cerramos el HTML -->

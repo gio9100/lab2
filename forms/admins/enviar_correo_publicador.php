@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 // Enviar Correo Publicador (Admin)
 // Funciones para enviar notificaciones por correo a publicadores y administradores
 
@@ -14,18 +14,18 @@ use PHPMailer\PHPMailer\Exception;
 // Incluir Helper de Emails
 require_once __DIR__ . '/../EmailHelper.php';
 
-// Función: Enviar correo de aprobación
+// FunciÃ³n: Enviar correo de aprobaciÃ³n
 // Notifica al publicador que su cuenta ha sido aprobada
 function enviarCorreoAprobacion($email_publicador, $nombre_publicador) {
-    $asunto = "? ¡Bienvenido a Lab Explorer! Tu cuenta ha sido aprobada";
+    $asunto = "âœ… Â¡Bienvenido a Lab Explora! Tu cuenta ha sido aprobada";
     
     $mensaje_html = "
-        <p>¡Tenemos excelentes noticias! Tu solicitud para ser publicador en <strong>Lab Explorer</strong> ha sido revisada y <strong>aprobada exitosamente</strong>.</p>
-        <p>Ahora formas parte de nuestra comunidad de profesionales de laboratorio clínico. Podrás compartir tus conocimientos, experiencias y contribuir al crecimiento de la comunidad científica.</p>
-        <h3>?? ¿Qué puedes hacer ahora?</h3>
+        <p>Â¡Tenemos excelentes noticias! Tu solicitud para ser publicador en <strong>Lab Explora</strong> ha sido revisada y <strong>aprobada exitosamente</strong>.</p>
+        <p>Ahora formas parte de nuestra comunidad de profesionales de laboratorio clÃ­nico. PodrÃ¡s compartir tus conocimientos, experiencias y contribuir al crecimiento de la comunidad cientÃ­fica.</p>
+        <h3>ğŸ“ Â¿QuÃ© puedes hacer ahora?</h3>
         <ul>
-            <li>Crear y publicar artículos científicos</li>
-            <li>Compartir casos clínicos interesantes</li>
+            <li>Crear y publicar artÃ­culos cientÃ­ficos</li>
+            <li>Compartir casos clÃ­nicos interesantes</li>
             <li>Publicar estudios y revisiones</li>
             <li>Interactuar con otros profesionales</li>
         </ul>
@@ -35,34 +35,34 @@ function enviarCorreoAprobacion($email_publicador, $nombre_publicador) {
         $email_publicador,
         $asunto,
         $mensaje_html,
-        '?? Iniciar Sesión Ahora',
+        'ğŸš€ Iniciar SesiÃ³n Ahora',
         'http://localhost/lab2/forms/publicadores/inicio-sesion-publicadores.php'
     );
 }
 
-// Función: Enviar correo de rechazo
+// FunciÃ³n: Enviar correo de rechazo
 // Notifica al publicador que su solicitud ha sido rechazada
 function enviarCorreoRechazo($email_publicador, $nombre_publicador, $motivo = '') {
-    $asunto = "? Actualización sobre tu solicitud en Lab Explorer";
+    $asunto = "âŒ ActualizaciÃ³n sobre tu solicitud en Lab Explora";
     
     $mensaje_html = "
-        <p>Gracias por tu interés en formar parte de <strong>Lab Explorer</strong> como publicador.</p>
-        <p>Lamentablemente, después de revisar tu solicitud, <strong>no hemos podido aprobarla en este momento</strong>.</p>";
+        <p>Gracias por tu interÃ©s en formar parte de <strong>Lab Explora</strong> como publicador.</p>
+        <p>Lamentablemente, despuÃ©s de revisar tu solicitud, <strong>no hemos podido aprobarla en este momento</strong>.</p>";
     
     if (!empty($motivo)) {
         $mensaje_html .= "
-        <h3>?? Motivo del rechazo:</h3>
+        <h3>ğŸ“‹ Motivo del rechazo:</h3>
         <p style='background-color: #f8f9fa; padding: 15px; border-left: 4px solid #dc3545; border-radius: 4px;'>
             " . htmlspecialchars($motivo) . "
         </p>";
     }
     
     $mensaje_html .= "
-        <h3>?? ¿Qué puedes hacer?</h3>
+        <h3>ğŸ”„ Â¿QuÃ© puedes hacer?</h3>
         <ul>
             <li>Revisa los requisitos para ser publicador en nuestra plataforma</li>
-            <li>Asegúrate de proporcionar información completa y verificable</li>
-            <li>Puedes volver a solicitar el registro más adelante</li>
+            <li>AsegÃºrate de proporcionar informaciÃ³n completa y verificable</li>
+            <li>Puedes volver a solicitar el registro mÃ¡s adelante</li>
         </ul>
     ";
     
@@ -73,8 +73,8 @@ function enviarCorreoRechazo($email_publicador, $nombre_publicador, $motivo = ''
     );
 }
 
-// Función: Notificar nuevo publicador a administradores
-// Envía un correo a todos los admins activos cuando se registra un nuevo publicador
+// FunciÃ³n: Notificar nuevo publicador a administradores
+// EnvÃ­a un correo a todos los admins activos cuando se registra un nuevo publicador
 function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicador, $especialidad, $conn) {
     // Obtener admins activos
     $query = "SELECT email, nombre FROM admins WHERE estado = 'activo'";
@@ -85,18 +85,18 @@ function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicado
     }
     
     // Preparar mensaje
-    $asunto = "?? Nuevo Publicador Pendiente de Aprobación";
+    $asunto = "ğŸ”” Nuevo Publicador Pendiente de AprobaciÃ³n";
     
     $mensaje_html = "
-        <p>Se ha registrado un nuevo publicador en la plataforma y está esperando tu aprobación.</p>
-        <h3>?? Datos del Publicador:</h3>
+        <p>Se ha registrado un nuevo publicador en la plataforma y estÃ¡ esperando tu aprobaciÃ³n.</p>
+        <h3>ğŸ“‹ Datos del Publicador:</h3>
         <ul>
             <li><strong>Nombre:</strong> " . htmlspecialchars($nombre_publicador) . "</li>
             <li><strong>Email:</strong> " . htmlspecialchars($email_publicador) . "</li>
             <li><strong>Especialidad:</strong> " . htmlspecialchars($especialidad) . "</li>
             <li><strong>Fecha de registro:</strong> " . date('d/m/Y H:i') . "</li>
         </ul>
-        <p>Por favor, revisa la información del publicador y procede con la aprobación o rechazo desde el panel de administración.</p>
+        <p>Por favor, revisa la informaciÃ³n del publicador y procede con la aprobaciÃ³n o rechazo desde el panel de administraciÃ³n.</p>
     ";
     
     // Enviar a cada admin
@@ -106,7 +106,7 @@ function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicado
             $admin['email'],
             $asunto,
             $mensaje_html,
-            'Ver Panel de Administración',
+            'Ver Panel de AdministraciÃ³n',
             'http://localhost/lab2/forms/admins/index-admin.php'
         );
         
@@ -118,4 +118,3 @@ function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicado
     return $enviados > 0;
 }
 ?>
-

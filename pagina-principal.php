@@ -798,7 +798,7 @@ session_start();
                     { 
                         element: '.hero-title', 
                         popover: { 
-                            title: '👋 ¡Bienvenido a Lab-Explorer!', 
+                            title: '👋 ¡Bienvenido a Lab-Explora!', 
                             description: 'Tu plataforma definitiva para el conocimiento en laboratorio clínico.', 
                             side: "bottom", 
                             align: 'start' 

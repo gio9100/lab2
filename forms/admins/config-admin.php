@@ -366,7 +366,7 @@ function suspenderPublicador($id, $motivo, $conn) {
         $asunto = "⚠️ Tu cuenta de publicador ha sido suspendida";
         
         $mensaje_html = "
-            <p>Lamentamos informarte que tu cuenta de publicador en <strong>Lab Explorer</strong> ha sido <strong>suspendida</strong>.</p>
+            <p>Lamentamos informarte que tu cuenta de publicador en <strong>Lab Explora</strong> ha sido <strong>suspendida</strong>.</p>
             <h3>📋 Motivo de la suspensión:</h3>
             <p style='background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 4px;'>
                 " . htmlspecialchars($motivo) . "

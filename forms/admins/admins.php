@@ -1,22 +1,22 @@
-<?php
-// GestiÛn de administradores (solo para superadmins)
-// Permite crear, editar, cambiar contraseÒas y eliminar otros admins
+Ôªø<?php
+// Gesti√≥n de administradores (solo para superadmins)
+// Permite crear, editar, cambiar contrase√±as y eliminar otros admins
 
-// Iniciar sesiÛn
+// Iniciar sesi√≥n
 session_start();
 
-// ConfiguraciÛn de la base de datos
+// Configuraci√≥n de la base de datos
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "lab_exp_db";
 
-// Crear conexiÛn
+// Crear conexi√≥n
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificar conexiÛn
+// Verificar conexi√≥n
 if ($conn->connect_error) {
-    die("Error de conexiÛn: " . $conn->connect_error);
+    die("Error de conexi√≥n: " . $conn->connect_error);
 }
 
 // Establecer charset a UTF-8
@@ -28,7 +28,7 @@ define('CLAVE_SUPERADMIN', 'superlabexplorer2025');
 
 // Verificar si el usuario es superadmin
 if (!isset($_SESSION['admin_id']) || $_SESSION['admin_nivel'] != 'superadmin') {
-    $_SESSION['mensaje'] = "No tienes permisos para acceder a esta secciÛn";
+    $_SESSION['mensaje'] = "No tienes permisos para acceder a esta secci√≥n";
     $_SESSION['tipo_mensaje'] = "danger";
     header("Location: index-admin.php");
     exit;
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         
         if ($clave_valida) {
-            // Hash de contraseÒa
+            // Hash de contrase√±a
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             
             // Insertar nuevo admin
@@ -109,24 +109,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
     
-    // Cambiar contraseÒa
+    // Cambiar contrase√±a
     if (isset($_POST['cambiar_password'])) {
         $id = intval($_POST['id']);
         $nueva_password = trim($_POST['nueva_password']);
         
-        // Hash de nueva contraseÒa
+        // Hash de nueva contrase√±a
         $password_hash = password_hash($nueva_password, PASSWORD_DEFAULT);
         
-        // Actualizar contraseÒa
+        // Actualizar contrase√±a
         $query = "UPDATE admins SET password=? WHERE id=?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("si", $password_hash, $id);
         
         if ($stmt->execute()) {
-            $_SESSION['mensaje'] = "ContraseÒa actualizada correctamente";
+            $_SESSION['mensaje'] = "Contrase√±a actualizada correctamente";
             $_SESSION['tipo_mensaje'] = "success";
         } else {
-            $_SESSION['mensaje'] = "Error al cambiar contraseÒa";
+            $_SESSION['mensaje'] = "Error al cambiar contrase√±a";
             $_SESSION['tipo_mensaje'] = "danger";
         }
         
@@ -138,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['eliminar_admin'])) {
         $id = intval($_POST['id']);
         
-        // Evitar auto-eliminaciÛn
+        // Evitar auto-eliminaci√≥n
         if ($id == $admin_id) {
             $_SESSION['mensaje'] = "No puedes eliminarte a ti mismo";
             $_SESSION['tipo_mensaje'] = "danger";
@@ -167,7 +167,7 @@ $query = "SELECT * FROM admins ORDER BY fecha_registro DESC";
 $result = $conn->query($query);
 $admins = $result->fetch_all(MYSQLI_ASSOC);
 
-// Obtener estadÌsticas por nivel
+// Obtener estad√≠sticas por nivel
 $query_stats = "SELECT nivel, COUNT(*) as total FROM admins GROUP BY nivel";
 $result_stats = $conn->query($query_stats);
 
@@ -184,7 +184,7 @@ while ($row = $result_stats->fetch_assoc()) {
 
 $total_general = $total_admins + $total_superadmins;
 
-// Cargar datos para ediciÛn si es necesario
+// Cargar datos para edici√≥n si es necesario
 $admin_editar = null;
 if (isset($_GET['editar'])) {
     $id_editar = intval($_GET['editar']);
@@ -202,7 +202,7 @@ if (isset($_GET['editar'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GestiÛn de Administradores - Lab-Explora</title>
+    <title>Gesti√≥n de Administradores - Lab-Explora</title>
     
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -246,14 +246,14 @@ if (isset($_GET['editar'])) {
                         <i class="bi bi-list"></i>
                     </button>
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                         <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="social-links">
-                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">????? Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
-                        <a href="logout-admin.php" class="logout-btn">Cerrar sesiÛn</a>
+                        <a href="perfil-admin.php" class="saludo d-none d-md-inline text-decoration-none text-dark me-3">üë®‚Äçüíº Hola, <?= htmlspecialchars($admin_nombre) ?> (<?= $admin_nivel ?>)</a>
+                        <a href="logout-admin.php" class="logout-btn">Cerrar sesi√≥n</a>
                     </div>
                 </div>
             </div>
@@ -265,13 +265,13 @@ if (isset($_GET['editar'])) {
             <div class="row">
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
                 <!-- Contenido Principal -->
                 <div class="col-md-9">
-                    <!-- Mensajes de SesiÛn -->
+                    <!-- Mensajes de Sesi√≥n -->
                     <?php if(isset($_SESSION['mensaje'])): ?>
                     <div class="alert alert-<?= $_SESSION['tipo_mensaje'] == 'success' ? 'success' : 'danger' ?> alert-dismissible fade show" role="alert">
                         <?= htmlspecialchars($_SESSION['mensaje']) ?>
@@ -283,11 +283,11 @@ if (isset($_GET['editar'])) {
                     endif; ?>
 
                     <div class="section-title" data-aos="fade-up">
-                        <h2>GestiÛn de Administradores</h2>
-                        <p>Administra los usuarios con acceso al panel de administraciÛn</p>
+                        <h2>Gesti√≥n de Administradores</h2>
+                        <p>Administra los usuarios con acceso al panel de administraci√≥n</p>
                     </div>
 
-                    <!-- EstadÌsticas -->
+                    <!-- Estad√≠sticas -->
                     <div class="row stats-grid mb-4" data-aos="fade-up">
                         <div class="col-md-4 mb-3">
                             <div class="stat-card primary">
@@ -328,7 +328,7 @@ if (isset($_GET['editar'])) {
                         </div>
                         <div class="card-body">
                             <?php if(!$admin_editar): ?>
-                            <!-- Formulario CreaciÛn -->
+                            <!-- Formulario Creaci√≥n -->
                             <form method="POST">
                                 <input type="hidden" name="crear_admin" value="1">
                                 
@@ -350,7 +350,7 @@ if (isset($_GET['editar'])) {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label class="form-label">ContraseÒa *</label>
+                                            <label class="form-label">Contrase√±a *</label>
                                             <input type="password" name="password" class="form-control" required>
                                         </div>
                                     </div>
@@ -372,7 +372,7 @@ if (isset($_GET['editar'])) {
                                 </div>
 
                                 <div class="clave-info">
-                                    <strong><i class="bi bi-info-circle me-2"></i>InformaciÛn sobre claves secretas:</strong>
+                                    <strong><i class="bi bi-info-circle me-2"></i>Informaci√≥n sobre claves secretas:</strong>
                                     <ul class="mb-0 mt-2">
                                         <li>Las claves son diferentes para crear un <strong>Admin</strong> y un <strong>SuperAdmin</strong> y deben mantenerse en secreto</li>
                                     </ul>
@@ -386,7 +386,7 @@ if (isset($_GET['editar'])) {
                             </form>
                             
                             <?php else: ?>
-                            <!-- Formulario EdiciÛn -->
+                            <!-- Formulario Edici√≥n -->
                             <form method="POST">
                                 <input type="hidden" name="id" value="<?= $admin_editar['id'] ?>">
                                 <input type="hidden" name="editar_admin" value="1">
@@ -463,11 +463,11 @@ if (isset($_GET['editar'])) {
                                             
                                             <td>
                                                 <?php 
-                                                // Generar firma digital ˙nica para el admin
+                                                // Generar firma digital √∫nica para el admin
                                                 $data_to_hash = $adm['id'] . $adm['nombre'] . $adm['email'] . "LAB_EXPLORA_ADMIN_SECURE_2024";
                                                 $firma = strtoupper(substr(hash('sha256', $data_to_hash), 0, 16));
                                                 ?>
-                                                <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital ⁄nica">
+                                                <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: inline-block; font-family: 'Courier New', monospace;" title="Firma Digital √önica">
                                                     <?= $firma ?>
                                                 </code>
                                             </td>
@@ -486,7 +486,7 @@ if (isset($_GET['editar'])) {
                                                             class="btn btn-sm btn-outline-warning" 
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#modalPassword<?= $adm['id'] ?>" 
-                                                            title="Cambiar ContraseÒa">
+                                                            title="Cambiar Contrase√±a">
                                                         <i class="bi bi-key"></i>
                                                     </button>
                                                     
@@ -503,20 +503,20 @@ if (isset($_GET['editar'])) {
                                             </td>
                                         </tr>
 
-                                        <!-- Modal Cambiar ContraseÒa -->
+                                        <!-- Modal Cambiar Contrase√±a -->
                                         <div class="modal fade" id="modalPassword<?= $adm['id'] ?>" tabindex="-1">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Cambiar ContraseÒa</h5>
+                                                        <h5 class="modal-title">Cambiar Contrase√±a</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <form method="POST">
                                                         <input type="hidden" name="id" value="<?= $adm['id'] ?>">
                                                         <div class="modal-body">
-                                                            <p>Cambiar contraseÒa de: <strong><?= htmlspecialchars($adm['nombre']) ?></strong></p>
+                                                            <p>Cambiar contrase√±a de: <strong><?= htmlspecialchars($adm['nombre']) ?></strong></p>
                                                             <div class="mb-3">
-                                                                <label class="form-label">Nueva ContraseÒa</label>
+                                                                <label class="form-label">Nueva Contrase√±a</label>
                                                                 <input type="password" name="nueva_password" class="form-control" required>
                                                             </div>
                                                         </div>
@@ -541,8 +541,8 @@ if (isset($_GET['editar'])) {
                                                     <form method="POST">
                                                         <input type="hidden" name="id" value="<?= $adm['id'] ?>">
                                                         <div class="modal-body">
-                                                            <p>øEst·s seguro de eliminar a <strong><?= htmlspecialchars($adm['nombre']) ?></strong>?</p>
-                                                            <p class="text-danger">Esta acciÛn no se puede deshacer.</p>
+                                                            <p>¬øEst√°s seguro de eliminar a <strong><?= htmlspecialchars($adm['nombre']) ?></strong>?</p>
+                                                            <p class="text-danger">Esta acci√≥n no se puede deshacer.</p>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -583,7 +583,6 @@ if (isset($_GET['editar'])) {
 </body>
 </html>
 <?php
-// Cerrar conexiÛn
+// Cerrar conexi√≥n
 $conn->close();
 ?>
-

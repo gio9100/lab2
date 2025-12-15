@@ -35,12 +35,12 @@ class EmailHelper {
             $mail->Port       = 587;
 
             // Remitente y destinatario
-            $mail->setFrom('lab.explorer2025@gmail.com', 'LabExplorer');
+            $mail->setFrom('lab.explorer2025@gmail.com', 'Lab Explora');
             $mail->addAddress($destinatario);
 
             // Adjuntar logo como imagen embebida (CID)
             // Intentamos buscar el logo en varias rutas posibles
-            $logoPath = __DIR__ . '/../assets/img/logo/logobrayan2.ico'; 
+            $logoPath = __DIR__ . '/../assets/img/logo/logo-labexplora.png'; 
             
             if (file_exists($logoPath)) {
                 $mail->addEmbeddedImage($logoPath, 'logo_lab');
@@ -51,10 +51,10 @@ class EmailHelper {
             // Intentamos buscar un PNG o JPG primero, si no, usamos el ICO
             $logoPath = __DIR__ . '/../assets/img/logo/logo.png'; // Idealmente PNG
             if (!file_exists($logoPath)) {
-                $logoPath = __DIR__ . '/../assets/img/logo/logobrayan2.ico';
+                $logoPath = __DIR__ . '/../assets/img/logo/logo-labexplora.png';
             }
             if (!file_exists($logoPath)) {
-                $logoPath = __DIR__ . '/../assets/img/logo/logobrayan.ico';
+                $logoPath = __DIR__ . '/../assets/img/logo/logo-labexplora.png';
             }
             
             if (file_exists($logoPath)) {
@@ -189,8 +189,8 @@ class EmailHelper {
 <html><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,sans-serif">
 <table width="100%" cellspacing="0" cellpadding="0"><tr><td style="padding:15px 0;text-align:center;background:#fff">
-<img src="{$logoUrl}" alt="LabExplorer" style="max-width:60px;height:auto">
-<div style="color:{$colorPrincipal};font-size:18px;font-weight:bold;margin-top:8px">LabExplorer</div>
+<img src="{$logoUrl}" alt="Lab Explora" style="max-width:60px;height:auto">
+<div style="color:{$colorPrincipal};font-size:18px;font-weight:bold;margin-top:8px">Lab Explora</div>
 </td></tr><tr><td style="padding:0 15px 30px">
 <table style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px" cellspacing="0" cellpadding="0">
 <tr><td style="height:3px;background:{$colorPrincipal}"></td></tr>
@@ -201,11 +201,11 @@ class EmailHelper {
 {$botonHtml}
 <div style="margin-top:25px;border-top:1px solid #eee;padding-top:15px;font-size:12px;color:#6c757d;text-align:center">
 <p style="margin:0">Atentamente,</p>
-<p style="margin:5px 0 0;font-weight:bold;color:{$colorPrincipal}">El equipo de LabExplorer</p>
+<p style="margin:5px 0 0;font-weight:bold;color:{$colorPrincipal}">El equipo de Lab Explora</p>
 </div>
 </td></tr></table>
 </td></tr><tr><td style="padding:0 15px 20px;text-align:center;color:#999;font-size:10px">
-<p>&copy; {$anio} LabExplorer</p>
+<p>&copy; {$anio} Lab Explora</p>
 </td></tr></table>
 </body></html>
 HTML;

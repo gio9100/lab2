@@ -115,7 +115,7 @@ $resultado_lista = $conn->query($query_lista);
                         <i class="bi bi-list"></i>
                     </button>
                     <a href="../../pagina-principal.php" class="logo d-flex align-items-end">
-                        <img src="../../assets/img/logo/logobrayan2.ico" alt="logo-lab">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
                         <h1 class="sitename">Lab-Explora</h1><span></span>
                     </a>
                 </div>
@@ -136,7 +136,7 @@ $resultado_lista = $conn->query($query_lista);
             <div class="row">
 
                 <!-- Sidebar (Columna Izquierda idéntica) -->
-                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebar-wrapper">
+                <div class="col-md-3 mb-4 sidebar-wrapper" id="sidebarWrapper">
                     <?php include 'sidebar-admin.php'; ?>
                 </div>
 
@@ -283,4 +283,3 @@ $resultado_lista = $conn->query($query_lista);
     </script>
 </body>
 </html>
-

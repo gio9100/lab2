@@ -1,4 +1,4 @@
-<?php
+Ôªø<?php
 // Notificar Publicador (Admin)
 // Funciones para enviar notificaciones de cambio de estado a publicadores
 
@@ -11,8 +11,8 @@ require_once __DIR__ . '/../PHPMailer/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// FunciÛn: Enviar notificaciÛn de estado
-// Notifica al publicador cuando el estado de su publicaciÛn cambia
+// Funci√≥n: Enviar notificaci√≥n de estado
+// Notifica al publicador cuando el estado de su publicaci√≥n cambia
 function enviarNotificacionPublicador($email_publicador, $nombre_publicador, $titulo_publicacion, $tipo_publicacion, $nuevo_estado, $publicacion_id, $conn) {
     
     // Variable para motivo de rechazo
@@ -28,31 +28,31 @@ function enviarNotificacionPublicador($email_publicador, $nombre_publicador, $ti
         
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            $mensaje_rechazo = $row['mensaje_rechazo'] ?? 'No se especificÛ un motivo.';
+            $mensaje_rechazo = $row['mensaje_rechazo'] ?? 'No se especific√≥ un motivo.';
         }
         $stmt->close();
     }
     
-    // Configurar mensaje seg˙n estado
+    // Configurar mensaje seg√∫n estado
     switch ($nuevo_estado) {
         case 'publicado':
-            $emoji = '?';
-            $titulo_email = 'PublicaciÛn Aprobada';
-            $mensaje_principal = "°Excelentes noticias! Tu publicaciÛn ha sido <strong>aprobada</strong> y ahora est· visible para todos los usuarios de Lab Explorer.";
-            $texto_adicional = "Tu contenido ya est· disponible en la plataforma y los usuarios pueden acceder a Èl.";
+            $emoji = '‚úÖ';
+            $titulo_email = 'Publicaci√≥n Aprobada';
+            $mensaje_principal = "¬°Excelentes noticias! Tu publicaci√≥n ha sido <strong>aprobada</strong> y ahora est√° visible para todos los usuarios de Lab Explora.";
+            $texto_adicional = "Tu contenido ya est√° disponible en la plataforma y los usuarios pueden acceder a √©l.";
             break;
             
         case 'rechazada':
-            $emoji = '?';
-            $titulo_email = 'PublicaciÛn Rechazada';
-            $mensaje_principal = "Lamentamos informarte que tu publicaciÛn ha sido <strong>rechazada</strong> por el equipo de administraciÛn.";
+            $emoji = '‚ùå';
+            $titulo_email = 'Publicaci√≥n Rechazada';
+            $mensaje_principal = "Lamentamos informarte que tu publicaci√≥n ha sido <strong>rechazada</strong> por el equipo de administraci√≥n.";
             $texto_adicional = "Por favor revisa el motivo del rechazo y realiza las correcciones necesarias antes de volver a enviarla.";
             break;
             
         case 'revision':
-            $emoji = '??';
-            $titulo_email = 'PublicaciÛn en RevisiÛn';
-            $mensaje_principal = "Tu publicaciÛn requiere algunas <strong>correcciones</strong> antes de ser aprobada.";
+            $emoji = 'üîÑ';
+            $titulo_email = 'Publicaci√≥n en Revisi√≥n';
+            $mensaje_principal = "Tu publicaci√≥n requiere algunas <strong>correcciones</strong> antes de ser aprobada.";
             $texto_adicional = "Por favor revisa los comentarios del administrador y realiza los ajustes necesarios.";
             break;
             
@@ -82,4 +82,3 @@ function enviarNotificacionPublicador($email_publicador, $nombre_publicador, $ti
     );
 }
 ?>
-

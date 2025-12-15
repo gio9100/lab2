@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Iniciar sesión
 session_start();
 
@@ -35,31 +35,21 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         
         if ($admin) {
             // Traer funciones de 2FA
-            // require_once '../2fa_functions.php'; // Comentado por seguridad si no existe
+            require_once '../2fa_functions.php';
             
-            // Verificar si tiene 2FA activado (Simulado o real si existe columna)
+            // Verificar si tiene 2FA activado
             $stmt_2fa = $conn->prepare("SELECT two_factor_enabled FROM admins WHERE id = ?");
-            // Check if column exists first or wrap in try catch, but assuming user code implies DB support or is old code
-            // For now, let's just assume the user wants this code.
-            // If column doesn't exist, this will fail. I should probably check via query first or just suppress 2fa part if problematic. 
-            // Given the user said "deja el inicio... como estaba", they likely had this code working or want it back.
-            // I'll assume standard login flow if 2FA column missing to prevent fatal error.
-            
+            $stmt_2fa->bind_param("i", $admin["id"]);
+            $stmt_2fa->execute();
+            $result_2fa = $stmt_2fa->get_result();
             $tiene2FA = false;
-            // Safe check for column existence before querying
-            $colCheck = $conn->query("SHOW COLUMNS FROM admins LIKE 'two_factor_enabled'");
-            if($colCheck && $colCheck->num_rows > 0) {
-                 $stmt_2fa->bind_param("i", $admin["id"]);
-                 $stmt_2fa->execute();
-                 $result_2fa = $stmt_2fa->get_result();
-                 if ($result_2fa && $result_2fa->num_rows > 0) {
-                     $row_2fa = $result_2fa->fetch_assoc();
-                     $tiene2FA = ($row_2fa['two_factor_enabled'] == 1);
-                 }
+            
+            if ($result_2fa && $result_2fa->num_rows > 0) {
+                $row_2fa = $result_2fa->fetch_assoc();
+                $tiene2FA = ($row_2fa['two_factor_enabled'] == 1);
             }
             
-            if ($tiene2FA && file_exists('../2fa_functions.php')) {
-                require_once '../2fa_functions.php';
+            if ($tiene2FA) {
                 // Enviar código 2FA
                 $codigo = generarCodigo2FA();
                 guardarCodigo2FA($conn, 'admin', $admin['id'], $codigo);
@@ -108,6 +98,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de Sesión Administrador - Lab-Explora</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="../../assets/css/inicio-sesion.css" rel="stylesheet">
 </head>
 <body>
@@ -115,7 +106,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     <form method="post" class="formulario" novalidate>
         
         <div class="logo-lab">
-            <img src="../../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
+            <img src="../../assets/img/logo/logo-labexplora.png" alt="Logo Lab">
             <h1>Inicio de Sesión Administrador</h1>
             <p class="subtitulo">Panel de Administración Lab-Explora</p>
         </div>

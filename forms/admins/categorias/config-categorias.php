@@ -1,6 +1,6 @@
-<?php
-// Configuración de Base de Datos (Categorías)
-// Clase para gestionar la conexión a la base de datos usando PDO
+ï»¿<?php
+// ConfiguraciÃ³n de Base de Datos (CategorÃ­as)
+// Clase para gestionar la conexiÃ³n a la base de datos usando PDO
 
 class Database {
     // Credenciales de la base de datos
@@ -10,28 +10,28 @@ class Database {
     private $password = "";
     public $conn;
 
-    // Método: Obtener conexión
+    // MÃ©todo: Obtener conexiÃ³n
     // Retorna una instancia de PDO o null si falla
     public function getConnection() {
         $this->conn = null;
         
         try {
-            // Crear nueva conexión PDO
+            // Crear nueva conexiÃ³n PDO
             $this->conn = new PDO(
                 "mysql:host=" . $this->host . ";dbname=" . $this->db_name, 
                 $this->username, 
                 $this->password
             );
             
-            // Configurar codificación UTF-8
+            // Configurar codificaciÃ³n UTF-8
             $this->conn->exec("set names utf8");
             
             // Configurar modo de errores a excepciones
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
         } catch(PDOException $exception) {
-            // Mostrar error si falla la conexión
-            echo "Error de conexión: " . $exception->getMessage();
+            // Mostrar error si falla la conexiÃ³n
+            echo "Error de conexiÃ³n: " . $exception->getMessage();
         }
         
         return $this->conn;

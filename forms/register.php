@@ -161,11 +161,11 @@ input.success {
 <!-- novalidate desactiva la validación automática del navegador -->
     <div class="logo-Lab">
     <!-- Contenedor del logo y título -->
-        <img src="../assets/img/logo/logobrayan2.ico" alt="Logo Lab">
+        <img src="../assets/img/logo/logo-labexplora.png" alt="Logo Lab">
         <!-- Logo del laboratorio -->
         <h1>Registro Lab-Explora</h1>
         <!-- Título principal -->
-        <p class="subtitulo">Lab Explorer (cbtis52)</p>
+        <p class="subtitulo">Lab Explora (cbtis52)</p>
         <!-- Subtítulo con el nombre de la escuela -->
     </div>
     <!-- Cerramos logo-Lab -->
