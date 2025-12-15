@@ -122,10 +122,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Registro Publicadores - Lab-Explora</title>
     <!-- Título de la pestaña -->
     
-    <link rel="stylesheet" href="../../assets/css/registro.css">
-    <!-- Cargamos el CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/inicio-sesion.css">
     <link rel="stylesheet" href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css">
-    <!-- Iconos para el widget de accesibilidad (Local) -->
     <style>
         .mensaje-validacion {
             font-size: 0.95rem;
@@ -147,14 +146,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         
         /* FIX LOGO DIRECTO */
-        .logo-Lab img {
+        .logo-lab img {
             width: 250px !important;
             max-width: 100% !important;
             height: auto !important;
             display: block;
             margin: 0 auto 10px auto;
         }
-
         /* FIX DE SCROLL Y CORTE EN PANTALLAS PEQUEÑAS */
         body {
             align-items: flex-start !important; /* Evita que se corte arriba */
@@ -165,107 +163,101 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     </style>
 </head>
-<!-- Cerramos head -->
 <body>
-<!-- Abrimos body -->
-    <div class="form-container">
-    <!-- Contenedor del formulario -->
-        <form method="post" class="formulario" novalidate>
-        <!-- Formulario que se envía por POST -->
-        <!-- novalidate desactiva la validación automática del navegador -->
-            
-            <!-- Logo y título -->
-            <div class="logo-Lab">
-                <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
-                <!-- Logo -->
-                <h1>Registro Publicadores Lab-Explora</h1>
-                <!-- Título -->
-                <p class="subtitulo">Panel de Publicadores (cbtis52)</p>
-                <!-- Subtítulo -->
+    <div class="container-fluid min-vh-100 d-flex justify-content-center py-5">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                
+                <form method="post" class="formulario" novalidate>
+                    <div class="logo-lab text-center mb-4">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab" class="mb-3">
+                        <h1>Registro Publicadores</h1>
+                        <p class="subtitulo">Panel de Publicadores (cbtis52)</p>
+                    </div>
+
+                    <section class="seccion-informacion mb-4">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo *</label>
+                            <input type="text" 
+                                   name="nombre" 
+                                   id="nombre"
+                                   class="form-control"
+                                   placeholder="Ej: Dr. Juan Pérez" 
+                                   value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Correo Electrónico *</label>
+                            <input type="email" 
+                                   id="correo" 
+                                   name="correo" 
+                                   class="form-control"
+                                   placeholder="ejemplo@gmail.com"
+                                   value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
+                                   required>
+                            <div id="mensaje-correo" class="mensaje-correo"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña *</label>
+                            <input type="password" 
+                                   id="contrasena"
+                                   name="contrasena" 
+                                   class="form-control"
+                                   placeholder="Mínimo 6 caracteres"
+                                   required 
+                                   minlength="6">
+                            <div id="mensaje-contrasena" class="mensaje-validacion"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Especialidad *</label>
+                            <input type="text" 
+                                   name="especialidad" 
+                                   id="especialidad"
+                                   class="form-control"
+                                   placeholder="Ej: Bacteriología, Hematología, etc." 
+                                   value="<?= htmlspecialchars($_POST['especialidad'] ?? '') ?>"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Título Académico</label>
+                            <input type="text" 
+                                   name="titulo_academico" 
+                                   id="titulo_academico"
+                                   class="form-control"
+                                   placeholder="Ej: Doctor en Microbiología" 
+                                   value="<?= htmlspecialchars($_POST['titulo_academico'] ?? '') ?>">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Institución</label>
+                            <input type="text" 
+                                   name="institucion" 
+                                   id="institucion"
+                                   class="form-control"
+                                   placeholder="Ej: Hospital General, Universidad Nacional" 
+                                   value="<?= htmlspecialchars($_POST['institucion'] ?? '') ?>">
+                        </div>
+                    </section>
+
+                    <section class="seccion-botones text-center">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Registrarse como Publicador</button>
+                        
+                        <div class="d-flex flex-column gap-2">
+                            <p class="mb-0">¿Ya tienes cuenta? <a href="inicio-sesion-publicadores.php" class="text-decoration-none">Inicia sesión</a></p>
+                            <p class="mb-0"><a href="../../index.php" class="text-decoration-none">← Volver al sitio principal</a></p>
+                        </div>
+                    </section>
+                </form>
             </div>
-            <!-- Cerramos logo-Lab -->
-
-            <!-- Sección de inputs -->
-            <section class="seccion-informacion">
-                
-                <label>Nombre Completo *</label>
-                <!-- Etiqueta (el * indica que es obligatorio) -->
-                <input type="text" 
-                       name="nombre" 
-                       id="nombre"
-                       placeholder="Ej: Dr. Juan Pérez" 
-                       value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
-                       required>
-                <!-- Input de nombre -->
-                <!-- htmlspecialchars() previene ataques XSS -->
-
-                <label>Correo Electrónico *</label>
-                <!-- Etiqueta -->
-                <input type="email" 
-                       id="correo" 
-                       name="correo" 
-                       placeholder="ejemplo@gmail.com"
-                       value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
-                       required>
-                <!-- Input de correo -->
-                <div id="mensaje-correo" class="mensaje-correo"></div>
-                <!-- Div vacío donde JavaScript mostrará mensajes -->
-
-                <label>Contraseña *</label>
-                <!-- Etiqueta -->
-                <input type="password" 
-                       id="contrasena"
-                       name="contrasena" 
-                       placeholder="Mínimo 6 caracteres"
-                       required 
-                       minlength="6">
-                <!-- Input de contraseña -->
-                <div id="mensaje-contrasena" class="mensaje-validacion"></div>
-                <!-- Div para mensajes de validación -->
-
-                <label>Especialidad *</label>
-                <!-- Etiqueta -->
-                <input type="text" 
-                       name="especialidad" 
-                       id="especialidad"
-                       placeholder="Ej: Bacteriología, Hematología, etc." 
-                       value="<?= htmlspecialchars($_POST['especialidad'] ?? '') ?>"
-                       required>
-                <!-- Input de especialidad -->
-
-                <label>Título Académico</label>
-                <!-- Etiqueta (sin *, es opcional) -->
-                <input type="text" 
-                       name="titulo_academico" 
-                       id="titulo_academico"
-                       placeholder="Ej: Doctor en Microbiología" 
-                       value="<?= htmlspecialchars($_POST['titulo_academico'] ?? '') ?>">
-                <!-- Input opcional -->
-
-                <label>Institución</label>
-                <!-- Etiqueta (opcional) -->
-                <input type="text" 
-                       name="institucion" 
-                       id="institucion"
-                       placeholder="Ej: Hospital General, Universidad Nacional" 
-                       value="<?= htmlspecialchars($_POST['institucion'] ?? '') ?>">
-                <!-- Input opcional -->
-            </section>
-            <!-- Cerramos seccion-informacion -->
-
-            <section class="seccion-botones">
-            <!-- Sección de botones -->
-                <button type="submit">Registrarse como Publicador</button>
-                <!-- Botón para enviar -->
-                
-                <p>¿Ya tienes cuenta? <a href="inicio-sesion-publicadores.php">Inicia sesión</a></p>
-                <!-- Link al login -->
-                <p><a href="../../index.php">← Volver al sitio principal</a></p>
-                <!-- Link para volver -->
-            </section>
-            <!-- Cerramos seccion-botones -->
-        </form>
-        <!-- Cerramos formulario -->
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </div>
     <!-- Cerramos form-container -->
 

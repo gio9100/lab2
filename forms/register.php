@@ -101,127 +101,103 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- Para que se vean bien los acentos -->
 <title>Registro Lab-Explora</title>
 <!-- Título que aparece en la pestaña del navegador -->
-<link rel="stylesheet" href="../assets/css/registro.css">
-<!-- Cargamos el CSS del registro -->
-<link rel="stylesheet" href="../assets/vendor/bootstrap-icons/bootstrap-icons.css">
-<!-- Iconos para el widget de accesibilidad (Local) -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Para que se vea bien en celulares -->
-<style>
-/* Abrimos CSS dentro del HTML */
-.mensaje-validacion {
-    /* Estilos para los mensajes de validación */
-    font-size: 0.95rem;
-    /* Tamaño de letra un poco más pequeño */
-    margin-top: 3px;
-    /* Espacio arriba */
-    margin-bottom: 5px;
-    /* Espacio abajo */
-    font-weight: 500;
-    /* Grosor de la letra medio */
-}
-/* Cerramos la clase */
-
-.mensaje-validacion.error {
-    /* Estilos para mensajes de error */
-    color: #dc3545;
-    /* Color rojo */
-}
-/* Cerramos la clase */
-
-.mensaje-validacion.success {
-    /* Estilos para mensajes de éxito */
-    color: #28a745;
-    /* Color verde */
-}
-/* Cerramos la clase */
-
-input.error {
-    /* Estilos para inputs con error */
-    border-color: #dc3545 !important;
-    /* Borde rojo (el !important fuerza el estilo) */
-}
-/* Cerramos la clase */
-
-input.success {
-    /* Estilos para inputs correctos */
-    border-color: #28a745 !important;
-    /* Borde verde */
-}
-/* Cerramos la clase */
-</style>
-<!-- Cerramos el CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/inicio-sesion.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap-icons/bootstrap-icons.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    /* Abrimos CSS dentro del HTML */
+    .mensaje-validacion {
+        font-size: 0.95rem;
+        margin-top: 3px;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+    .mensaje-validacion.error {
+        color: #dc3545;
+    }
+    .mensaje-validacion.success {
+        color: #28a745;
+    }
+    input.error {
+        border-color: #dc3545 !important;
+    }
+    input.success {
+        border-color: #28a745 !important;
+    }
+    /* Override body alignment for tall forms */
+    body {
+        align-items: flex-start !important;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        height: auto !important;
+    }
+    </style>
 </head>
-<!-- Cerramos el head -->
 <body>
-<!-- Abrimos el body -->
 
-<form method="post" class="formulario" novalidate>
-<!-- Formulario que se envía por POST -->
-<!-- novalidate desactiva la validación automática del navegador -->
-    <div class="logo-Lab">
-    <!-- Contenedor del logo y título -->
-        <img src="../assets/img/logo/logo-labexplora.png" alt="Logo Lab">
-        <!-- Logo del laboratorio -->
-        <h1>Registro Lab-Explora</h1>
-        <!-- Título principal -->
-        <p class="subtitulo">Lab Explora (cbtis52)</p>
-        <!-- Subtítulo con el nombre de la escuela -->
+    <div class="container-fluid min-vh-100 d-flex justify-content-center py-5">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                
+                <form method="post" class="formulario" novalidate>
+                    <div class="logo-lab text-center mb-4">
+                        <img src="../assets/img/logo/logo-labexplora.png" alt="Logo Lab" class="mb-3">
+                        <h1>Registro Lab-Explora</h1>
+                        <p class="subtitulo">Lab Explora (cbtis52)</p>
+                    </div>
+
+                    <section class="seccion-informacion mb-4">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" 
+                                   name="nombre" 
+                                   id="nombre"
+                                   class="form-control"
+                                   placeholder="Ej: Edwin Herrera" 
+                                   value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" 
+                                   id="correo" 
+                                   name="correo" 
+                                   class="form-control"
+                                   placeholder="ejemplo@gmail.com"
+                                   value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
+                                   required>
+                            <div id="mensaje-correo" class="mensaje-validacion" role="alert" aria-live="polite"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" 
+                                   id="contrasena"
+                                   name="contrasena" 
+                                   class="form-control"
+                                   placeholder="Mínimo 6 caracteres"
+                                   required 
+                                   minlength="6">
+                            <div id="mensaje-contrasena" class="mensaje-validacion" role="alert" aria-live="polite"></div>
+                        </div>
+                    </section>
+
+                    <section class="seccion-botones text-center">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Crear Cuenta</button>
+                        <div class="d-flex flex-column gap-2">
+                            <p class="mb-0">¿Ya tienes cuenta? <a href="inicio-sesion.php" class="text-decoration-none">Inicia sesión</a></p>
+                            <p class="mb-0"><a href="../index.php" class="text-decoration-none">← Volver al sitio principal</a></p>
+                        </div>
+                    </section>
+                </form>
+
+            </div>
+        </div>
     </div>
-    <!-- Cerramos logo-Lab -->
 
-    <section class="seccion-informacion">
-    <!-- Sección donde van los inputs -->
-        <label>Nombre Completo</label>
-        <!-- Etiqueta para el input de nombre -->
-        <input type="text" 
-               name="nombre" 
-               id="nombre"
-               placeholder="Ej: Edwin Herrera" 
-               value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
-               required>
-        <!-- Input de nombre -->
-        <!-- placeholder es el texto de ejemplo que se ve -->
-        <!-- value mantiene el nombre escrito si hubo error -->
-        <!-- required hace que sea obligatorio -->
-
-        <label>Correo Electrónico</label>
-        <!-- Etiqueta para el input de correo -->
-        <input type="email" 
-               id="correo" 
-               name="correo" 
-               placeholder="ejemplo@gmail.com"
-               value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
-               required>
-        <!-- Input de correo -->
-        <div id="mensaje-correo" class="mensaje-validacion" role="alert" aria-live="polite"></div>
-        <!-- Div vacío donde JavaScript mostrará mensajes de validación -->
-
-        <label>Contraseña</label>
-        <!-- Etiqueta para el input de contraseña -->
-        <input type="password" 
-               id="contrasena"
-               name="contrasena" 
-               placeholder="Mínimo 6 caracteres"
-               required 
-               minlength="6">
-        <!-- Input de contraseña -->
-        <!-- minlength="6" requiere mínimo 6 caracteres -->
-        <div id="mensaje-contrasena" class="mensaje-validacion" role="alert" aria-live="polite"></div>
-        <!-- Div vacío donde JavaScript mostrará mensajes de validación -->
-    </section>
-    <!-- Cerramos seccion-informacion -->
-
-    <section class="seccion-botones">
-    <!-- Sección de botones y links -->
-        <button type="submit">Crear Cuenta</button>
-        <!-- Botón para enviar el formulario -->
-        <p>¿Ya tienes cuenta? <a href="inicio-sesion.php">Inicia sesión</a></p>
-        <!-- Link para ir al login -->
-    </section>
-    <!-- Cerramos seccion-botones -->
-</form>
-<!-- Cerramos el formulario -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <?php if($mensaje && $exito): ?>

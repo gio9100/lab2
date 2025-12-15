@@ -114,63 +114,101 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Administrador - Lab-Explora</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/inicio-sesion.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../../assets/css/registro.css">
+    <style>
+        .mensaje-validacion {
+            font-size: 0.95rem;
+            margin-top: 3px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        /* Override body alignment for tall forms */
+        body {
+            align-items: flex-start !important;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            height: auto !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="form-container">
-        <form method="post" class="formulario" novalidate>
-            
-            <div class="logo-Lab">
-                <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab">
-                <h1>Registro Administrador</h1>
-                <p class="subtitulo">Panel de Administración Lab-Explora</p>
+    <div class="container-fluid min-vh-100 d-flex justify-content-center py-5">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                
+                <form method="post" class="formulario" novalidate>
+                    <div class="logo-lab text-center mb-4">
+                        <img src="../../assets/img/logo/logo-labexplora.png" alt="logo-lab" class="mb-3">
+                        <h1>Registro Administrador</h1>
+                        <p class="subtitulo">Panel de Administración Lab-Explora</p>
+                    </div>
+
+                    <section class="seccion-informacion mb-4">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" 
+                                   name="nombre" 
+                                   class="form-control"
+                                   placeholder="Ej: Administrador Principal" 
+                                   value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" 
+                                   name="email" 
+                                   class="form-control"
+                                   placeholder="admin@labexplora.com"
+                                   value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" 
+                                   name="password" 
+                                   class="form-control"
+                                   placeholder="Mínimo 6 caracteres"
+                                   required 
+                                   minlength="6">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nivel de Administrador</label>
+                            <select name="nivel" class="form-select" required>
+                                <option value="admin">Administrador</option>
+                                <option value="superadmin">Super Administrador</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Clave Secreta</label>
+                            <input type="password" 
+                                   name="clave_maestra" 
+                                   class="form-control"
+                                   placeholder="Clave Secreta"
+                                   required>
+                        </div>
+                        
+                    </section>
+
+                    <section class="seccion-botones text-center">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Registrar Administrador</button>
+                        <div class="d-flex flex-column gap-2">
+                            <p class="mb-0">¿Ya tienes cuenta? <a href="login-admin.php" class="text-decoration-none">Inicia sesión como administrador</a></p>
+                            <p class="mb-0"><a href="../../pagina-principal.php" class="text-decoration-none">← Volver al sitio principal</a></p>
+                        </div>
+                    </section>
+                </form>
             </div>
-
-            <section class="seccion-informacion">
-                
-                <label>Nombre Completo</label>
-                <input type="text" 
-                       name="nombre" 
-                       placeholder="Ej: Administrador Principal" 
-                       value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>"
-                       required>
-
-                <label>Email</label>
-                <input type="email" 
-                       name="email" 
-                       placeholder="admin@labexplora.com"
-                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                       required>
-
-                <label>Contraseña</label>
-                <input type="password" 
-                       name="password" 
-                       placeholder="Mínimo 6 caracteres"
-                       required 
-                       minlength="6">
-
-                <label>Nivel de Administrador</label>
-                <select name="nivel" required>
-                    <option value="admin">Administrador</option>
-                    <option value="superadmin">Super Administrador</option>
-                </select>
-
-                <label>Clave Secreta</label>
-                <input type="password" 
-                       name="clave_maestra" 
-                       placeholder="Clave Secreta"
-                       required>
-                
-            </section>
-
-            <section class="seccion-botones">
-                <button type="submit">Registrar Administrador</button>
-                <p>¿Ya tienes cuenta? <a href="login-admin.php">Inicia sesión como administrador</a></p>
-                <p><a href="../../pagina-principal.php">← Volver al sitio principal</a></p>
-            </section>
-        </form>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <?php if($mensaje): ?>
     <div class="modal-mensaje <?= $exito ? 'exito' : 'error' ?>">

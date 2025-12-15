@@ -50,10 +50,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
                         $mensaje = "⏳ Tu cuenta está pendiente de aprobación.\n\nUn administrador revisará tu solicitud pronto. Recibirás un correo electrónico cuando tu cuenta sea aprobada o si necesitamos más información.\n\n¡Gracias por tu paciencia!";
                         break;
                     case 'suspendido':
-                        $mensaje = "🚫 Tu cuenta ha sido suspendida.\n\nPor favor, contacta con el administrador para más información.";
+                        $motivo_suspension = htmlspecialchars($publicador['motivo_suspension'] ?? 'Sin motivo especificado');
+                        $mensaje = "🚫 Tu cuenta ha sido suspendida.\n\nMotivo: {$motivo_suspension}\n\nPor favor, contacta con el administrador para más información.";
                         break;
                     case 'rechazado':
-                        $mensaje = "❌ Tu solicitud de registro fue rechazada.\n\nSi crees que esto es un error, por favor contacta con el administrador.";
+                        $motivo_rechazo = htmlspecialchars($publicador['motivo_rechazo'] ?? 'Sin motivo especificado');
+                        $mensaje = "❌ Tu solicitud de registro fue rechazada.\n\nMotivo: {$motivo_rechazo}\n\nSi crees que esto es un error, por favor contacta con el administrador.";
                         break;
                     default:
                         $mensaje = "⚠️ Tu cuenta no está activa. Contacta con el administrador.";

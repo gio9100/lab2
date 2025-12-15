@@ -73,6 +73,75 @@ function enviarCorreoRechazo($email_publicador, $nombre_publicador, $motivo = ''
     );
 }
 
+// Función: Enviar correo de suspensión
+// Notifica al publicador que su cuenta ha sido suspendida
+function enviarCorreoSuspension($email_publicador, $nombre_publicador, $motivo) {
+    $asunto = "⚠️ Importante: Tu cuenta ha sido suspendida - Lab Explora";
+    
+    $mensaje_html = "
+        <p>Hola <strong>" . htmlspecialchars($nombre_publicador) . "</strong>,</p>
+        <p>Te informamos que tu cuenta de publicador en <strong>Lab Explora</strong> ha sido <strong style='color: #dc3545;'>SUSPENDIDA</strong> temporalmente.</p>
+        
+        <h3>📋 Motivo de la suspensión:</h3>
+        <p style='background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 4px; color: #856404;'>
+            " . htmlspecialchars($motivo) . "
+        </p>
+        
+        <h3>¿Qué implica esto?</h3>
+        <ul>
+            <li>No podrás iniciar sesión en tu panel de publicador.</li>
+            <li>Tus publicaciones actuales dejarán de ser visibles públicamente.</li>
+            <li>No podrás crear ni editar contenido.</li>
+        </ul>
+        
+        <p>Si consideras que esto es un error o deseas apelar esta decisión, por favor contacta directamente con la administración respondiendo a este correo.</p>
+    ";
+    
+    return EmailHelper::enviarCorreo(
+        $email_publicador,
+        $asunto,
+        $mensaje_html
+    );
+}
+
+// Función: Enviar correo de reactivación
+function enviarCorreoReactivacion($email_publicador, $nombre_publicador) {
+    $asunto = "🎉 ¡Bienvenido de nuevo! Tu cuenta ha sido reactivada - Lab Explora";
+    
+    $mensaje_html = "
+        <p>Hola <strong>" . htmlspecialchars($nombre_publicador) . "</strong>,</p>
+        <p>Nos alegra informarte que tu cuenta de publicador en <strong>Lab Explora</strong> ha sido <strong style='color: #28a745;'>REACTIVADA</strong>.</p>
+        <p>Ya puedes volver a iniciar sesión y gestionar tus publicaciones con normalidad.</p>
+        <p>¡Gracias por seguir con nosotros!</p>
+    ";
+    
+    return EmailHelper::enviarCorreo(
+        $email_publicador,
+        $asunto,
+        $mensaje_html,
+        '🚀 Iniciar Sesión',
+        'http://localhost/lab2/forms/publicadores/inicio-sesion-publicadores.php'
+    );
+}
+
+// Función: Enviar correo de eliminación
+function enviarCorreoEliminacion($email_publicador, $nombre_publicador) {
+    $asunto = "⚠️ Tu cuenta ha sido eliminada - Lab Explora";
+    
+    $mensaje_html = "
+        <p>Hola <strong>" . htmlspecialchars($nombre_publicador) . "</strong>,</p>
+        <p>Te informamos que tu cuenta de publicador en <strong>Lab Explora</strong> ha sido <strong style='color: #dc3545;'>ELIMINADA</strong> permanentemente.</p>
+        <p>Esta acción es irreversible y toda tu información y publicaciones han sido borradas de nuestros registros.</p>
+        <p>Si consideras que esto ha sido un error, por favor ponte en contacto con la administración de Lab Explora inmediatamente.</p>
+    ";
+    
+    return EmailHelper::enviarCorreo(
+        $email_publicador,
+        $asunto,
+        $mensaje_html
+    );
+}
+
 // Función: Notificar nuevo publicador a administradores
 // Envía un correo a todos los admins activos cuando se registra un nuevo publicador
 function enviarCorreoNuevoPublicadorAAdmins($nombre_publicador, $email_publicador, $especialidad, $conn) {

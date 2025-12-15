@@ -7,6 +7,7 @@ session_start();
 
 // Incluir notificaciones por correo
 require_once 'enviar_correo_publicador.php';
+require_once dirname(__DIR__) . '/funciones_auditoria.php';
 
 // Configuración de la base de datos
 $servername = "localhost";
@@ -136,6 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 error_log("Verificación - Estado guardado: '" . $verify_data['estado'] . "', Motivo: '" . $verify_data['motivo_rechazo'] . "'");
                 
                 enviarCorreoRechazo($publicador_datos['email'], $publicador_datos['nombre'], $motivo);
+                registrarLogAuditoria($conn, $admin_id, 'rechazar_publicador', 'publicador', $publicador_id, "Motivo: $motivo");
                 $_SESSION['mensaje'] = "Publicador rechazado correctamente. Estado: " . $verify_data['estado'] . ", Motivo: " . $verify_data['motivo_rechazo'];
                 $_SESSION['tipo_mensaje'] = "success";
             } else {
@@ -159,7 +161,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->bind_param("si", $motivo, $publicador_id);
         
         if ($stmt->execute()) {
-            $_SESSION['mensaje'] = "Publicador suspendido correctamente";
+            // Obtener datos para correo
+            $query_datos = "SELECT nombre, email FROM publicadores WHERE id = ?";
+            $stmt_datos = $conn->prepare($query_datos);
+            $stmt_datos->bind_param("i", $publicador_id);
+            $stmt_datos->execute();
+            $result_datos = $stmt_datos->get_result();
+            $publicador_datos = $result_datos->fetch_assoc();
+
+            enviarCorreoSuspension($publicador_datos['email'], $publicador_datos['nombre'], $motivo);
+            registrarLogAuditoria($conn, $admin_id, 'suspender_publicador', 'publicador', $publicador_id, "Motivo: $motivo");
+
+            $_SESSION['mensaje'] = "Publicador suspendido correctamente y notificado por correo";
             $_SESSION['tipo_mensaje'] = "success";
         } else {
             $_SESSION['mensaje'] = "Error al suspender publicador";
@@ -179,7 +192,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->bind_param("i", $publicador_id);
         
         if ($stmt->execute()) {
-            $_SESSION['mensaje'] = "Publicador activado correctamente";
+            // Obtener datos para correo
+            $query_datos = "SELECT nombre, email FROM publicadores WHERE id = ?";
+            $stmt_datos = $conn->prepare($query_datos);
+            $stmt_datos->bind_param("i", $publicador_id);
+            $stmt_datos->execute();
+            $result_datos = $stmt_datos->get_result();
+            $publicador_datos = $result_datos->fetch_assoc();
+
+            enviarCorreoReactivacion($publicador_datos['email'], $publicador_datos['nombre']);
+            registrarLogAuditoria($conn, $admin_id, 'activar_publicador', 'publicador', $publicador_id, "Reactivación de cuenta");
+
+            $_SESSION['mensaje'] = "Publicador activado correctamente y notificado por correo";
             $_SESSION['tipo_mensaje'] = "success";
         } else {
             $_SESSION['mensaje'] = "Error al activar publicador";
@@ -194,12 +218,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['eliminar_publicador'])) {
         $publicador_id = intval($_POST['publicador_id']);
         
+        // Obtener datos para correo ANTES de eliminar
+        $query_datos = "SELECT nombre, email FROM publicadores WHERE id = ?";
+        $stmt_datos = $conn->prepare($query_datos);
+        $stmt_datos->bind_param("i", $publicador_id);
+        $stmt_datos->execute();
+        $result_datos = $stmt_datos->get_result();
+        $publicador_datos = $result_datos->fetch_assoc();
+
         $query = "DELETE FROM publicadores WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $publicador_id);
         
         if ($stmt->execute()) {
-            $_SESSION['mensaje'] = "Publicador eliminado correctamente";
+            enviarCorreoEliminacion($publicador_datos['email'], $publicador_datos['nombre']);
+            registrarLogAuditoria($conn, $admin_id, 'eliminar_publicador', 'publicador', $publicador_id, "Eliminación definitiva de cuenta");
+            
+            $_SESSION['mensaje'] = "Publicador eliminado correctamente y notificado por correo";
             $_SESSION['tipo_mensaje'] = "success";
         } else {
             $_SESSION['mensaje'] = "Error al eliminar publicador";

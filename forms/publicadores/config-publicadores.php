@@ -42,10 +42,14 @@ function loginPublicador($email, $password, $conn) {
                 return $publicador;
             } else {
                 // Retornar array con información del estado
+                // Retornar array con información detalalda del estado
                 return [
                     'estado_cuenta' => $publicador['estado'],
                     'nombre' => $publicador['nombre'],
-                    'email' => $publicador['email']
+                    'email' => $publicador['email'],
+                    // Incluimos los motivos para mostrarlos en el login
+                    'motivo_suspension' => $publicador['motivo_suspension'] ?? '',
+                    'motivo_rechazo' => $publicador['motivo_rechazo'] ?? ''
                 ];
             }
         }
